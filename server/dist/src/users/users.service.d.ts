@@ -18,6 +18,7 @@ export declare class UsersService {
     addChatGroupToUser(userId: string, chatGroup: object): Promise<mongoose.Document<unknown, {}, User> & User & Required<{
         _id: string;
     }>>;
+    removeChatGroupFromUser(user: any, chatGroup: any): Promise<void>;
     addFriend(userId: string, friend: object): Promise<mongoose.Document<unknown, {}, User> & User & Required<{
         _id: string;
     }>>;

@@ -8,7 +8,8 @@ export declare class ChatGroupsService {
     createChatGroup(chatGroup: CreateChatGroupDTO, creatorUser: any): Promise<mongoose.Document<unknown, {}, ChatGroups> & ChatGroups & {
         _id: mongoose.Types.ObjectId;
     }>;
-    getChatGroupById(id: string): Promise<mongoose.Document<unknown, {}, ChatGroups> & ChatGroups & {
+    deleteChatGroup(chatGroupId: mongoose.Types.ObjectId): Promise<void>;
+    getChatGroupById(chatGroupId: string): Promise<mongoose.Document<unknown, {}, ChatGroups> & ChatGroups & {
         _id: mongoose.Types.ObjectId;
     }>;
     getChatGroupByObjectId(id: object): Promise<mongoose.Document<unknown, {}, ChatGroups> & ChatGroups & {

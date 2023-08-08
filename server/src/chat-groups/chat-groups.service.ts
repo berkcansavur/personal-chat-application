@@ -21,10 +21,13 @@ export class ChatGroupsService {
         const newChatGroup = new this.ChatGroupsModel({users,chatGroupName,creatingDate});
         return await newChatGroup.save();
     }
-    async getChatGroupById(id:string){
+    async deleteChatGroup(chatGroupId:mongoose.Types.ObjectId){
+        await this.ChatGroupsModel.findByIdAndRemove(chatGroupId);
+    }
+    async getChatGroupById(chatGroupId:string){
         try {
-            if(!id){return null;}
-            return await this.ChatGroupsModel.findById(id);
+            if(!chatGroupId){return null;}
+            return await this.ChatGroupsModel.findById(chatGroupId);
         } catch (error) {
             throw new Error(error.message);
         }

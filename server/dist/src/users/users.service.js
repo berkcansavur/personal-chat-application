@@ -57,6 +57,17 @@ let UsersService = exports.UsersService = class UsersService {
             throw new Error(error);
         }
     }
+    async removeChatGroupFromUser(user, chatGroup) {
+        try {
+            const userId = user._id;
+            const chatGroupId = chatGroup._id;
+            const updatedUser = await this.userModel.findByIdAndUpdate(userId, { $pull: { ChatGroups: { _id: chatGroupId } } }, { new: true });
+            await updatedUser.save();
+        }
+        catch (error) {
+            throw new Error(error);
+        }
+    }
     async addFriend(userId, friend) {
         try {
             const updatedUser = await this.userModel.findByIdAndUpdate(userId, { $push: { Friends: friend } }, { new: true });
