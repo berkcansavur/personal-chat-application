@@ -167,7 +167,7 @@ export class AppController {
 
     @UseGuards( JwtAuthGuard )
     @Delete('/delete-chat-group/:chatGroupId')
-    async deleteChatGroup( @Param('chatGroupId') chatGroupId:mongoose.Types.ObjectId,@Request() req ) {
+    async deleteChatGroup( @Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId) {
       try {
         const chatGroupToBeDelete = await this.chatGroupService.getChatGroupByObjectId( chatGroupId );
         const usersOfChatGroup = await this.chatGroupService.getChatGroupsUsers(chatGroupId);
