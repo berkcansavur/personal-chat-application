@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UseGuards, Request, Body, UnauthorizedException, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards, Request, Body, UnauthorizedException, Param, Query, Delete } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth/auth.service';
@@ -163,6 +163,22 @@ export class AppController {
         const newChatGroup = await this.chatGroupService.createChatGroup( body, user );
         await this.userService.addChatGroupToUser( req.user.userId, newChatGroup );
         return newChatGroup;
+    }
+
+    @UseGuards( JwtAuthGuard )
+    @Delete('/delete-chat-group/:chatGroupId')
+    async deleteChatGroup( @Param('chatGroupId') chatGroupId:mongoose.Types.ObjectId,@Request() req ) {
+      try {
+        const chatGroupToBeDelete = await this.chatGroupService.getChatGroupByObjectId( chatGroupId );
+        const usersOfChatGroup = await this.chatGroupService.getChatGroupsUsers(chatGroupId);
+        for( let user of usersOfChatGroup){
+          await this.userService.removeChatGroupFromUser(user,chatGroupToBeDelete)
+        }
+        await this.chatGroupService.deleteChatGroup(chatGroupId);
+        
+      } catch (error) {
+        throw new Error(error);
+      }
     }
 
     @UseGuards( JwtAuthGuard )

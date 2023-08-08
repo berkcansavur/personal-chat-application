@@ -28,12 +28,15 @@ let ChatGroupsService = exports.ChatGroupsService = class ChatGroupsService {
         const newChatGroup = new this.ChatGroupsModel({ users, chatGroupName, creatingDate });
         return await newChatGroup.save();
     }
-    async getChatGroupById(id) {
+    async deleteChatGroup(chatGroupId) {
+        await this.ChatGroupsModel.findByIdAndRemove(chatGroupId);
+    }
+    async getChatGroupById(chatGroupId) {
         try {
-            if (!id) {
+            if (!chatGroupId) {
                 return null;
             }
-            return await this.ChatGroupsModel.findById(id);
+            return await this.ChatGroupsModel.findById(chatGroupId);
         }
         catch (error) {
             throw new Error(error.message);

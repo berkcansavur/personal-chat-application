@@ -149,6 +149,19 @@ let AppController = exports.AppController = class AppController {
         await this.userService.addChatGroupToUser(req.user.userId, newChatGroup);
         return newChatGroup;
     }
+    async deleteChatGroup(chatGroupId, req) {
+        try {
+            const chatGroupToBeDelete = await this.chatGroupService.getChatGroupByObjectId(chatGroupId);
+            const usersOfChatGroup = await this.chatGroupService.getChatGroupsUsers(chatGroupId);
+            for (let user of usersOfChatGroup) {
+                await this.userService.removeChatGroupFromUser(user, chatGroupToBeDelete);
+            }
+            await this.chatGroupService.deleteChatGroup(chatGroupId);
+        }
+        catch (error) {
+            throw new Error(error);
+        }
+    }
     async getChatGroup(chatGroupId, req) {
         if (!req.user) {
             throw new common_1.UnauthorizedException('You need to login to create a chat group');
@@ -253,6 +266,15 @@ __decorate([
     __metadata("design:paramtypes", [create_chat_group_dto_1.CreateChatGroupDTO, Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "createChatGroup", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Delete)('/delete-chat-group/:chatGroupId'),
+    __param(0, (0, common_1.Param)('chatGroupId')),
+    __param(1, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [mongoose_1.default.Types.ObjectId, Object]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "deleteChatGroup", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('/get-chat-group/:chatGroupId'),

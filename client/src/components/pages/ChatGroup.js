@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../ChatGroupRelated/ChatGroupPage.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Footer from '../Footer';
 
 export default function Chats() {
-
+  const navigate = useNavigate();
   const [friends, setFriends] = useState([]);
   const [chatGroup, setChatGroup] = useState({});
   const [chatGroupUsers, setChatGroupUsers] = useState([]);
@@ -114,6 +114,19 @@ export default function Chats() {
       console.log(error);
     }
   };
+  const handleDeleteChatGroup = async (chatGroupId) => {
+    try {
+      const deleteChatGroup = await axios.delete(`http://localhost:3001/app//delete-chat-group/${chatGroupId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      navigate('/profile');
+    } catch (error) {
+      console.log(error);
+    }
+  }
   
 
   return (
@@ -125,7 +138,6 @@ export default function Chats() {
       <div className="chat-group__cards-container">
         <div className="chat-group__cards-wrapper">
           <h3 className="chat-group__section-title">Group Members</h3>
-          <ul>
           {chatGroupUsers && chatGroupUsers.map((user) => (
             <div className="chat-group__card" key={user._id}>
               <h4 className="chat-group__card-title">{user.name}</h4>
@@ -139,11 +151,9 @@ export default function Chats() {
 
             </div>
           ))}
-          </ul>
         </div>
         <div className="chat-group__cards-wrapper">
           <h3 className="chat-group__section-title">Friends</h3>
-          <ul>
           {friends && friends.map((friend) => (
             <div className="chat-group__card" key={friend._id}>
               <h4 className="chat-group__card-title">{friend.name}</h4>
@@ -156,9 +166,11 @@ export default function Chats() {
               </button>
             </div>
           ))}
-          </ul>
         </div>
         
+      </div>
+      <div>
+      <button className="chat-group__card-button remove-button" onClick={() => handleDeleteChatGroup}> Delete Chat Group</button>
       </div>
     </div>
     <Footer/>
