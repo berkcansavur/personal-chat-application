@@ -1,0 +1,22 @@
+
+.chats__container {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-image: url('../../public/images/img-3.jpg'); /* Arka plan fotoğrafını buraya ekleyin */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.chats__btn {
+  margin-top: 1rem;
+}
+
+  .chats__btn {
+    margin-top: 1rem;
+  }
+  

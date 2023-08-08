@@ -1,0 +1,8 @@
+Get http://localhost:3001/users/me
+### Login
+http://localhost:3001/users/login
+
+{
+    "email":"berkcansavur@gmail.com",
+    "password":"8karakter"
+}
