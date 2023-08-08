@@ -128,6 +128,18 @@ let AppController = exports.AppController = class AppController {
         }
         return friendsData;
     }
+    async getChatGroupsUsersInfo(chatGroupId) {
+        if (!chatGroupId) {
+            throw new common_1.UnauthorizedException('You must provide an existing chatgroup!');
+        }
+        const friends = await this.chatGroupService.getChatGroupsUsers(chatGroupId);
+        const friendsData = [];
+        for (const friend of friends) {
+            const friendData = await this.userService.getUserData(friend);
+            friendsData.push(friendData);
+        }
+        return friendsData;
+    }
     async createChatGroup(body, req) {
         if (!req.user) {
             throw new common_1.UnauthorizedException('You need to login to create a chat group');
@@ -224,6 +236,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "getFriends", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('/get-chatgroups-friends-data/:chatGroupId'),
+    __param(0, (0, common_1.Param)('chatGroupId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [mongoose_1.default.Types.ObjectId]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "getChatGroupsUsersInfo", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('/create-chat-group'),

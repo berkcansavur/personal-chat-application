@@ -137,6 +137,21 @@ export class AppController {
       }
       return friendsData;
     }
+    
+    @UseGuards( JwtAuthGuard )
+    @Get('/get-chatgroups-friends-data/:chatGroupId')
+    async getChatGroupsUsersInfo( @Param('chatGroupId') chatGroupId:mongoose.Types.ObjectId ) {
+      if( !chatGroupId ) {
+        throw new UnauthorizedException('You must provide an existing chatgroup!');
+      }
+      const friends = await this.chatGroupService.getChatGroupsUsers(chatGroupId);
+      const friendsData = [];
+      for( const friend of friends ) {
+        const friendData = await this.userService.getUserData( friend );
+        friendsData.push( friendData );
+      }
+      return friendsData;
+    }
  
     @UseGuards( JwtAuthGuard )
     @Post('/create-chat-group')
