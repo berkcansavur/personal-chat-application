@@ -48,7 +48,7 @@ export default function Chats() {
     try {
       await axios.post(
         `http://localhost:3001/app/add-friends-to-chat-group/${chatGroupId}/${friendId}`,
-        null, // Burada payload olarak null gönderiyoruz, çünkü payload gerekmiyor.
+        null,
         {
           headers: {
             Authorization: `Bearer ${token}`,
