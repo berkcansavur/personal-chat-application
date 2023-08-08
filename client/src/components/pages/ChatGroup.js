@@ -116,7 +116,7 @@ export default function Chats() {
   };
   const handleDeleteChatGroup = async (chatGroupId) => {
     try {
-      const deleteChatGroup = await axios.delete(`http://localhost:3001/app//delete-chat-group/${chatGroupId}`,
+      await axios.delete(`http://localhost:3001/app/delete-chat-group/${chatGroupId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -170,7 +170,7 @@ export default function Chats() {
         
       </div>
       <div>
-      <button className="chat-group__card-button remove-button" onClick={() => handleDeleteChatGroup}> Delete Chat Group</button>
+      <button className="chat-group__card-button remove-button" onClick={() => handleDeleteChatGroup(chatGroupId)}> Delete Chat Group</button>
       </div>
     </div>
     <Footer/>

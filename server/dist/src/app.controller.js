@@ -149,7 +149,7 @@ let AppController = exports.AppController = class AppController {
         await this.userService.addChatGroupToUser(req.user.userId, newChatGroup);
         return newChatGroup;
     }
-    async deleteChatGroup(chatGroupId, req) {
+    async deleteChatGroup(chatGroupId) {
         try {
             const chatGroupToBeDelete = await this.chatGroupService.getChatGroupByObjectId(chatGroupId);
             const usersOfChatGroup = await this.chatGroupService.getChatGroupsUsers(chatGroupId);
@@ -270,9 +270,8 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Delete)('/delete-chat-group/:chatGroupId'),
     __param(0, (0, common_1.Param)('chatGroupId')),
-    __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [mongoose_1.default.Types.ObjectId, Object]),
+    __metadata("design:paramtypes", [mongoose_1.default.Types.ObjectId]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "deleteChatGroup", null);
 __decorate([

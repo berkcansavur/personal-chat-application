@@ -48,7 +48,7 @@ export declare class AppController {
     createChatGroup(body: CreateChatGroupDTO, req: any): Promise<mongoose.Document<unknown, {}, import("./chat-groups/chat-groups.model").ChatGroups> & import("./chat-groups/chat-groups.model").ChatGroups & {
         _id: mongoose.Types.ObjectId;
     }>;
-    deleteChatGroup(chatGroupId: mongoose.Types.ObjectId, req: any): Promise<void>;
+    deleteChatGroup(chatGroupId: mongoose.Types.ObjectId): Promise<void>;
     getChatGroup(chatGroupId: mongoose.Types.ObjectId, req: any): Promise<mongoose.Document<unknown, {}, import("./chat-groups/chat-groups.model").ChatGroups> & import("./chat-groups/chat-groups.model").ChatGroups & {
         _id: mongoose.Types.ObjectId;
     }>;
