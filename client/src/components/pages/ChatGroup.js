@@ -126,7 +126,7 @@ export default function Chats() {
         <div className="chat-group__cards-wrapper">
           <h3 className="chat-group__section-title">Group Members</h3>
           <ul>
-          {chatGroupUsers.map((user) => (
+          {chatGroupUsers && chatGroupUsers.map((user) => (
             <div className="chat-group__card" key={user._id}>
               <h4 className="chat-group__card-title">{user.name}</h4>
               <p className="chat-group__card-email">{user.email}</p>
@@ -144,7 +144,7 @@ export default function Chats() {
         <div className="chat-group__cards-wrapper">
           <h3 className="chat-group__section-title">Friends</h3>
           <ul>
-          {friends.map((friend) => (
+          {friends && friends.map((friend) => (
             <div className="chat-group__card" key={friend._id}>
               <h4 className="chat-group__card-title">{friend.name}</h4>
               <p className="chat-group__card-email">{friend.email}</p>
