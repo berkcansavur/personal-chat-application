@@ -44,6 +44,7 @@ export declare class AppController {
         _id: string;
     }>>;
     getFriends(req: any): Promise<any[]>;
+    getChatGroupsUsersInfo(chatGroupId: mongoose.Types.ObjectId): Promise<any[]>;
     createChatGroup(body: CreateChatGroupDTO, req: any): Promise<mongoose.Document<unknown, {}, import("./chat-groups/chat-groups.model").ChatGroups> & import("./chat-groups/chat-groups.model").ChatGroups & {
         _id: mongoose.Types.ObjectId;
     }>;
