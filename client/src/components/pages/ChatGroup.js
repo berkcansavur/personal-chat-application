@@ -101,7 +101,7 @@ export default function Chats() {
       <ul>
         {chatGroup.users &&
           chatGroup.users.map((user) => (
-            <li key={user._id}>
+            <li key={user.email}>
                 {user._id}
                 <button onClick={() => handleRemoveFriendFromChatGroup(user._id)}>
                 Remove Friend From {chatGroup.chatGroupName}        
