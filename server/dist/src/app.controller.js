@@ -84,22 +84,6 @@ let AppController = exports.AppController = class AppController {
             throw new Error(error);
         }
     }
-    async addUserToChatGroup(body, req) {
-        try {
-            const id = req.user.userId;
-            const stringifiedChatGroupId = body.chatGroupId.toString();
-            if (!id) {
-                throw new common_1.UnauthorizedException('You need to login to create a chat group');
-            }
-            const chatGroupToUpdate = await this.chatGroupService.getChatGroupById(stringifiedChatGroupId);
-            const updatedUser = await this.userService.addChatGroupToUser(id, chatGroupToUpdate);
-            const updatedChatGroup = await this.chatGroupService.addUserToChatGroup(stringifiedChatGroupId, updatedUser);
-            return updatedChatGroup;
-        }
-        catch (error) {
-            throw new Error(error);
-        }
-    }
     async addFriend(friendId, req) {
         if (!req.user) {
             throw new common_1.UnauthorizedException('You must be logged in for adding friend');
@@ -214,15 +198,6 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "removeFriendsFromChatGroup", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, common_1.Post)('add-user'),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Request)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Promise)
-], AppController.prototype, "addUserToChatGroup", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('/add-friend/:friendId'),

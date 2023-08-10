@@ -52,8 +52,11 @@ export class ChatGroupsService {
             throw new Error(error.message);
           }
     }
-    async addUserToChatGroup(chatGroupId:string, user:object){
+    async addUserToChatGroup(chatGroupId:string, user:User){
         try {
+
+            const chatGroup = await this.ChatGroupsModel.findById(chatGroupId);
+            const cgUsers = await this.getChatGroupsUsers(chatGroup._id);
             const updatedChatGroup = await this.ChatGroupsModel.findByIdAndUpdate(
                 chatGroupId,
                 {$push:{users:user}},

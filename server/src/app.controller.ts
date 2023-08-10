@@ -82,28 +82,10 @@ export class AppController {
       throw new Error(error);
     }
   }
-  
-  @UseGuards( JwtAuthGuard )
-  @Post('add-user')
-    async addUserToChatGroup(@Body() body: { chatGroupId: object }, @Request() req ) {
-        try {
-          const id = req.user.userId;
-          const stringifiedChatGroupId = body.chatGroupId.toString();
-            if (!id) {
-                throw new UnauthorizedException('You need to login to create a chat group');
-            }
-            const chatGroupToUpdate = await this.chatGroupService.getChatGroupById( stringifiedChatGroupId ); 
-            const updatedUser = await this.userService.addChatGroupToUser( id, chatGroupToUpdate );
-            const updatedChatGroup = await this.chatGroupService.addUserToChatGroup( stringifiedChatGroupId, updatedUser );
-            return updatedChatGroup;
-          } catch (error) {
-            throw new Error(error);
-          }
-    }
     
-    @UseGuards( JwtAuthGuard )
-    @Post('/add-friend/:friendId')
-    async addFriend( @Param('friendId') friendId: mongoose.Types.ObjectId, @Request() req ) {
+  @UseGuards( JwtAuthGuard )
+  @Post('/add-friend/:friendId')
+  async addFriend( @Param('friendId') friendId: mongoose.Types.ObjectId, @Request() req ) {
         if( !req.user ) {
             throw new UnauthorizedException('You must be logged in for adding friend');
         }

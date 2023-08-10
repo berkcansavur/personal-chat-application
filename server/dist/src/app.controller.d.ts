@@ -32,11 +32,6 @@ export declare class AppController {
     removeFriendsFromChatGroup(chatGroupId: string, friendId: string): Promise<mongoose.Document<unknown, {}, import("./chat-groups/chat-groups.model").ChatGroups> & import("./chat-groups/chat-groups.model").ChatGroups & {
         _id: mongoose.Types.ObjectId;
     }>;
-    addUserToChatGroup(body: {
-        chatGroupId: object;
-    }, req: any): Promise<mongoose.Document<unknown, {}, import("./chat-groups/chat-groups.model").ChatGroups> & import("./chat-groups/chat-groups.model").ChatGroups & {
-        _id: mongoose.Types.ObjectId;
-    }>;
     addFriend(friendId: mongoose.Types.ObjectId, req: any): Promise<mongoose.Document<unknown, {}, import("./users/users.model").User> & import("./users/users.model").User & Required<{
         _id: string;
     }>>;
