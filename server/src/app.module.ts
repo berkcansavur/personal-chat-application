@@ -10,6 +10,7 @@ import { ChatGroupsModule } from './chat-groups/chat-groups.module';
 import { AuthModule } from './auth/auth.module';
 const cookieSession = require('cookie-session');
 import { SessionModule } from 'nestjs-session';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { SessionModule } from 'nestjs-session';
     MongooseModule.forRoot('mongodb+srv://berkcansavur:8karakter@cluster0.duok4hv.mongodb.net/?retryWrites=true&w=majority'),
     UsersModule,
     ChatGroupsModule,
-    AuthModule
+    AuthModule,
+    MessagesModule
   ],
   controllers: [AppController],
   providers: [AppService,{
