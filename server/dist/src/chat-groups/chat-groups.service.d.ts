@@ -2,6 +2,7 @@ import { ChatGroups } from './chat-groups.model';
 import { Model } from 'mongoose';
 import { CreateChatGroupDTO } from './dtos/create-chat-group.dto';
 import mongoose from "mongoose";
+import { User } from 'src/users/users.model';
 export declare class ChatGroupsService {
     private ChatGroupsModel;
     constructor(ChatGroupsModel: Model<ChatGroups>);
@@ -16,7 +17,7 @@ export declare class ChatGroupsService {
         _id: mongoose.Types.ObjectId;
     }>;
     getChatGroupsUsers(id: mongoose.Types.ObjectId): Promise<object[]>;
-    addUserToChatGroup(chatGroupId: string, user: object): Promise<mongoose.Document<unknown, {}, ChatGroups> & ChatGroups & {
+    addUserToChatGroup(chatGroupId: string, user: User): Promise<mongoose.Document<unknown, {}, ChatGroups> & ChatGroups & {
         _id: mongoose.Types.ObjectId;
     }>;
     removeUserFromChatGroup(chatGroupId: string, userId: string): Promise<mongoose.Document<unknown, {}, ChatGroups> & ChatGroups & {
