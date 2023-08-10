@@ -19,6 +19,7 @@ const chat_groups_module_1 = require("./chat-groups/chat-groups.module");
 const auth_module_1 = require("./auth/auth.module");
 const cookieSession = require('cookie-session');
 const nestjs_session_1 = require("nestjs-session");
+const messages_module_1 = require("./messages/messages.module");
 let AppModule = exports.AppModule = class AppModule {
     configure(consumer) {
         consumer
@@ -52,7 +53,8 @@ exports.AppModule = AppModule = __decorate([
             mongoose_1.MongooseModule.forRoot('mongodb+srv://berkcansavur:8karakter@cluster0.duok4hv.mongodb.net/?retryWrites=true&w=majority'),
             users_module_1.UsersModule,
             chat_groups_module_1.ChatGroupsModule,
-            auth_module_1.AuthModule
+            auth_module_1.AuthModule,
+            messages_module_1.MessagesModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, {
