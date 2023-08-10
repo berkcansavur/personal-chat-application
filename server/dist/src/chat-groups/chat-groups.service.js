@@ -70,7 +70,6 @@ let ChatGroupsService = exports.ChatGroupsService = class ChatGroupsService {
         try {
             const chatGroup = await this.ChatGroupsModel.findById(chatGroupId);
             const cgUsers = await this.getChatGroupsUsers(chatGroup._id);
-            const isUserAlreadyInChatGroup = cgUsers.includes(user);
             const updatedChatGroup = await this.ChatGroupsModel.findByIdAndUpdate(chatGroupId, { $push: { users: user } }, { new: true });
             await updatedChatGroup.save();
             return updatedChatGroup;
