@@ -50,7 +50,7 @@ exports.AppModule = AppModule = __decorate([
             users_module_1.UsersModule,
             chat_groups_module_1.ChatGroupsModule,
             auth_module_1.AuthModule,
-            messages_module_1.MessagesModule
+            messages_module_1.MessagesModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, {

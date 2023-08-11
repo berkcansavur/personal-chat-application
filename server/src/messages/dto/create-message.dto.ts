@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 export class CreateMessageDto {
   @IsNotEmpty()
   @IsString()
-  chatGroup: string;
+  chatGroupID: string;
 
   @IsNotEmpty()
   @IsString()

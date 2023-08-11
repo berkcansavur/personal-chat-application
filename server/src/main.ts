@@ -4,7 +4,7 @@ import * as cors from 'cors';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // Add the line below, which you're missing:
+  
   app.use(cors({
     origin: `${process.env.ORIGIN}`,
     credentials: true,

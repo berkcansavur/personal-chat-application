@@ -7,13 +7,13 @@ import { useNavigate, useParams } from "react-router-dom";
 const socket = io("http://localhost:3001");
 
 function Chat() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { chatGroupId } = useParams();
   const [message, setMessage] = useState("");
   const [messagesList, setMessagesList] = useState([]);
   const [ user, setUser ] = useState({});
   const [chatGroupUsers, setChatGroupUsers] = useState([]);
   const [chatGroup, setChatGroup] = useState({});
-  const { chatGroupId } = useParams();
   const token = sessionStorage.getItem("token");
   const [isLoading, setIsLoading] = useState(true);
   
@@ -76,15 +76,19 @@ function Chat() {
 
   useEffect(() => {
     // Mesajları dinlemek için socket üzerine abone olun
+    socket.on('join', {chatGroupId});
+    
     socket.on('message', ({ chatGroup, senderUser, text }) => {
-      handleNewMessage({ chatGroup, senderUser, text });
+      if (chatGroup === chatGroupId) {
+        handleNewMessage({ chatGroup, senderUser, text });
+      }
     });
 
     // Component unmount olduğunda socket bağlantısını temizle
     return () => {
       socket.off('message');
     };
-  }, []);
+  }, [chatGroupId]);
 
   const handleSubmitNewMessage = () => {
     if (message.trim() !== "") {

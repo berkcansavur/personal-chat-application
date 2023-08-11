@@ -19,29 +19,29 @@ export class MessagesGateway {
 
     @SubscribeMessage('createMessage')
     async create(@MessageBody() createMessageDto: CreateMessageDto) {
-      const { chatGroup, senderUser, text } = createMessageDto;
+      const { chatGroupID, senderUser, text } = createMessageDto;
   
       const user = await this.userService.findUserById(senderUser);
       const message = await this.messagesService.create(
-        chatGroup,
+        chatGroupID,
         user.name, 
         text
       );
   
-      this.server.emit('message', message);
+      this.server.to(chatGroupID).emit('message', message);
       return message;
     }
-
 
   @SubscribeMessage('findAllMessages')
   findAll() {
     return this.messagesService.findAll();
   }
   @SubscribeMessage('join')
-  joinChatRoom(
-    @MessageBody('senderUser') senderUser: string, 
+  async joinChatRoom(
+    @MessageBody() payload: { chatGroupID: string },
     @ConnectedSocket() client:Socket) {
-      return this.messagesService.identify(senderUser, client.id);
+      const { chatGroupID } = payload;
+      return this.messagesService.identify(chatGroupID, client);
   }
   @SubscribeMessage('typing')
   async typing( 
@@ -51,18 +51,4 @@ export class MessagesGateway {
       client.broadcast.emit( 'typing', { senderUserName,isTyping } );
   }
 
-  // @SubscribeMessage('findOneMessage')
-  // findOne(@MessageBody() id: number) {
-  //   return this.messagesService.findOne(id);
-  // }
-
-  // @SubscribeMessage('updateMessage')
-  // update(@MessageBody() updateMessageDto: UpdateMessageDto) {
-  //   return this.messagesService.update(updateMessageDto.id, updateMessageDto);
-  // }
-
-  // @SubscribeMessage('removeMessage')
-  // remove(@MessageBody() id: number) {
-  //   return this.messagesService.remove(id);
-  // }
 }

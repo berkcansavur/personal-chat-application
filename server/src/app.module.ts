@@ -3,13 +3,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
-import {  ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
 import { ChatGroupsModule } from './chat-groups/chat-groups.module';
 import { AuthModule } from './auth/auth.module';
 const cookieSession = require('cookie-session');
 import { SessionModule } from 'nestjs-session';
 import { MessagesModule } from './messages/messages.module';
+
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { MessagesModule } from './messages/messages.module';
     UsersModule,
     ChatGroupsModule,
     AuthModule,
-    MessagesModule
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [AppService,{
