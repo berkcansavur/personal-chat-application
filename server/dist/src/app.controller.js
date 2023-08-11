@@ -69,6 +69,7 @@ let AppController = exports.AppController = class AppController {
         try {
             const friendToAdd = await this.userService.findUser(friendId);
             const updatedChatGroup = await this.chatGroupService.addUserToChatGroup(chatGroupId, friendToAdd);
+            await this.userService.addChatGroupToUser(friendId.toString(), updatedChatGroup);
             return updatedChatGroup;
         }
         catch (error) {
@@ -77,7 +78,9 @@ let AppController = exports.AppController = class AppController {
     }
     async removeFriendsFromChatGroup(chatGroupId, friendId) {
         try {
+            const friendToRemove = await this.userService.findUserById(friendId);
             const updatedChatGroup = await this.chatGroupService.removeUserFromChatGroup(chatGroupId, friendId);
+            await this.userService.removeChatGroupFromUser(friendToRemove, updatedChatGroup);
             return updatedChatGroup;
         }
         catch (error) {
@@ -191,7 +194,7 @@ __decorate([
 ], AppController.prototype, "addFriendsToChatGroup", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, common_1.Post)('/remove-friends-to-chat-group/:chatGroupId/:friendId'),
+    (0, common_1.Post)('/remove-friends-from-chat-group/:chatGroupId/:friendId'),
     __param(0, (0, common_1.Param)('chatGroupId')),
     __param(1, (0, common_1.Param)('friendId')),
     __metadata("design:type", Function),

@@ -21,7 +21,6 @@ export class MessagesGateway {
     async create(@MessageBody() createMessageDto: CreateMessageDto) {
       const { chatGroup, senderUser, text } = createMessageDto;
   
-      // Kullanıcının adını almak için _id'yi kullanabilirsiniz
       const user = await this.userService.findUserById(senderUser);
       const message = await this.messagesService.create(
         chatGroup,

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import io from 'socket.io-client';
 import "../ChatGroupRelated/Chat.css";
 import axios from "axios";
+import Footer from '../Footer';
 import { useNavigate, useParams } from "react-router-dom";
 const socket = io("http://localhost:3001");
 
@@ -10,9 +11,11 @@ function Chat() {
   const [message, setMessage] = useState("");
   const [messagesList, setMessagesList] = useState([]);
   const [ user, setUser ] = useState({});
+  const [chatGroupUsers, setChatGroupUsers] = useState([]);
   const [chatGroup, setChatGroup] = useState({});
   const { chatGroupId } = useParams();
   const token = sessionStorage.getItem("token");
+  const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
     const getProfileData = async () => {
@@ -30,6 +33,27 @@ function Chat() {
     };
     getProfileData();
   }, [token]);
+
+  useEffect(() => {
+    
+      const getChatGroupUsersData = async () => {
+        try {
+          const response = await axios.get(
+            `http://localhost:3001/app/get-chatgroups-friends-data/${chatGroupId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setChatGroupUsers(response.data);
+          setIsLoading(false);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      getChatGroupUsersData();
+  }, [isLoading, chatGroupId, token]);
 
   useEffect(() => {
     const getChatGroupData = async () => {
@@ -80,32 +104,40 @@ function Chat() {
   }
 
   return (
-    <div className="chat-container">
-      <div>
-        <ul id='messages'>
-          {messagesList.map((msg, index) => (
-            <li key={index}>
-              <div>
-                <span className="username">{msg.senderUser}:</span>
-                <span className="message">{msg.text}</span>
-              </div>
-            </li>
-          ))}
-        </ul>
-        <div className="message-input">
-          <input
-            type='text'
-            value={message}
-            onChange={e => setMessage(e.target.value)}
-          />
-          <button onClick={handleSubmitNewMessage}>Submit</button>
+    <>
+        <div className="chat-container">
+            <div>
+                <div className="chat-info">
+                    <p>Chat Group Name: {chatGroup.chatGroupName}</p>
+                    <h6>Chat Group ID: {chatGroupId}</h6>
+                    <p>Chat Group Users: {chatGroupUsers.map((cgUser) => cgUser.name).join(", ")}</p>
+                </div>
+                <ul id='messages'>
+                    {messagesList.map((msg, index) => (
+                        <li key={index}>
+                            <div>
+                                <span className="username">{msg.senderUser}:</span>
+                                <span className="message">{msg.text}</span>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+                <div className="message-input">
+                    <input
+                        type='text'
+                        value={message}
+                        onChange={e => setMessage(e.target.value)}
+                    />
+                    <button onClick={handleSubmitNewMessage}>Submit</button>
+                </div>
+            </div>
+            <button onClick={navigateToChatGroup} className="chat-group__card-button">
+                Go to Chat Group Settings
+            </button>
         </div>
-      </div>
-      <button onClick={navigateToChatGroup} className="chat-group__card-button">
-            Go to Chat Group Settings
-          </button>
-    </div>
-  );
+        <Footer />
+    </>
+);
 }
 
 export default Chat;

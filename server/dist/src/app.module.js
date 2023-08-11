@@ -14,7 +14,6 @@ const mongoose_1 = require("@nestjs/mongoose");
 const users_module_1 = require("./users/users.module");
 const config_1 = require("@nestjs/config");
 const core_1 = require("@nestjs/core");
-const chat_gateway_1 = require("./chat/chat.gateway");
 const chat_groups_module_1 = require("./chat-groups/chat-groups.module");
 const auth_module_1 = require("./auth/auth.module");
 const cookieSession = require('cookie-session');
@@ -24,11 +23,11 @@ let AppModule = exports.AppModule = class AppModule {
     configure(consumer) {
         consumer
             .apply(cookieSession({
-            keys: ['DOMinicALTAN']
+            keys: [`${process.env.COOKIE_SESSION_KEY}`]
         }))
             .forRoutes('*');
         consumer.apply((req, res, next) => {
-            res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+            res.setHeader('Access-Control-Allow-Origin', `${process.env.ALLOWED_ORIGIN}`);
             res.setHeader('Access-Control-Allow-Credentials', 'true');
             res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
             next();
@@ -39,10 +38,7 @@ let AppModule = exports.AppModule = class AppModule {
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            config_1.ConfigModule.forRoot({
-                isGlobal: true,
-                envFilePath: `.env.${process.env.NODE_ENV}`
-            }),
+            config_1.ConfigModule.forRoot({}),
             nestjs_session_1.SessionModule.forRoot({
                 session: {
                     secret: 'keyboard',
@@ -50,7 +46,7 @@ exports.AppModule = AppModule = __decorate([
                     saveUninitialized: false
                 },
             }),
-            mongoose_1.MongooseModule.forRoot('mongodb+srv://berkcansavur:8karakter@cluster0.duok4hv.mongodb.net/?retryWrites=true&w=majority'),
+            mongoose_1.MongooseModule.forRoot(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.duok4hv.mongodb.net/?retryWrites=true&w=majority`),
             users_module_1.UsersModule,
             chat_groups_module_1.ChatGroupsModule,
             auth_module_1.AuthModule,
@@ -62,7 +58,7 @@ exports.AppModule = AppModule = __decorate([
                 useValue: new common_1.ValidationPipe({
                     whitelist: true
                 })
-            }, chat_gateway_1.ChatGateway],
+            }],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
