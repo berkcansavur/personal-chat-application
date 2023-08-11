@@ -4,7 +4,7 @@ import "../ChatGroupRelated/Chat.css";
 import axios from "axios";
 import Footer from '../Footer';
 import { useNavigate, useParams } from "react-router-dom";
-const socket = io("http://localhost:3001");
+
 
 function Chat() {
   const navigate = useNavigate();
@@ -75,7 +75,9 @@ function Chat() {
   }, [chatGroupId, token]);
 
   useEffect(() => {
-    // Mesajları dinlemek için socket üzerine abone olun
+    const socket = io("http://localhost:3001",{
+  autoConnect: false,
+});
     socket.emit('join', { chatGroupID: chatGroupId, user: { socketId: socket.id, ...user} } );
     
     socket.on('message', ({ chatGroup, senderUser, text }) => {
@@ -84,16 +86,18 @@ function Chat() {
       }
     });
 
-    // Component unmount olduğunda socket bağlantısını temizle
     return () => {
       socket.off('message');
     };
   }, [chatGroupId]);
 
   const handleSubmitNewMessage = () => {
+    const socket = io("http://localhost:3001",{
+  autoConnect: false,
+});
     if (message.trim() !== "") {
       socket.emit('createMessage', { chatGroupID: chatGroupId, senderUser:user.UserID, text: message });
-      setMessage(""); // Reset the message input
+      setMessage(""); 
     }
   }
 
