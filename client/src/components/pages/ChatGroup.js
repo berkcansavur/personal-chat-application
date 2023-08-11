@@ -97,7 +97,7 @@ export default function Chats() {
   const handleRemoveFriendFromChatGroup = async (friendId) => {
     try {
       await axios.post(
-        `http://localhost:3001/app/remove-friends-to-chat-group/${chatGroupId}/${friendId}`,
+        `http://localhost:3001/app/remove-friends-from-chat-group/${chatGroupId}/${friendId}`,
         null,
         {
           headers: {

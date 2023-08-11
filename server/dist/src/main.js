@@ -6,10 +6,10 @@ const cors = require("cors");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.use(cors({
-        origin: 'http://localhost:3000',
+        origin: `${process.env.ORIGIN}`,
         credentials: true,
     }));
-    await app.listen(3001);
+    await app.listen(process.env.PORT);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

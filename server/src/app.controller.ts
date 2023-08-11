@@ -66,6 +66,7 @@ export class AppController {
     try {
       const friendToAdd = await this.userService.findUser( friendId );
       const updatedChatGroup = await this.chatGroupService.addUserToChatGroup( chatGroupId, friendToAdd );
+      await this.userService.addChatGroupToUser( friendId.toString(), updatedChatGroup );
       return updatedChatGroup ;
     } catch (error) {
       throw new Error(error);
@@ -73,10 +74,12 @@ export class AppController {
   }
 
   @UseGuards( JwtAuthGuard )
-  @Post('/remove-friends-to-chat-group/:chatGroupId/:friendId')
+  @Post('/remove-friends-from-chat-group/:chatGroupId/:friendId')
   async removeFriendsFromChatGroup(@Param('chatGroupId') chatGroupId: string, @Param('friendId') friendId: string ){
     try {
+      const friendToRemove = await this.userService.findUserById( friendId );
       const updatedChatGroup = await this.chatGroupService.removeUserFromChatGroup( chatGroupId, friendId );
+      await this.userService.removeChatGroupFromUser(friendToRemove,updatedChatGroup);
       return updatedChatGroup ;
     } catch (error) {
       throw new Error(error);
