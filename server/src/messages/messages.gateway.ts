@@ -4,6 +4,7 @@ import { CreateMessageDto } from './dto/create-message.dto';
 
 import { Server,Socket } from 'socket.io';
 import { JoinChatGroupDTO } from './dto/join-chatgroup.dto';
+import { UsersService } from 'src/users/users.service';
 @WebSocketGateway({
   cors:{
     origin:'*',
@@ -12,14 +13,26 @@ import { JoinChatGroupDTO } from './dto/join-chatgroup.dto';
 export class MessagesGateway {
   @WebSocketServer()
   server:Server
-  constructor(private readonly messagesService: MessagesService) {}
+  constructor(
+    private readonly messagesService: MessagesService,
+    private readonly userService: UsersService) {}
 
-  @SubscribeMessage('createMessage')
-  async create(@MessageBody() createMessageDto: CreateMessageDto) {
-    const message = await this.messagesService.create(createMessageDto);
-    this.server.emit('message', message);
-    return message;
-  }
+    @SubscribeMessage('createMessage')
+    async create(@MessageBody() createMessageDto: CreateMessageDto) {
+      const { chatGroup, senderUser, text } = createMessageDto;
+  
+      // Kullanıcının adını almak için _id'yi kullanabilirsiniz
+      const user = await this.userService.findUserById(senderUser);
+      const message = await this.messagesService.create(
+        chatGroup,
+        user.name, 
+        text
+      );
+  
+      this.server.emit('message', message);
+      return message;
+    }
+
 
   @SubscribeMessage('findAllMessages')
   findAll() {

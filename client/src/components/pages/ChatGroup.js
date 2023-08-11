@@ -11,6 +11,7 @@ export default function Chats() {
   const [chatGroupUsers, setChatGroupUsers] = useState([]);
   const { chatGroupId } = useParams();
   const token = sessionStorage.getItem("token");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getChatGroupData = async () => {
@@ -26,45 +27,55 @@ export default function Chats() {
         setChatGroup(chatGroupData.data);
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsLoading(false);
       }
     };
     getChatGroupData();
   }, [chatGroupId, token]);
 
-  useEffect(() => {
-    const getFriendsOfUser = async () => {
-      try {
-        const response = await axios.get("http://localhost:3001/app/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setFriends(response.data.Friends);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    getFriendsOfUser();
-  }, [token]);
+  const navigateToChat = () => {
+    navigate(`/chat/${chatGroupId}`);
+  }
 
   useEffect(() => {
-    const getChatGroupUsersData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:3001/app/get-chatgroups-friends-data/${chatGroupId}`,
-          {
+    if (!isLoading) {
+      const getFriendsOfUser = async () => {
+        try {
+          const response = await axios.get("http://localhost:3001/app/me", {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
-        );
-        setChatGroupUsers(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    getChatGroupUsersData();
-  }, [chatGroupId,token]);
+          });
+          setFriends(response.data.Friends);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      getFriendsOfUser();
+    }
+  }, [isLoading, token]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      const getChatGroupUsersData = async () => {
+        try {
+          const response = await axios.get(
+            `http://localhost:3001/app/get-chatgroups-friends-data/${chatGroupId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setChatGroupUsers(response.data);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      getChatGroupUsersData();
+    }
+  }, [isLoading, chatGroupId, token]);
 
   const handleAddFriendToChatGroup = async (friendId) => {
     try {
@@ -77,19 +88,12 @@ export default function Chats() {
           },
         }
       );
-        const chatGroupData = await axios.get(
-          `http://localhost:3001/app/get-chat-group/${chatGroupId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setChatGroup(chatGroupData.data);
+      setIsLoading(true);
     } catch (error) {
       console.log(error);
     }
   };
+
   const handleRemoveFriendFromChatGroup = async (friendId) => {
     try {
       await axios.post(
@@ -101,33 +105,26 @@ export default function Chats() {
           },
         }
       );
-        const chatGroupData = await axios.get(
-          `http://localhost:3001/app/get-chat-group/${chatGroupId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setChatGroup(chatGroupData.data);
+      setIsLoading(true);
     } catch (error) {
       console.log(error);
     }
   };
-  const handleDeleteChatGroup = async (chatGroupId) => {
+
+  const handleDeleteChatGroup = async () => {
     try {
       await axios.delete(`http://localhost:3001/app/delete-chat-group/${chatGroupId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       navigate('/profile');
     } catch (error) {
       console.log(error);
     }
   }
-  
 
   return (
     <>
@@ -167,7 +164,11 @@ export default function Chats() {
             </div>
           ))}
         </div>
-        
+        <div>
+          <button onClick={navigateToChat} className="chat-group__card-button" >
+            Go to Chat
+          </button>
+        </div>
       </div>
       <div>
       <button className="chat-group__card-button remove-button" onClick={() => handleDeleteChatGroup(chatGroupId)}> Delete Chat Group</button>
@@ -177,3 +178,4 @@ export default function Chats() {
     </>
   );
 }
+

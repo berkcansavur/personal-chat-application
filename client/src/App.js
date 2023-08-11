@@ -22,7 +22,7 @@ function App() {
       <Route path='/network' Component={Network}/>
       <Route path='/sign-up' Component={SignUp}/>
       <Route path='/log-in' Component={LogIn}/>
-      <Route path='/chat' Component={Chat}/>
+      <Route path='/chat/:chatGroupId' Component={Chat}/>
       <Route path='/profile' Component={UserProfile}/>
       <Route path='/create-chat-group' Component={CreateChatGroupPage}/>
       <Route path='/chat-group/:chatGroupId' Component={ChatGroup}/>
