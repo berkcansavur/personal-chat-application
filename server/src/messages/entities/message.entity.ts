@@ -6,6 +6,6 @@ export class Message {
 }
 export const MessagesSchema = new mongoose.Schema({
     chatGroup:{type:Object},
-    senderUser:{type:Object, required:true},
+    senderUser:{type:Object},
     text: {type:String}
 },{timestamps:true});

@@ -6,6 +6,9 @@ export declare class UsersService {
     createUser(name: string, email: string, password: string): Promise<mongoose.Document<unknown, {}, User> & User & Required<{
         _id: string;
     }>>;
+    findUserById(id: string): Promise<mongoose.Document<unknown, {}, User> & User & Required<{
+        _id: string;
+    }>>;
     findUser(id: mongoose.Types.ObjectId): Promise<mongoose.Document<unknown, {}, User> & User & Required<{
         _id: string;
     }>>;

@@ -24,6 +24,18 @@ let UsersService = exports.UsersService = class UsersService {
         const newUser = new this.userModel({ name, email, password });
         return await newUser.save();
     }
+    async findUserById(id) {
+        try {
+            if (!id) {
+                return null;
+            }
+            const user = await this.userModel.findOne({ _id: id });
+            return user;
+        }
+        catch (error) {
+            throw new Error(error);
+        }
+    }
     async findUser(id) {
         try {
             if (!id) {

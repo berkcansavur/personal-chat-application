@@ -11,6 +11,17 @@ export class UsersService {
         const newUser = new this.userModel({name, email, password});
         return await newUser.save();
     }
+    async findUserById(id: string ){
+        try {
+            if(!id){
+                return null;
+            }
+            const user = await this.userModel.findOne({_id: id});
+            return user;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
     async findUser(id: mongoose.Types.ObjectId ){
         try {
             if(!id){
