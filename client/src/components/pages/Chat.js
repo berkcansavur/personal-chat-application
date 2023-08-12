@@ -145,6 +145,7 @@ function Chat() {
         </div>
         <Footer />
     </>
+    
 );
 }
 
