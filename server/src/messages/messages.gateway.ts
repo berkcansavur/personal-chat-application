@@ -1,47 +1,57 @@
-import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer, ConnectedSocket } from '@nestjs/websockets';
+import { 
+  WebSocketGateway, 
+  SubscribeMessage, 
+  MessageBody, 
+  WebSocketServer, 
+  ConnectedSocket, 
+  OnGatewayConnection,
+  OnGatewayDisconnect
+} from '@nestjs/websockets';
 import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto/create-message.dto';
-
 import { Server,Socket } from 'socket.io';
-import { JoinChatGroupDTO } from './dto/join-chatgroup.dto';
 import { UsersService } from 'src/users/users.service';
-@WebSocketGateway({
+import { User  } from '../../shared/chat.interface';
+import { ChatGroupsService } from 'src/chat-groups/chat-groups.service';
+
+  @WebSocketGateway({
   cors:{
     origin:'*',
   }
 })
-export class MessagesGateway {
-  @WebSocketServer()
-  server:Server
+export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  
+  @WebSocketServer() server:Server 
+  
   constructor(
     private readonly messagesService: MessagesService,
-    private readonly userService: UsersService) {}
+    private readonly userService: UsersService,
+    private readonly chatGroupService: ChatGroupsService) {}
 
     @SubscribeMessage('createMessage')
     async create(@MessageBody() createMessageDto: CreateMessageDto) {
-      const { chatGroup, senderUser, text } = createMessageDto;
-  
+      const { chatGroupID, senderUser, text } = createMessageDto;
       const user = await this.userService.findUserById(senderUser);
       const message = await this.messagesService.create(
-        chatGroup,
+        chatGroupID,
         user.name, 
         text
       );
   
-      this.server.emit('message', message);
+      this.server.to(chatGroupID).emit('message', message);
       return message;
     }
-
 
   @SubscribeMessage('findAllMessages')
   findAll() {
     return this.messagesService.findAll();
   }
   @SubscribeMessage('join')
-  joinChatRoom(
-    @MessageBody('senderUser') senderUser: string, 
-    @ConnectedSocket() client:Socket) {
-      return this.messagesService.identify(senderUser, client.id);
+  async joinChatRoom(
+    @MessageBody() payload: { chatGroupID: string, user:User }) {
+      const { chatGroupID, user } = payload;
+      const { socketId } = user;
+      await this.server.in(socketId).socketsJoin(chatGroupID);
   }
   @SubscribeMessage('typing')
   async typing( 
@@ -50,19 +60,11 @@ export class MessagesGateway {
       const senderUserName = await this.messagesService.getClientName(client.id);
       client.broadcast.emit( 'typing', { senderUserName,isTyping } );
   }
+  async handleConnection(socket: Socket): Promise<void> {
+    console.log(`Socket connected: ${socket.id}`)
+  }
+  async handleDisconnect(socket: Socket): Promise<void> {
+    console.log(`Socket disconnected: ${socket.id}`)
+  }
 
-  // @SubscribeMessage('findOneMessage')
-  // findOne(@MessageBody() id: number) {
-  //   return this.messagesService.findOne(id);
-  // }
-
-  // @SubscribeMessage('updateMessage')
-  // update(@MessageBody() updateMessageDto: UpdateMessageDto) {
-  //   return this.messagesService.update(updateMessageDto.id, updateMessageDto);
-  // }
-
-  // @SubscribeMessage('removeMessage')
-  // remove(@MessageBody() id: number) {
-  //   return this.messagesService.remove(id);
-  // }
 }
