@@ -37,6 +37,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
         user.name, 
         text
       );
+  
       this.server.to(chatGroupID).emit('message', message);
       return message;
     }
