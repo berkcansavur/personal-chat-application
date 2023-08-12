@@ -69,7 +69,7 @@ function Profile() {
                     key={chatGroup._id}
                     src="images/img-2.jpg"
                     label="Chat Group"
-                    path={`/chat/${chatGroup._id}`}
+                    path={`/chat-group/${chatGroup._id}`}
                     chatGroupName={chatGroup.chatGroupName}
                     onSelectChatGroup={() => handleSelectChatGroup(chatGroup._id)}
                   />
