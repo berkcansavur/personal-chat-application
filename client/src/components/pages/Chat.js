@@ -75,9 +75,7 @@ function Chat() {
   }, [chatGroupId, token]);
 
   useEffect(() => {
-    const socket = io("http://localhost:3001",{
-  autoConnect: false,
-});
+    const socket = io("http://localhost:3001");
     socket.emit('join', { chatGroupID: chatGroupId, user: { socketId: socket.id, ...user} } );
     
     socket.on('message', ({ chatGroup, senderUser, text }) => {
@@ -92,9 +90,7 @@ function Chat() {
   }, [chatGroupId]);
 
   const handleSubmitNewMessage = () => {
-    const socket = io("http://localhost:3001",{
-  autoConnect: false,
-});
+    const socket = io("http://localhost:3001");
     if (message.trim() !== "") {
       socket.emit('createMessage', { chatGroupID: chatGroupId, senderUser:user.UserID, text: message });
       setMessage(""); 
