@@ -76,7 +76,7 @@ function Chat() {
 
   useEffect(() => {
     // Mesajları dinlemek için socket üzerine abone olun
-    socket.on('join', {chatGroupId});
+    socket.emit('join', { chatGroupID: chatGroupId, user: { socketId: socket.id, ...user} } );
     
     socket.on('message', ({ chatGroup, senderUser, text }) => {
       if (chatGroup === chatGroupId) {
@@ -92,7 +92,7 @@ function Chat() {
 
   const handleSubmitNewMessage = () => {
     if (message.trim() !== "") {
-      socket.emit('createMessage', { chatGroup: chatGroupId, senderUser:user.UserID, text: message });
+      socket.emit('createMessage', { chatGroupID: chatGroupId, senderUser:user.UserID, text: message });
       setMessage(""); // Reset the message input
     }
   }
