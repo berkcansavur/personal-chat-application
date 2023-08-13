@@ -51,16 +51,11 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
       const { socketId } = user;
       await this.server.in(socketId).socketsJoin(chatGroupID);
   }
-  @SubscribeMessage('typing')
-  async typing( 
-    @MessageBody('isTyping') isTyping: boolean,
-    @ConnectedSocket() client: Socket){
-      const senderUserName = await this.messagesService.getClientName(client.id);
-      client.broadcast.emit( 'typing', { senderUserName,isTyping } );
-  }
+  
   async handleConnection(socket: Socket): Promise<void> {
     console.log(`Socket connected: ${socket.id}`)
   }
+  
   async handleDisconnect(socket: Socket): Promise<void> {
     console.log(`Socket disconnected: ${socket.id}`)
   }

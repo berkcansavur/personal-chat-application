@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import './CreateChatGroup.css';
 import { Button } from './Button';
@@ -8,7 +8,7 @@ const ChatGroupPage = () => {
   const [chatGroupName, setChatGroupName] = useState('');
   const token = sessionStorage.getItem("token");
   const handleCreateChatGroup = async () => {
-      const response = await axios.post(
+      await axios.post(
         'http://localhost:3001/app/create-chat-group',
         { chatGroupName },
         {headers:{

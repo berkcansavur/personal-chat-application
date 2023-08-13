@@ -84,5 +84,29 @@ export const Button = ({
         </Link>
       );
   }
+  if(toOperation==='create-defined-chat-group'){
+    return (
+        <Link to='/chats' className='btn-mobile'>
+          <button
+            className={`btn ${checkButtonStyle} ${checkButtonSize}`}
+            onClick={onClick}
+            type={type}
+          >
+            {children}
+          </button>
+        </Link>
+      );
+  }
+  if(toOperation==='search-friend'){
+    return (
+          <button
+            className={`btn ${checkButtonStyle} ${checkButtonSize}`}
+            onClick={onClick}
+            type={type}
+          >
+            {children}
+          </button>
+      );
+  }
   
 };
