@@ -7,6 +7,7 @@ import { UsersService } from './users/users.service';
 import { ChatGroupsService } from './chat-groups/chat-groups.service';
 import mongoose from 'mongoose';
 import { CreateChatGroupDTO } from './chat-groups/dtos/create-chat-group.dto';
+import { MessagesService } from './messages/messages.service';
 
 @Controller('app')
 export class AppController {
@@ -14,7 +15,8 @@ export class AppController {
     private readonly appService: AppService,
     private authService: AuthService,
     private userService: UsersService,
-    private chatGroupService: ChatGroupsService ) {}
+    private chatGroupService: ChatGroupsService,
+    private messagesService : MessagesService ) {}
 
   @Get()
   getHello(): string {
@@ -181,5 +183,14 @@ export class AppController {
     async searchUser( @Query("searchText") searchText: string ) {
       const users = await this.userService.searchUser( searchText );
       return users;
+    }
+    @UseGuards(JwtAuthGuard)
+    @Get('/get-last-20-messages/:chatGroupId')
+    async getLast20Messages(@Param('chatGroupId') chatGroupId: string, @Request() req){
+      if (!req.user) {
+        throw new UnauthorizedException('You need to login to create a chat group');
+      }
+      const last20Messages = await this.messagesService.getLast20Message(chatGroupId);
+      return last20Messages;
     }
 }

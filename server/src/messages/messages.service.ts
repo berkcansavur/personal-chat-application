@@ -25,5 +25,12 @@ export class MessagesService {
   findAll() {
     return `This action returns all messages`;
   }
+  getLast20Message(chatGroupID:string){
+    return this.messageModel
+      .find({ chatGroup: chatGroupID })
+      .sort({ createdAt: -1 })
+      .limit(20)
+      .exec();
+  }
 
 }
