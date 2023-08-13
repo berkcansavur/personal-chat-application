@@ -4,7 +4,7 @@ import "../ChatGroupRelated/Chat.css";
 import axios from "axios";
 import Footer from '../Footer';
 import { useNavigate, useParams } from "react-router-dom";
-const socket = io("http://localhost:3001");
+const socket = io("http://localhost:3001",{ autoConnect:false});
 
 function Chat() {
   const navigate = useNavigate();
