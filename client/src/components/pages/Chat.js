@@ -4,9 +4,7 @@ import "../ChatGroupRelated/Chat.css";
 import axios from "axios";
 import Footer from '../Footer';
 import { useNavigate, useParams } from "react-router-dom";
-const socket = io("http://localhost:3001",{
-  autoConnect:false
-});
+const socket = io("http://localhost:3001");
 
 function Chat() {
   const navigate = useNavigate();
@@ -75,7 +73,24 @@ function Chat() {
     };
     getChatGroupData();
   }, [chatGroupId, token]);
-
+  useEffect(() => {
+    const getlast20Messages = async () => {
+      try {
+        const last20Messages = await axios.get(
+          `http://localhost:3001/app/get-last-20-messages/${chatGroupId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setMessagesList(last20Messages.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getlast20Messages();
+  }, [chatGroupId, token]);
   useEffect(() => {
 
     socket.emit('join', { chatGroupID: chatGroupId, user: { socketId: socket.id, ...user} } );
