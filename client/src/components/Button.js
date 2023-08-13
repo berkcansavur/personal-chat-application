@@ -22,13 +22,12 @@ export const Button = ({
   if( type ==='submit'){
     return (
         <button
-      className={`btn ${checkButtonStyle} ${checkButtonSize}`}
-      onClick={onClick}
-      type={type}
-    >
-      {children}
-  </button>
-        
+          className={`btn ${checkButtonStyle} ${checkButtonSize}`}
+          onClick={onClick}
+          type={type}
+        >
+          {children}
+      </button>
     );
   }
   if(toOperation==='login'){
