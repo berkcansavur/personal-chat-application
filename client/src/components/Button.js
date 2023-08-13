@@ -21,13 +21,15 @@ export const Button = ({
   const checkButtonSize = SIZES.includes(buttonSize) ? buttonSize : SIZES[0];
   if( type ==='submit'){
     return (
+      <Link to='/profile' className='btn-mobile'>
         <button
-          className={`btn ${checkButtonStyle} ${checkButtonSize}`}
-          onClick={onClick}
-          type={type}
-        >
-          {children}
-      </button>
+      className={`btn ${checkButtonStyle} ${checkButtonSize}`}
+      onClick={onClick}
+      type={type}
+    >
+      {children}
+  </button></Link>
+        
     );
   }
   if(toOperation==='login'){
@@ -71,7 +73,7 @@ export const Button = ({
   }
   if(toOperation==='create-chat-group'){
     return (
-        <Link to='/create-chat-group' className='btn-mobile'>
+        <Link to='/profile' className='btn-mobile'>
           <button
             className={`btn ${checkButtonStyle} ${checkButtonSize}`}
             onClick={onClick}

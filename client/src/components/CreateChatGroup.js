@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './SignUp.css';
+import './CreateChatGroup.css';
 import { Button } from './Button';
 
 
@@ -18,23 +18,30 @@ const ChatGroupPage = () => {
   };
 
   return (
-    <div className='sign-up'>
-        <div className='sign-up__container'>
-
+    <div className='chatgroup'>
+            <div className='chatgroup__container'>
+                <h2>Create Chat Group</h2>
                 <form onSubmit={handleCreateChatGroup}>
-                    <p>Chat Group Name</p>
-                    <input className='signup-input'
-                    required
-                    type="text"
-                    value= {chatGroupName}
-                    onChange={(e)=> {
-                      setChatGroupName(e.target.value)
-                    }}
+                    <p>Chat Group Name:</p>
+                    <input
+                        className='chatgroup-name-input'
+                        required
+                        type="text"
+                        value={chatGroupName}
+                        onChange={(e) => {
+                            setChatGroupName(e.target.value);
+                        }}
                     />
-                    <Button toOperation= 'submit' buttonStyle='btn--outline'>Create</Button>
+                    <Button
+                        toOperation='create-chat-group'
+                        buttonStyle='btn--outline'
+                        onClick={handleCreateChatGroup}
+                    >
+                        Create
+                    </Button>
                 </form>
+            </div>
         </div>
-    </div>
   );
 };
 
