@@ -12,7 +12,6 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { Server,Socket } from 'socket.io';
 import { UsersService } from 'src/users/users.service';
 import { User  } from '../../shared/chat.interface';
-import { ChatGroupsService } from 'src/chat-groups/chat-groups.service';
 
   @WebSocketGateway({
   cors:{
@@ -25,8 +24,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
   
   constructor(
     private readonly messagesService: MessagesService,
-    private readonly userService: UsersService,
-    private readonly chatGroupService: ChatGroupsService) {}
+    private readonly userService: UsersService) {}
 
     @SubscribeMessage('createMessage')
     async create(@MessageBody() createMessageDto: CreateMessageDto) {
