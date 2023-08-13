@@ -10,7 +10,7 @@ function Login() {
   const handleSubmit = (e)=>{
     e.preventDefault();
     console.log(email,password);
-    const {data} = axios.post('http://localhost:3001/app/login',{
+    axios.post('http://localhost:3001/app/login',{
       email: email,
       password: password
     },{ withCredentials: true })
