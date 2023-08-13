@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import FriendCard from "../FriendCard";
+import Footer from "../Footer";
+import "../NetworkRelated/Network.css"
+import { Button } from "../Button";
 
 function Network() {
   const token = sessionStorage.getItem("token");
@@ -58,13 +61,17 @@ function Network() {
   };
 
   return (
+    <>
     <div className="network">
-      <input
+      <input className="network-name-input"
         type="text"
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
       />
-      <button onClick={handleSearch}>Search</button>
+      <Button 
+      toOperation='search-friend'
+      buttonStyle='btn--outline'
+      onClick={handleSearch}>Search</Button>
       <div className="friend-cards">
         {searchResults.map((friend) => (
           <FriendCard
@@ -77,6 +84,8 @@ function Network() {
         ))}
       </div>
     </div>
+       <Footer/>
+    </>
   );
 }
 

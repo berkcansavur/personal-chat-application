@@ -4,13 +4,13 @@ import axios from 'axios';
 import { Button } from './Button';
 import { useNavigate } from 'react-router-dom';
 function Login() {
-  const [email, setEmail] = useState('')
+  const [ email, setEmail] = useState('')
   const [ password, setPassword] = useState('')
   const navigate = useNavigate();
   const handleSubmit = (e)=>{
     e.preventDefault();
     console.log(email,password);
-    const {data} = axios.post('http://localhost:3001/app/login',{
+    axios.post('http://localhost:3001/app/login',{
       email: email,
       password: password
     },{ withCredentials: true })

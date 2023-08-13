@@ -10,7 +10,7 @@ import Chat from './components/pages/Chat';
 import UserProfile from './components/pages/UserProfile';
 import CreateChatGroupPage from './components/pages/CreatechatGroup';
 import Network from './components/pages/Network';
-import ChatGroup from './components/pages/ChatGroup';
+import ChatGroupSettings from './components/pages/ChatGroupSettings';
 function App() {
   return(
     <>
@@ -25,7 +25,7 @@ function App() {
       <Route path='/chat/:chatGroupId' Component={Chat}/>
       <Route path='/profile' Component={UserProfile}/>
       <Route path='/create-chat-group' Component={CreateChatGroupPage}/>
-      <Route path='/chat-group/:chatGroupId' Component={ChatGroup}/>
+      <Route path='/chat-group/:chatGroupId' Component={ChatGroupSettings}/>
     </Routes>
     </Router>
     </>
