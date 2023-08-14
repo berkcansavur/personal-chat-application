@@ -128,16 +128,16 @@ function Chat() {
         <div className="chat-container">
             <div>
                 <div className="chat-info">
-                    <p>Chat Group Name: {chatGroup.chatGroupName}</p>
-                    <h6>Chat Group ID: {chatGroupId}</h6>
-                    <p>Chat Group Users: {chatGroupUsers.map((cgUser) => cgUser.name).join(", ")}</p>
+                    <p>Chat Group Name: { chatGroup.chatGroupName }</p>
+                    <h6>Chat Group ID: { chatGroupId }</h6>
+                    <p>Chat Group Users: { chatGroupUsers.map( ( cgUser ) => cgUser.name ).join(", ")}</p>
                 </div>
                 <ul id='messages'>
-                    {messagesList.map((msg, index) => (
+                    {messagesList.map(( msg, index ) => (
                         <li key={index}>
                             <div>
-                                <span className="username">{msg.senderUser}:</span>
-                                <span className="message">{msg.text}</span>
+                                <span className="username">{ msg.senderUser }:</span>
+                                <span className="message">{ msg.text }</span>
                             </div>
                         </li>
                     ))}
@@ -145,13 +145,13 @@ function Chat() {
                 <div className="message-input">
                     <input
                         type='text'
-                        value={message}
-                        onChange={e => setMessage(e.target.value)}
+                        value={ message }
+                        onChange={ e => setMessage( e.target.value )}
                     />
-                    <button onClick={handleSubmitNewMessage}>Submit</button>
+                    <button onClick={ handleSubmitNewMessage }>Submit</button>
                 </div>
             </div>
-            <button onClick={navigateToChatGroup} className="chat-group__card-button">
+            <button onClick={ navigateToChatGroup } className="chat-group__card-button">
                 Go to Chat Group Settings
             </button>
         </div>

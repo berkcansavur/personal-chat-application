@@ -29,7 +29,6 @@ function Network() {
 
   const handleSearch = async () => {
     try {
-      // Kullanıcı adına veya e-posta adresine göre arama yap
       const response = await axios.get(
         `http://localhost:3001/app/search-user?searchText=${searchText}`,{
             headers: {
@@ -44,20 +43,27 @@ function Network() {
   };
 
   const handleFriendAdded = async (friendEmail) => {
-    // Yeni arkadaş eklendiğinde "currentUserFriends" durumunu güncelle
     setCurrentUserFriends((prevFriends) => [...prevFriends, friendEmail]);
-    const friendsData = await axios.get(`http://localhost:3001/app/get-friends`,{
-      headers:{
-        Authorization: `Authorization: Bearer ${token}`,
-      }
-    });
-    setCurrentUserFriends(friendsData.data.map((friend) => friend.email));
+    setSearchResults((prevResults) =>
+      prevResults.map((friend) =>
+        friend.email === friendEmail
+          ? { ...friend, isFriend: true }
+          : friend
+      )
+    );
   };
 
   const handleFriendRemoved = async (friendEmail) => {
-    // Arkadaş çıkarıldığında "currentUserFriends" durumunu güncelle
-    setCurrentUserFriends((prevFriends) => prevFriends.filter((email) => email !== friendEmail));
-    
+    setCurrentUserFriends((prevFriends) =>
+      prevFriends.filter((email) => email !== friendEmail)
+    );
+    setSearchResults((prevResults) =>
+      prevResults.map((friend) =>
+        friend.email === friendEmail
+          ? { ...friend, isFriend: false }
+          : friend
+      )
+    );
   };
 
   return (
