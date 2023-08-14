@@ -1,11 +1,11 @@
 body {
-  background-image: url('../../../public/images/img-3.jpg'); /* Arka plan resminin yolunu belirtin */
+  background-image: url('../../../public/images/img-3.jpg');
   background-size: cover;
     background-repeat: no-repeat;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif; /* Varsayılan yazı tipi belirleyebilirsiniz */
-    color: #333; /* Varsayılan metin rengi belirleyebilirsiniz */
+    font-family: Arial, sans-serif;
+    color: #333; 
   overflow-y: auto;
 }
 .chat-container {
@@ -20,8 +20,6 @@ body {
     background-size: cover;
   }
   
-  
-  /* Mesajların listesi */
   #messages {
     list-style: none;
     padding: 0;
@@ -30,20 +28,18 @@ body {
     overflow-y: scroll;
     border: 1px solid #ddd;
     border-radius: 8px;
-    font-size: 16px; /* İstenilen font boyutu */
-    color: #555; /* Yazı rengi */
+    font-size: 16px; 
+    color: #555; 
   }
   
-  /* Her bir mesaj */
   #messages li {
     background-color: #f9f9f9;
     padding: 10px;
     margin: 5px 0;
     border-radius: 4px;
-    color: black; /* Mesaj rengi */
+    color: black; 
   }
   
-  /* Mesaj input alanı ve butonu */
   .message-input {
     display: flex;
     align-items: center;
@@ -77,9 +73,9 @@ body {
   padding: 10px;
   border-radius: 8px;
   margin-bottom: 10px;
-  font-size: 18px; /* İstenilen font boyutu */
-  font-weight: bold; /* İstenilen font kalınlığı */
-  color: #333; /* Yazı rengi */
+  font-size: 18px; 
+  font-weight: bold; 
+  color: #333; 
 }
 .chat-content {
   background-color: rgba(255, 255, 255, 0.8);
@@ -88,7 +84,7 @@ body {
   max-height: 300px;
   overflow-y: scroll;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  flex: 1; /* Alanın genişlemesini sağlamak için */
+  flex: 1; 
 }
 
 .chat-group__card-button {

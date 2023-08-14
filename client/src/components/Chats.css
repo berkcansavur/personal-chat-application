@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-image: url('../../public/images/img-3.jpg'); /* Arka plan fotoğrafını buraya ekleyin */
+  background-image: url('../../public/images/img-3.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
