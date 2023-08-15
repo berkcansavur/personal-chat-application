@@ -52,6 +52,18 @@ export class ChatGroupsService {
             throw new Error(error.message);
           }
     }
+    async getChatGroupsUsersById(id: string){
+        try {
+            const chatGroup = await this.ChatGroupsModel.findById(id);
+            if (!chatGroup) {
+              throw new Error('Chat group not found');
+            }
+            const users:object[] = chatGroup.users.map((user)=>user);
+            return users;
+          } catch (error) {
+            throw new Error(error.message);
+          }
+    }
     async addUserToChatGroup(chatGroupId:string, user:User){
         try {
 

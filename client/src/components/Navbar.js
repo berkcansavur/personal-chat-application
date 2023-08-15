@@ -47,7 +47,7 @@ function Navbar() {
                 className='nav-links'
                 onClick={closeMobileMenu}
               >
-                Chats
+                Create Chat Group
               </Link>
             </li>
             <li className='nav-item'>

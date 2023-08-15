@@ -11,6 +11,7 @@
 .profile__info {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   margin-bottom: 2rem;
 }
 
@@ -54,6 +55,7 @@
 .profile__info {
   flex-wrap: wrap;
   align-items: flex-start;
+  width: 100%;
 }
 
 .profile__details {
@@ -61,7 +63,8 @@
 }
 
 .cards__container {
-  display: grid;
+  display: flex;
+  overflow-x: auto; 
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1rem;
   width: 100%;
@@ -69,11 +72,8 @@
 }
 
 .cards__wrapper {
-  width: 100%;
+  width: max-content;
   display: flex;
-  flex-flow: column;
+  flex-flow: row nowrap; 
   align-items: center;
 }
-
-/* Diğer kartlar için stiller */
-/* ... diğer kart stilleri */

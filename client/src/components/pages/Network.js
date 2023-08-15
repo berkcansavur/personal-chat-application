@@ -4,13 +4,14 @@ import FriendCard from "../FriendCard";
 import Footer from "../Footer";
 import "../NetworkRelated/Network.css"
 import { Button } from "../Button";
+import io from 'socket.io-client';
+const socket = io("http://localhost:3001");
 
 function Network() {
   const token = sessionStorage.getItem("token");
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [currentUserFriends, setCurrentUserFriends] = useState([]);
-
   useEffect(() => {
     const fetchFriends = async () => {
       try {
@@ -27,21 +28,30 @@ function Network() {
     fetchFriends();
   }, [token]);
 
-  const handleSearch = async () => {
+  useEffect(()=>{
+    socket.emit('events', { eventName: 'searchUserEvent', socketId:socket.id });
+    socket.on('searchUser',(users)=>{
+      setSearchResults(users);
+    })
+    return ()=>{
+      socket.off('searchUser');
+    }
+  },[socket.id]);
+
+  useEffect(() => {
+    handleSearchFriendsOfUser();
+  }, [searchText]);
+  const handleSearchFriendsOfUser = async ()=>{
+    if (searchText.trim() === "") {
+      setSearchResults([]);
+      return;
+    }
     try {
-      const response = await axios.get(
-        `http://localhost:3001/app/search-user?searchText=${searchText}`,{
-            headers: {
-                Authorization: `Bearer ${token}`,
-              },
-        }
-      );
-      setSearchResults(response.data);
+      socket.emit('searchUser',{ searchText: searchText} );
     } catch (error) {
       console.error(error);
     }
-  };
-
+  }
   const handleFriendAdded = async (friendEmail) => {
     setCurrentUserFriends((prevFriends) => [...prevFriends, friendEmail]);
     setSearchResults((prevResults) =>
@@ -69,25 +79,32 @@ function Network() {
   return (
     <>
     <div className="network">
-      <input className="network-name-input"
-        type="text"
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-      />
-      <Button 
-      toOperation='search-friend'
-      buttonStyle='btn--outline'
-      onClick={handleSearch}>Search</Button>
+      <div className="search-bar">
+        <input className="network-name-input"
+          type="text"
+          value={searchText}
+          onChange={(e) => {
+            setSearchText(e.target.value)}}
+        />
+        <Button 
+        toOperation='search-friend'
+        buttonStyle='btn--outline'
+        onClick={handleSearchFriendsOfUser}>Search</Button>
+      </div>
       <div className="friend-cards">
-        {searchResults.map((friend) => (
-          <FriendCard
-            key={friend._id}
-            friend={friend}
-            currentUserFriends={currentUserFriends}
-            onFriendAdded={handleFriendAdded}
-            onFriendRemoved={handleFriendRemoved}
-          />
-        ))}
+      {searchResults.length > 0 ? (
+            searchResults.map((friend) => (
+              <FriendCard
+                key={friend._id}
+                friend={friend}
+                currentUserFriends={currentUserFriends}
+                onFriendAdded={handleFriendAdded}
+                onFriendRemoved={handleFriendRemoved}
+              />
+            ))
+          ) : (
+            <h6>{searchText.trim() === "" ? "Enter username or email" : "No results found"}</h6>
+          )}
       </div>
     </div>
        <Footer/>
