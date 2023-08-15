@@ -106,6 +106,15 @@ export class UsersService {
             throw new Error(error);
         }
     }
+    async getFriendsOfUserById( userId:string) {
+        try {
+            const user = await this.findUserById(userId);
+            const friends : object[] = user.Friends;
+            return friends;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
     async getUserData(userObject:Object){
         try {
             const user = await this.userModel.findOne(userObject);

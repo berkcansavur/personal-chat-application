@@ -1,9 +1,6 @@
-// Profile.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./ChatGroupCards.css";
 import CardItem from "./ProfileRelated/CardItem";
-import "./Cards.css";
 import FriendsList from "./ProfileRelated/FriendsList";
 import "./Profile.css";
 

@@ -8,3 +8,21 @@
     margin-bottom: 16px;
     border: 1px solid #fff;
 }
+.network {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.friend-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.friend-cards h6 {
+    margin-top: 20px;
+    font-size: 18px;
+    color: white;
+}

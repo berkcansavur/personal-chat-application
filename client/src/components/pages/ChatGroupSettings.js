@@ -3,6 +3,8 @@ import axios from "axios";
 import "../ChatGroupRelated/ChatGroupPage.css";
 import { useNavigate, useParams } from "react-router-dom";
 import Footer from '../Footer';
+import io from 'socket.io-client';
+const socket = io("http://localhost:3001");
 
 export default function Chats() {
   const navigate = useNavigate();
@@ -34,10 +36,27 @@ export default function Chats() {
     getChatGroupData();
   }, [chatGroupId, token]);
 
-  const navigateToChat = () => {
-    navigate(`/chat/${chatGroupId}`);
-  }
+  useEffect(()=>{
+    socket.emit('events', { eventName: 'getChatGroupUsersEvent', socketId: socket.id } );
+    socket.on('getChatGroupUsers', (users)=>{
+      setChatGroupUsers(users);
+    });
+    return () => {
+      socket.off('getChatGroupUsers');
+    }
+  },[socket.id]);
 
+  useEffect(()=>{
+    handleGetFriendsOfChatGroup();
+  }, [chatGroupId]);
+
+  const handleGetFriendsOfChatGroup = async ()=>{
+    try {
+      socket.emit( 'getChatGroupUsers', { chatGroupId: chatGroupId } )
+    } catch (error) {
+      console.log(error);
+    }
+  }
   useEffect(() => {
     if (!isLoading) {
       const getFriendsOfUser = async () => {
@@ -56,26 +75,9 @@ export default function Chats() {
     }
   }, [isLoading, token]);
 
-  useEffect(() => {
-    if (!isLoading) {
-      const getChatGroupUsersData = async () => {
-        try {
-          const response = await axios.get(
-            `http://localhost:3001/app/get-chatgroups-friends-data/${chatGroupId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          setChatGroupUsers(response.data);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-      getChatGroupUsersData();
-    }
-  }, [isLoading, chatGroupId, token]);
+  const navigateToChat = () => {
+    navigate(`/chat/${chatGroupId}`);
+  }
 
   const handleAddFriendToChatGroup = async (friendId) => {
     try {
@@ -141,7 +143,9 @@ export default function Chats() {
               <p className="chat-group__card-email">{user.email}</p>
               <button
                 className="chat-group__card-button remove-button"
-                onClick={() => handleRemoveFriendFromChatGroup(user._id)}
+                onClick={() => {
+                  handleRemoveFriendFromChatGroup(user._id);
+                  handleGetFriendsOfChatGroup()}}
               >
                 Remove Friend From Group
               </button>
@@ -157,7 +161,9 @@ export default function Chats() {
               <p className="chat-group__card-email">{friend.email}</p>
               <button
                 className="chat-group__card-button add-button"
-                onClick={() => handleAddFriendToChatGroup(friend._id)}
+                onClick={() => {
+                  handleAddFriendToChatGroup(friend._id);
+                  handleGetFriendsOfChatGroup()}}
               >
                 Add Friend to Group
               </button>

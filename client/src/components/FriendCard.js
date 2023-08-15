@@ -12,7 +12,6 @@ function FriendCard({ friend, currentUserFriends, onFriendAdded, onFriendRemoved
 
   const handleFriendAction = async (action) => {
     try {
-      // Arkadaş olarak eklemek veya çıkarmak için API çağrısı yap
       const endpoint = action === "add" ? "add-friend" : "remove-friend";
       const response = await axios.post(
         `http://localhost:3001/app/${endpoint}/${friend._id}`,
@@ -24,7 +23,6 @@ function FriendCard({ friend, currentUserFriends, onFriendAdded, onFriendRemoved
         }
       );
 
-      // Yanıtı işleyerek duruma göre uyarı ver ve düğmeyi güncelle
       if (response.status === 200) {
         if (action === "add") {
           alert(`${friend.name} is now your friend!`);
@@ -46,9 +44,13 @@ function FriendCard({ friend, currentUserFriends, onFriendAdded, onFriendRemoved
       <img src={friend.avatarUrl} alt={friend.name} />
       <h5>{friend.name}</h5>
       {isFriend ? (
-        <button onClick={() => handleFriendAction("remove")}>Remove Friend</button>
+        <button className="remove-button" onClick={() => {
+          handleFriendAction("remove");
+          setIsFriend(false)}}>Remove Friend</button>
       ) : (
-        <button onClick={() => handleFriendAction("add")}>Add Friend</button>
+        <button className="add-button" onClick={() => { 
+          handleFriendAction("add");
+          setIsFriend(true)}}>Add Friend</button>
       )}
     </div>
   );
