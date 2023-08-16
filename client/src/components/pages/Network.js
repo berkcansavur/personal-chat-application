@@ -41,6 +41,7 @@ function Network() {
   useEffect(() => {
     handleSearchFriendsOfUser();
   }, [searchText]);
+  
   const handleSearchFriendsOfUser = async ()=>{
     if (searchText.trim() === "") {
       setSearchResults([]);

@@ -90,7 +90,7 @@ export default function Chats() {
           },
         }
       );
-      setIsLoading(true);
+      handleGetFriendsOfChatGroup();
     } catch (error) {
       console.log(error);
     }
@@ -107,7 +107,7 @@ export default function Chats() {
           },
         }
       );
-      setIsLoading(true);
+      handleGetFriendsOfChatGroup();
     } catch (error) {
       console.log(error);
     }
