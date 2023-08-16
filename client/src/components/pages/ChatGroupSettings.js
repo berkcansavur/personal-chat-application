@@ -133,7 +133,6 @@ export default function Chats() {
     <div className="chat-group__container">
       <div className="chat-group__bg"></div>
       <h2 className="chat-group__name">{chatGroup.chatGroupName}</h2>
-      <p className="chat-group__email">Chat Group ID: {chatGroup._id}</p>
       <div className="chat-group__cards-container">
         <div className="chat-group__cards-wrapper">
           <h3 className="chat-group__section-title">Group Members</h3>

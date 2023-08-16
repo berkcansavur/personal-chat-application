@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from './Button';
 
 function CardItem(props) {
   const { src, label, path, chatGroupName, onSelectChatGroup } = props;
@@ -13,11 +12,6 @@ function CardItem(props) {
           </figure>
           <div className='cards__item__info'>
             <h5 className='cards__item__text'>{chatGroupName}</h5>
-            <Button 
-            toOperation='create-defined-chat-group'
-            buttonStyle='btn--outline__home'>
-              Create
-            </Button>
           </div>
         </Link>
       </li>

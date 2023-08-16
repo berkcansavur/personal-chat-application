@@ -1,6 +1,6 @@
 
 .chat-group__container {
-  background-image: url('../../../public/images/img-2.jpg');
+  background-image: url('../../../public/images/img-3.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -16,16 +16,16 @@
 }
 
 .chat-group__name {
-  font-size: 2rem;
+  font-size: 3rem;
   font-weight: bold;
   margin: 0;
-  color: #0d3559cf;
+  color: white;
   margin-bottom: 0.5rem;
 }
 
 .chat-group__email {
   font-size: 1.2rem;
-  color: #0d3559cf;
+  color: white;
 }
 
 
@@ -52,6 +52,7 @@
   flex-direction: column;
   align-items: center;
   width: 250px; 
+  margin: 3px;
 }
 
 .chat-group__card-title {
@@ -69,7 +70,7 @@
 }
 
 .chat-group__card-button {
-  background-color: #ff6b6b;
+  background-color: #3a404a;
   color: #fff;
   border: none;
   padding: 0.5rem 1rem;
@@ -81,7 +82,7 @@
 }
 
 .chat-group__card-button:hover {
-  background-color: #ff4f4f;
+  background-color: #6a7c8d;
 }
 
 .remove-button {
@@ -93,11 +94,11 @@
 }
 
 .add-button {
-  background-color: #6bff9c;
+  background-color: #0aa13c;
 }
 
 .add-button:hover {
-  background-color: #4fff77;
+  background-color: #44e469;
 }
 
 
@@ -105,7 +106,7 @@
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 1rem;
-  color: #0d3559cf;
+  color: white;
   align-self: flex-start; 
   width: 100%; 
   padding-left: 1rem; 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import FriendCard from "./FriendCard";
+import FriendCard from "../FriendCard";
 
 function Network() {
   const [searchText, setSearchText] = useState("");
@@ -8,7 +8,6 @@ function Network() {
   
   const handleSearch = async () => {
     try {
-      // Kullanıcı adına veya e-posta adresine göre arama yap
       const response = await axios.get(
         `http://localhost:3001/app/search-user?searchText=${searchText}`
       );
@@ -26,7 +25,7 @@ function Network() {
         onChange={(e) => setSearchText(e.target.value)}
       />
       <button onClick={handleSearch}>Search</button>
-      <div className="friend-cards">
+      <div className="friend-card">
         {searchResults.map((friend) => (
           <FriendCard key={friend.id} friend={friend}  />
         ))}

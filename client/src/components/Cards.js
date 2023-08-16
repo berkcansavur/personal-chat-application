@@ -11,19 +11,19 @@ function Cards() {
                 <div className='cards__wrapper'>
                     <ul className='cards__items'>
                         <CardItem
-                            src='images/img-2.jpg'
+                            src='images/chat-group.jpg'
                             text='Create your game based chat group features like voice chatting and high performance'
                             label='Game'
                             path= '/chats'
                         />
                         <CardItem
-                            src='images/img-1.jpg'
+                            src='images/chat-group.jpg'
                             text='Create your business based chat group features like video chatting '
                             label='Business'
                             path= '/chats'
                         />
                         <CardItem
-                            src='images/img-1.jpg'
+                            src='images/chat-group.jpg'
                             text='Create your Regular Chat group only contains Chatting.'
                             label='Basic Chat group'
                             path= '/chats'

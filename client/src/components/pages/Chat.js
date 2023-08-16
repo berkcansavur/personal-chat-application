@@ -129,7 +129,6 @@ function Chat() {
             <div>
                 <div className="chat-info">
                     <p>Chat Group Name: { chatGroup.chatGroupName }</p>
-                    <h6>Chat Group ID: { chatGroupId }</h6>
                     <p>Chat Group Users: { chatGroupUsers.map( ( cgUser ) => cgUser.name ).join(", ")}</p>
                 </div>
                 <ul id='messages'>

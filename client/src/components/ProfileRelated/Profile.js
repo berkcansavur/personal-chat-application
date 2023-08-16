@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import CardItem from "./ProfileRelated/CardItem";
-import FriendsList from "./ProfileRelated/FriendsList";
+import CardItem from "../CardItem";
+import FriendsList from "./FriendsList";
 import "./Profile.css";
 
 function Profile() {
@@ -56,7 +56,7 @@ function Profile() {
             <p className="profile__email">Email: {user.UserEmail}</p>
           </div>
         </div>
-        <p>Chat Groups:</p>
+        <h6>Chat Groups:</h6>
         <div className="cards__container">
           <div className="cards__wrapper">
             <ul className="cards__items">
@@ -64,7 +64,7 @@ function Profile() {
                 user.ChatGroups.map((chatGroup) => (
                   <CardItem
                     key={chatGroup._id}
-                    src="images/img-2.jpg"
+                    src="images/chat-group.jpg"
                     label="Chat Group"
                     path={`/chat/${chatGroup._id}`}
                     chatGroupName={chatGroup.chatGroupName}
@@ -74,7 +74,7 @@ function Profile() {
             </ul>
           </div>
         </div>
- <FriendsList friends={friends} friendToAdd={friendToAdd} setFriendToAdd={setFriendToAdd} />       
+        <FriendsList friends={friends} friendToAdd={friendToAdd} setFriendToAdd={setFriendToAdd} />       
       </div>
     </>
   );

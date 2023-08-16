@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './CreateChatGroup.css';
-import { Button } from './Button';
+import { Button } from '../Button';
 
 
 const ChatGroupPage = () => {
