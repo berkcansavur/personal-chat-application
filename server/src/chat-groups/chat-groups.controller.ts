@@ -41,9 +41,8 @@ export class ChatGroupsController {
         }
     }
     @Post('/remove-user/:id')
-    async removeUserFromChatGroup(@Param('id')chatGroupId:string, @Body() body:{userId:string}){
+    async removeUserFromChatGroup(@Param('id') chatGroupId: string, @Body() body:{userId:string}){
         try {
-            //const chatGroup = await this.chatGroupsService.getChatGroupById(chatGroupId);
             const updatedChatGroup = await this.chatGroupsService.removeUserFromChatGroup(chatGroupId,body.userId);
             return updatedChatGroup;
         } catch (error) {
@@ -51,7 +50,7 @@ export class ChatGroupsController {
         }
     }
     @Post('/change-group-name/:id')
-    async updateGroupName(@Param('id')chatGroupId:string,@Body() body:{newName:string}){
+    async updateGroupName(@Param('id') chatGroupId: string, @Body() body:{newName:string}){
         try {
             const updatedChatGroup = await this.chatGroupsService.updateChatGroupName(chatGroupId,body.newName);
             return updatedChatGroup;
