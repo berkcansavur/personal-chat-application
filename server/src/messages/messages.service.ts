@@ -1,8 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Message } from './entities/message.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Server, Socket } from 'socket.io';
+import { Socket } from 'socket.io';
 @Injectable()
 export class MessagesService {
   constructor(
@@ -17,13 +17,6 @@ export class MessagesService {
   }
   identify(chatGroupId: string, socket:Socket) {
     this.connectedClients.set(chatGroupId, socket);
-  }
-
-  getClientName(clientId:string){
-  }
-
-  findAll() {
-    return `This action returns all messages`;
   }
   getLast20Message(chatGroupID:string){
     return this.messageModel

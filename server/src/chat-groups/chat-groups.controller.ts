@@ -17,7 +17,7 @@ export class ChatGroupsController {
         private usersService: UsersService){}
     
     @Post('/create-chat-group')
-    async createChatGroup(@Body() body:CreateChatGroupDTO, @Session() session: any){
+    async createChatGroup(@Body() body: CreateChatGroupDTO, @Session() session: any){
         if (!session.CurrentUser._id) {
             throw new UnauthorizedException('You need to login to create a chat group');
         }
@@ -26,12 +26,12 @@ export class ChatGroupsController {
         return newChatGroup;
     }
     @Get('/get-users/:id')
-    async getChatGroupUsers(@Param('id') id:mongoose.Types.ObjectId){
+    async getChatGroupUsers(@Param('id') id: mongoose.Types.ObjectId){
         const users = await this.chatGroupsService.getChatGroupsUsers(id);
         return users;
     }
     @Post('/add-user')
-    async addUserToChatGroup(@Body() body:{chatGroupId:string},@Session() session:any){
+    async addUserToChatGroup(@Body() body:{ chatGroupId: string }, @Session() session:any){
         try {
             
             const user = await this.usersService.findUser(session.CurrentUser._id);
@@ -41,7 +41,7 @@ export class ChatGroupsController {
         }
     }
     @Post('/remove-user/:id')
-    async removeUserFromChatGroup(@Param('id') chatGroupId: string, @Body() body:{userId:string}){
+    async removeUserFromChatGroup(@Param('id') chatGroupId: string, @Body() body:{ userId: string }){
         try {
             const updatedChatGroup = await this.chatGroupsService.removeUserFromChatGroup(chatGroupId,body.userId);
             return updatedChatGroup;
@@ -50,7 +50,7 @@ export class ChatGroupsController {
         }
     }
     @Post('/change-group-name/:id')
-    async updateGroupName(@Param('id') chatGroupId: string, @Body() body:{newName:string}){
+    async updateGroupName(@Param('id') chatGroupId: string, @Body() body:{ newName: string}){
         try {
             const updatedChatGroup = await this.chatGroupsService.updateChatGroupName(chatGroupId,body.newName);
             return updatedChatGroup;
