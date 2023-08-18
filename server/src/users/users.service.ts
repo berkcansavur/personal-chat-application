@@ -56,10 +56,10 @@ export class UsersService {
             throw new Error(error);
         }
     }
-    async removeChatGroupFromUser(user, chatGroup){
+    async removeChatGroupFromUser(user , chatGroup ){
         try {
-            const userId:string = user._id;
-            const chatGroupId:string = chatGroup._id;
+            const userId: string = user._id;
+            const chatGroupId: string = chatGroup._id;
 
             const updatedUser = await this.userModel.findByIdAndUpdate(
                 userId,

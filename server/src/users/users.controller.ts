@@ -1,21 +1,16 @@
 import {
-    Param,
     Body, 
     Controller, 
     Post, 
     Get, 
     Session,
     UseGuards,
-    Request,
-    UnauthorizedException} from '@nestjs/common';
+    Request } from '@nestjs/common';
 import { CreateUserDTO } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
 import { LocalAuthGuard } from 'src/auth/local.auth.guard';
 import { UtilsService } from '../utils/utils.service';
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard';
-import { AddFriendDTO } from './dtos/user.dto';
-import { CurrentUser } from './decorators/current-user.decorator';
-import mongoose from 'mongoose';
 
 @Controller('users')
 export class UsersController {
@@ -24,7 +19,7 @@ export class UsersController {
         private utilsService:UtilsService ){}
 
     @Post('/signup')
-    async createUser(@Body() body: CreateUserDTO, @Session() session: any){
+    async createUser(@Body() body: CreateUserDTO ){
         try {
             const hashedPassword = await this.utilsService.hashPassword(body.password);
             const user = await this.userService.createUser(body.name,body.email,hashedPassword);

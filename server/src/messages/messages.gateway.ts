@@ -3,7 +3,6 @@ import {
   SubscribeMessage, 
   MessageBody, 
   WebSocketServer, 
-  ConnectedSocket, 
   OnGatewayConnection,
   OnGatewayDisconnect
 } from '@nestjs/websockets';
@@ -12,10 +11,7 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { Server,Socket } from 'socket.io';
 import { UsersService } from 'src/users/users.service';
 import { User  } from '../../shared/chat.interface';
-
 import { ChatGroupsService } from 'src/chat-groups/chat-groups.service';
-import mongoose from 'mongoose';
-
 
   @WebSocketGateway({
   cors:{
@@ -43,15 +39,6 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
   
       this.server.to(chatGroupID).emit('message', message);
       return message;
-    }
-    @SubscribeMessage('addFriend')
-    async addFriend(@MessageBody() payload:{friendId:string, userId:string, }){
-      const { friendId, userId } = payload;
-      const friend = await this.userService.findUserById(friendId);
-      const updatedUser = await this.userService.addFriend(userId, friend);
-      
-      this.server.to('addFriendEvent').emit('addFriend', updatedUser);
-      return updatedUser;
     }
     @SubscribeMessage('getFriends')
     async getFriends(@MessageBody() payload:{ userId:string,}) {
@@ -95,13 +82,6 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
         const { chatGroupID, user } = payload;
         const { socketId } = user;
         await this.server.in(socketId).socketsJoin(chatGroupID);
-    }
-    @SubscribeMessage('typing')
-    async typing( 
-      @MessageBody('isTyping') isTyping: boolean,
-      @ConnectedSocket() client: Socket){
-        const senderUserName = await this.messagesService.getClientName(client.id);
-        client.broadcast.emit( 'typing', { senderUserName, isTyping } );
     }
     async handleConnection(socket: Socket): Promise<void> {
       console.log(`Socket connected: ${socket.id}`)
