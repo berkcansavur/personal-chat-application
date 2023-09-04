@@ -22,7 +22,7 @@ export class UsersController {
     async createUser(@Body() body: CreateUserDTO ){
         try {
             const hashedPassword = await this.utilsService.hashPassword(body.password);
-            const user = await this.userService.createUser(body.name,body.email,hashedPassword);
+            const user = await this.userService.createUser(body.name,body.email, hashedPassword);
             return {
                 name:user.name,
                 email:user.email
