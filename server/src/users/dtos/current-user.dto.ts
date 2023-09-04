@@ -1,6 +1,7 @@
 import { Expose, Exclude } from "class-transformer";
 import mongoose from "mongoose";
-export class UserDTO {
+
+export class CurrentUserDTO {
     @Exclude()
     userId: number;
     @Expose()

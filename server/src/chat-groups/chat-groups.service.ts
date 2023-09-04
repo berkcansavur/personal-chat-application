@@ -21,13 +21,13 @@ export class ChatGroupsService {
         const newChatGroup = new this.ChatGroupsModel({users,chatGroupName,creatingDate});
         return await newChatGroup.save();
     }
-    async deleteChatGroup(chatGroupId:mongoose.Types.ObjectId){
+    async deleteChatGroup(chatGroupId: mongoose.Types.ObjectId){
         await this.ChatGroupsModel.findByIdAndRemove(chatGroupId);
     }
     async getChatGroupById(chatGroupId:string){
         try {
             if(!chatGroupId){return null;}
-            return await this.ChatGroupsModel.findById(chatGroupId);
+            return this.ChatGroupsModel.findById(chatGroupId);
         } catch (error) {
             throw new Error(error.message);
         }
@@ -58,7 +58,7 @@ export class ChatGroupsService {
             if (!chatGroup) {
               throw new Error('Chat group not found');
             }
-            const users:object[] = chatGroup.users.map((user)=>user);
+            const users: object[] = chatGroup.users.map((user)=>user);
             return users;
           } catch (error) {
             throw new Error(error.message);
@@ -80,7 +80,7 @@ export class ChatGroupsService {
             throw new Error(error.message);
         }
     }
-    async removeUserFromChatGroup(chatGroupId:string,userId:string){
+    async removeUserFromChatGroup(chatGroupId: string, userId: string){
         try {
             const updatedChatGroup = await this.ChatGroupsModel.findByIdAndUpdate(
                 chatGroupId,

@@ -115,10 +115,10 @@ export class UsersService {
             throw new Error(error);
         }
     }
-    async getUserData(userObject:Object){
+    async getUserData( userObject: Object ){
         try {
             const user = await this.userModel.findOne(userObject);
-            const {name, email, ChatGroups, _id } = user;
+            const { name, email, ChatGroups, _id } = user;
             const userData = {
                 _id: _id,
                 name: name,
