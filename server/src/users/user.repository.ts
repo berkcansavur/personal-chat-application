@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import mongoose, { Model } from 'mongoose';
 import { User } from './users.model';
 import { InjectModel } from '@nestjs/mongoose';
-import { CreateUserDTO } from './dtos/create-user.dto';
 @Injectable()
 export class UsersRepository { 
     constructor(@InjectModel('Users') private userModel: Model<User>){}
+    
     async createUser( name:string, email:string, password:string ){
         const newUser = new this.userModel({ name, email, password });
         return await newUser.save();
@@ -36,5 +36,5 @@ export class UsersRepository {
             throw new Error(error);
         }
     }
-    
+
 }

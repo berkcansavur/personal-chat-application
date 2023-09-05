@@ -11,7 +11,8 @@ import { UsersService } from './users.service';
 import { LocalAuthGuard } from 'src/auth/local.auth.guard';
 import { UtilsService } from '../utils/utils.service';
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard';
-
+import { UserProfileDTO } from './dtos/user-profile.dto';
+import { CurrentUserDTO } from './dtos/current-user.dto';
 @Controller('users')
 export class UsersController {
     constructor(
@@ -23,10 +24,10 @@ export class UsersController {
         try {
             const hashedPassword = await this.utilsService.hashPassword(body.password);
             const user = await this.userService.createUser(body.name,body.email, hashedPassword);
-            return {
-                name:user.name,
-                email:user.email
-            };
+            const userProfileDTO = new UserProfileDTO();
+            userProfileDTO.name = user.name;
+            userProfileDTO.email = user.email;
+            return userProfileDTO;
         } catch (error) {
             throw new Error(error);
         }
@@ -38,7 +39,7 @@ export class UsersController {
         try {
             console.log(req.user);
             return {
-                User:req.user,
+                User: req.user,
                 message:'User logged in successfully'
             }
         } catch (error) {
@@ -51,15 +52,15 @@ export class UsersController {
         session.CurrentUser = null;
     }
     @UseGuards(JwtAuthGuard)
+    
     @Get('/me')
-    getUserProfile(@Request() req){
+    getUserProfile( @Request() req){
         try {
-            return {
-                userId:req.session.userId,
-                userName:req.session.CurrentUser.name,
-                userEmail:req.session.CurrentUser.email
-
-            };
+            const currentUser = new CurrentUserDTO();
+            currentUser.userId = req.session.userId;
+            currentUser.userEmail = req.session.CurrentUser.email;
+            currentUser.userName = req.session.CurrentUser.name
+            return currentUser;
             
         } catch (error) {
             throw new Error(error);
