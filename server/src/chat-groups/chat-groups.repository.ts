@@ -10,7 +10,6 @@ export class ChatGroupsRepository {
     constructor(
         @InjectModel('ChatGroups') private ChatGroupsModel: Model<ChatGroups>){}
 
-
     async createChatGroup(chatGroup: CreateChatGroupDTO, creatorUser){
         const users = chatGroup.users || [];
         users.push(creatorUser);

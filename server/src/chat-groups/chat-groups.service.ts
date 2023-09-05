@@ -3,6 +3,7 @@ import { CreateChatGroupDTO } from './dtos/create-chat-group.dto';
 import mongoose from "mongoose";
 import { User } from 'src/users/users.model';
 import { ChatGroupsRepository } from './chat-groups.repository';
+
 @Injectable()
 export class ChatGroupsService {
     constructor(
