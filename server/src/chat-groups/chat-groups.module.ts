@@ -6,6 +6,7 @@ import { ChatGroupsService } from './chat-groups.service';
 import { ChatGroupsSchema } from './chat-groups.model';
 import { UsersService } from 'src/users/users.service';
 import { UsersModule } from 'src/users/users.module';
+import { ChatGroupsRepository } from './chat-groups.repository';
 
 @Module({
   imports:[
@@ -13,7 +14,10 @@ import { UsersModule } from 'src/users/users.module';
     UsersModule
   ],
   controllers: [ChatGroupsController],
-  providers:[ChatGroupsService],
+  providers:[
+    ChatGroupsService, 
+    ChatGroupsRepository
+  ],
   exports:[ChatGroupsService]
 })
 export class ChatGroupsModule {}
