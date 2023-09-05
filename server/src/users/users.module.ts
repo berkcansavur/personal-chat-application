@@ -8,6 +8,7 @@ import { SessionModule } from 'nestjs-session';
 import { SessionOptions } from 'express-session';
 import { PassportModule } from '@nestjs/passport';
 import { UtilsModule } from 'src/utils/utils.module';
+import { UsersRepository } from './users.repository';
 
 @Module({
     imports:[
@@ -25,7 +26,7 @@ import { UtilsModule } from 'src/utils/utils.module';
     }),
     ],
     controllers:[UsersController],
-    providers:[UsersService],
+    providers:[UsersService,UsersRepository],
     exports:[UsersService]
 })
 export class UsersModule {

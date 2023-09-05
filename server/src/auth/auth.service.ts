@@ -3,8 +3,11 @@ import { UsersService } from 'src/users/users.service';
 import { promisify } from "util";
 import { scrypt as _scrypt} from "crypto";
 import { UserDTO } from 'src/users/dtos/user.dto';
+import { LoginUserDTO } from 'src/users/dtos/login-user.dto';
 const scrypt = promisify(_scrypt);
 import { JwtService } from '@nestjs/jwt';
+import { AuthenticatedUserDTO } from 'src/users/dtos/authenticated-user.dto';
+import { CurrentUserDTO } from 'src/users/dtos/current-user.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -12,8 +15,9 @@ export class AuthService {
     private jwtTokenService :JwtService
     ) {}
   
-  async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.userService.findByEmail(email);
+  async validateUser(body: LoginUserDTO): Promise<any> {
+    const {email, password } = body;
+    const user = await this.userService.findUserByEmail(email);
     if(!user){
         throw new NotFoundException('User Not Found');
     }
@@ -31,19 +35,18 @@ export class AuthService {
     }
     return null
   }
-  async loginWithCredentials(user:UserDTO){
+  async loginWithCredentials(user: CurrentUserDTO){
     const payload = {
       sub:user.userId,
-      email:user.email,
+      email:user.userEmail,
     }
     const access_token = this.jwtTokenService.sign(payload);
-    return {
-      access_token: access_token,
-      user:{
-        userId:user.userId,
-        userName:user.name,
-        userEmail:user.email
-      }
-    }
+    const authenticatedUser = new AuthenticatedUserDTO();
+    authenticatedUser.access_token = access_token;
+    authenticatedUser.userId = user.userId;
+    authenticatedUser.userEmail = user.userEmail;
+    authenticatedUser.userName = user.userName;
+    return authenticatedUser;
+    
   }
 }

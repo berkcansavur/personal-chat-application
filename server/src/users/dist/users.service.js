@@ -5,9 +5,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -47,25 +44,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.UsersService = void 0;
 var common_1 = require("@nestjs/common");
-var mongoose_1 = require("@nestjs/mongoose");
 var UsersService = /** @class */ (function () {
-    function UsersService(UserModel) {
-        this.UserModel = UserModel;
+    function UsersService(usersRepository) {
+        this.usersRepository = usersRepository;
     }
     UsersService.prototype.createUser = function (name, email, password) {
         return __awaiter(this, void 0, void 0, function () {
             var newUser;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        newUser = new this.UserModel({ name: name, email: email, password: password });
-                        return [4 /*yield*/, newUser.save()];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 0: return [4 /*yield*/, this.usersRepository.createUser(name, email, password)];
+                    case 1:
+                        newUser = _a.sent();
+                        return [2 /*return*/, newUser];
                 }
             });
         });
     };
-    UsersService.prototype.findUser = function (id) {
+    UsersService.prototype.findUserById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             var error_1;
             return __generator(this, function (_a) {
@@ -75,7 +71,7 @@ var UsersService = /** @class */ (function () {
                         if (!id) {
                             return [2 /*return*/, null];
                         }
-                        return [4 /*yield*/, this.UserModel.findById(id)];
+                        return [4 /*yield*/, this.usersRepository.findUserById(id)];
                     case 1: return [2 /*return*/, _a.sent()];
                     case 2:
                         error_1 = _a.sent();
@@ -85,22 +81,176 @@ var UsersService = /** @class */ (function () {
             });
         });
     };
-    UsersService.prototype.findByEmail = function (email) {
+    UsersService.prototype.findUser = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var error_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        if (!id) {
+                            return [2 /*return*/, null];
+                        }
+                        return [4 /*yield*/, this.usersRepository.findUserByObjectId(id)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                    case 2:
+                        error_2 = _a.sent();
+                        throw new Error(error_2);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UsersService.prototype.findUserByEmail = function (email) {
+        return __awaiter(this, void 0, void 0, function () {
+            var error_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.usersRepository.findByEmail(email)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                    case 2:
+                        error_3 = _a.sent();
+                        throw new Error(error_3);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UsersService.prototype.addChatGroupToUser = function (userId, chatGroup) {
+        return __awaiter(this, void 0, void 0, function () {
+            var error_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.usersRepository.addChatGroupToUser(userId, chatGroup)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                    case 2:
+                        error_4 = _a.sent();
+                        throw new Error(error_4);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UsersService.prototype.removeChatGroupFromUser = function (user, chatGroup) {
+        return __awaiter(this, void 0, void 0, function () {
+            var error_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.usersRepository.removeChatGroupFromUser(user, chatGroup)];
+                    case 1:
+                        _a.sent();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_5 = _a.sent();
+                        throw new Error(error_5);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UsersService.prototype.addFriend = function (userId, friend) {
+        return __awaiter(this, void 0, void 0, function () {
+            var error_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.usersRepository.addFriend(userId, friend)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                    case 2:
+                        error_6 = _a.sent();
+                        throw new Error(error_6);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UsersService.prototype.removeFriend = function (userId, friendId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var error_7;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.usersRepository.removeFriend(userId, friendId)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                    case 2:
+                        error_7 = _a.sent();
+                        throw new Error(error_7);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UsersService.prototype.getFriendsOfUser = function (userId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var error_8;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.usersRepository.getFriendsOfUser(userId)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                    case 2:
+                        error_8 = _a.sent();
+                        throw new Error(error_8);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UsersService.prototype.getFriendsOfUserById = function (userId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var error_9;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.usersRepository.getFriendsOfUserById(userId)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                    case 2:
+                        error_9 = _a.sent();
+                        throw new Error(error_9);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UsersService.prototype.getUserData = function (userObject) {
+        return __awaiter(this, void 0, void 0, function () {
+            var error_10;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.usersRepository.getUserData(userObject)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                    case 2:
+                        error_10 = _a.sent();
+                        throw new Error(error_10);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UsersService.prototype.searchUser = function (searchText) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                try {
-                    return [2 /*return*/, this.UserModel.findOne({ email: email })];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.usersRepository.searchUser(searchText)];
+                    case 1: return [2 /*return*/, _a.sent()];
                 }
-                catch (error) {
-                    throw new Error(error);
-                }
-                return [2 /*return*/];
             });
         });
     };
     UsersService = __decorate([
-        common_1.Injectable(),
-        __param(0, mongoose_1.InjectModel('Users'))
+        common_1.Injectable()
     ], UsersService);
     return UsersService;
 }());
