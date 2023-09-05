@@ -1,4 +1,4 @@
-export class UserProfileInfo {
+export class UserProfileInfoDTO {
     UserId: string;
     UserName: string;
     UserEmail: string;
