@@ -8,6 +8,7 @@ import { ChatGroupsService } from './chat-groups/chat-groups.service';
 import mongoose from 'mongoose';
 import { CreateChatGroupDTO } from './chat-groups/dtos/create-chat-group.dto';
 import { MessagesService } from './messages/messages.service';
+import { UserProfileInfo } from './users/dtos/user-profile-info.dto';
 
 @Controller('app')
 export class AppController {
@@ -49,13 +50,14 @@ export class AppController {
           chatGroupName: chatGroup.chatGroupName,
         });
       }
-      return {
-        UserID: _id,
-        UserName: name,
-        UserEmail: email,
-        ChatGroups: chatGroupDetails,
-        Friends: friendsData
-      }
+      const userProfileInfo = new UserProfileInfo();
+      userProfileInfo.UserId = _id;
+      userProfileInfo.UserName = name;
+      userProfileInfo.UserEmail = email;
+      userProfileInfo.ChatGroups = chatGroupDetails;
+      userProfileInfo.Friends = friendsData;
+
+      return userProfileInfo;
       
   } catch (error) {
       throw new Error(error);
