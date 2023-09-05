@@ -8,7 +8,7 @@ import { SessionModule } from 'nestjs-session';
 import { SessionOptions } from 'express-session';
 import { PassportModule } from '@nestjs/passport';
 import { UtilsModule } from 'src/utils/utils.module';
-import { UsersRepository } from './user.repository';
+import { UsersRepository } from './users.repository';
 
 @Module({
     imports:[

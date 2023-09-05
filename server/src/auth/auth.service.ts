@@ -17,7 +17,7 @@ export class AuthService {
   
   async validateUser(body: LoginUserDTO): Promise<any> {
     const {email, password } = body;
-    const user = await this.userService.findByEmail(email);
+    const user = await this.userService.findUserByEmail(email);
     if(!user){
         throw new NotFoundException('User Not Found');
     }
