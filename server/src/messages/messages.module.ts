@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MessagesSchema } from './entities/message.entity';
 import { UsersModule } from 'src/users/users.module';
 import { ChatGroupsModule } from 'src/chat-groups/chat-groups.module';
+import { MessagesRepository } from './messages.repository';
 
 @Module({
   imports:[
@@ -12,7 +13,7 @@ import { ChatGroupsModule } from 'src/chat-groups/chat-groups.module';
     UsersModule,
     ChatGroupsModule
   ],
-  providers: [MessagesGateway, MessagesService],
+  providers: [MessagesGateway, MessagesService, MessagesRepository],
   exports:[MessagesGateway, MessagesService]
 })
 export class MessagesModule {}
