@@ -5,11 +5,13 @@ import {
     Get,
     Param,
     Session, 
-    UnauthorizedException} from '@nestjs/common';
+    UnauthorizedException
+} from '@nestjs/common';
 import { ChatGroupsService } from './chat-groups.service';
 import { UsersService } from 'src/users/users.service';
 import { CreateChatGroupDTO } from './dtos/create-chat-group.dto';
 import mongoose from 'mongoose';
+
 @Controller('chat-groups')
 export class ChatGroupsController {
     constructor(
@@ -31,7 +33,7 @@ export class ChatGroupsController {
         return users;
     }
     @Post('/add-user')
-    async addUserToChatGroup(@Body() body:{ chatGroupId: string }, @Session() session:any){
+    async addUserToChatGroup(@Body() body:{ chatGroupId: mongoose.Types.ObjectId }, @Session() session:any){
         try {
             
             const user = await this.usersService.findUser(session.CurrentUser._id);
@@ -41,7 +43,7 @@ export class ChatGroupsController {
         }
     }
     @Post('/remove-user/:id')
-    async removeUserFromChatGroup(@Param('id') chatGroupId: string, @Body() body:{ userId: string }){
+    async removeUserFromChatGroup(@Param('id') chatGroupId: mongoose.Types.ObjectId, @Body() body:{ userId: mongoose.Types.ObjectId }){
         try {
             const updatedChatGroup = await this.chatGroupsService.removeUserFromChatGroup(chatGroupId,body.userId);
             return updatedChatGroup;
@@ -50,7 +52,7 @@ export class ChatGroupsController {
         }
     }
     @Post('/change-group-name/:id')
-    async updateGroupName(@Param('id') chatGroupId: string, @Body() body:{ newName: string}){
+    async updateGroupName(@Param('id') chatGroupId: mongoose.Types.ObjectId, @Body() body:{ newName: string}){
         try {
             const updatedChatGroup = await this.chatGroupsService.updateChatGroupName(chatGroupId,body.newName);
             return updatedChatGroup;

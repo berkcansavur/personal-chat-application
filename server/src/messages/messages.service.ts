@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Message } from './entities/message.entity';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Socket } from 'socket.io';
 @Injectable()
@@ -18,7 +18,7 @@ export class MessagesService {
   identify(chatGroupId: string, socket:Socket) {
     this.connectedClients.set(chatGroupId, socket);
   }
-  getLast20Message(chatGroupID:string){
+  getLast20Message(chatGroupID: mongoose.Types.ObjectId){
     return this.messageModel
       .find({ chatGroup: chatGroupID })
       .sort({ createdAt: -1 })

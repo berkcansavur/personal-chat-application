@@ -10,9 +10,6 @@ export class UsersRepository {
         const newUser = new this.userModel({ name, email, password });
         return await newUser.save();
     }
-    async findUserById( id: string ) {
-        return await this.userModel.findOne({ _id: id });
-    }
     async findUserByObjectId( id: mongoose.Types.ObjectId){
         const user = await this.userModel.findOne({ _id: id });
         return user;
@@ -20,7 +17,7 @@ export class UsersRepository {
     async findByEmail(email: string){
         return this.userModel.findOne({email: email});
     }
-    async addChatGroupToUser(userId:string, chatGroup:object){
+    async addChatGroupToUser(userId:mongoose.Types.ObjectId, chatGroup:object){
         const updatedUser = await this.userModel.findByIdAndUpdate(
             userId,
             {$push:{ChatGroups:chatGroup}},
@@ -39,7 +36,7 @@ export class UsersRepository {
         );
         await updatedUser.save();
     }
-    async addFriend(userId:string, friend:object) {
+    async addFriend(userId:mongoose.Types.ObjectId, friend:object) {
         const updatedUser = await this.userModel.findByIdAndUpdate(
             userId,
             {$push:{Friends:friend}},
@@ -48,7 +45,7 @@ export class UsersRepository {
         await updatedUser.save();
         return updatedUser;
     }
-    async removeFriend(userId:string, friendId:string) {
+    async removeFriend(userId:mongoose.Types.ObjectId, friendId:string) {
         const updatedUser = await this.userModel.findByIdAndUpdate(
             userId,
             { $pull: { Friends: { _id: friendId } } },
@@ -62,11 +59,6 @@ export class UsersRepository {
         const friends : object[] = user.Friends;
         return friends;
         
-    }
-    async getFriendsOfUserById( userId:string) {
-        const user = await this.findUserById(userId);
-        const friends : object[] = user.Friends;
-        return friends;
     }
     async getUserData( userObject: Object ){
         const user = await this.userModel.findOne(userObject);

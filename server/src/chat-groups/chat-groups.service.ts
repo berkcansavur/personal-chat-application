@@ -9,7 +9,6 @@ export class ChatGroupsService {
     constructor(
         private chatGroupsRepository : ChatGroupsRepository){}
 
-
     async createChatGroup(chatGroup: CreateChatGroupDTO, creatorUser){
         try {
             return await this.chatGroupsRepository.createChatGroup(chatGroup, creatorUser);
@@ -24,15 +23,7 @@ export class ChatGroupsService {
             throw new Error(error);
         }
     }
-    async getChatGroupById(chatGroupId:string){
-        try {
-            if(!chatGroupId){return null;}
-            return await this.chatGroupsRepository.getChatGroupById(chatGroupId);
-        } catch (error) {
-            throw new Error(error.message);
-        }
-    }
-    async getChatGroupByObjectId(id:object){
+    async getChatGroup(id: mongoose.Types.ObjectId){
         try {
             if(!id){return null;}
             return await this.chatGroupsRepository.getChatGroupByObjectId(id);
@@ -47,29 +38,21 @@ export class ChatGroupsService {
             throw new Error(error.message);
           }
     }
-    async getChatGroupsUsersById(chatGroupId: string){
-        try {
-            return await this.chatGroupsRepository.getChatGroupsUsersById(chatGroupId);
-          } catch (error) {
-            throw new Error(error.message);
-          }
-    }
-    async addUserToChatGroup(chatGroupId:string, user:User){
+    async addUserToChatGroup(chatGroupId:mongoose.Types.ObjectId, user:User){
         try {
             return await this.chatGroupsRepository.addUserToChatGroup(chatGroupId, user);
         } catch (error) {
             throw new Error(error.message);
         }
     }
-    async removeUserFromChatGroup(chatGroupId: string, userId: string){
+    async removeUserFromChatGroup(chatGroupId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId){
         try {
-            
             return await this.chatGroupsRepository.removeUserFromChatGroup(chatGroupId, userId);
         } catch (error) {
             throw new Error(error);
         }   
     }
-    async updateChatGroupName(chatGroupId: string, chatGroupName: string) {
+    async updateChatGroupName(chatGroupId: mongoose.Types.ObjectId, chatGroupName: string) {
         try {
           return await this.chatGroupsRepository.updateChatGroupName(chatGroupId, chatGroupName);
         } catch (error) {
