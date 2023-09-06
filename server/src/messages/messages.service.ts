@@ -1,29 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { Message } from './entities/message.entity';
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
 import { Socket } from 'socket.io';
+import { MessagesRepository } from './messages.repository';
 @Injectable()
 export class MessagesService {
   constructor(
-    @InjectModel('Messages') private messageModel: Model<Message>){}
+    private messagesRepository: MessagesRepository){}
     private readonly connectedClients: Map<string, Socket> = new Map();
   async create(chatGroupID: string, senderUser: string, text: string) {
-    const newMessage = new this.messageModel({ 
-      chatGroup: chatGroupID,
-      senderUser: senderUser,
-      text:text });
-    return await newMessage.save();
+    return await this.messagesRepository.create(chatGroupID, senderUser, text);
   }
   identify(chatGroupId: string, socket:Socket) {
     this.connectedClients.set(chatGroupId, socket);
   }
-  getLast20Message(chatGroupID:string){
-    return this.messageModel
-      .find({ chatGroup: chatGroupID })
-      .sort({ createdAt: -1 })
-      .limit(20)
-      .exec();
+  async getLast20Message(chatGroupID:string){
+    return await this.messagesRepository.getLastMessages(chatGroupID, 20);
   }
 
 }
