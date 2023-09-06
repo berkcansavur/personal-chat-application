@@ -5,7 +5,7 @@ export interface User {
     email: string;
     password: string;
     Friends: object[];
-    ChatGroups: object[];
+    ChatGroups: mongoose.Types.ObjectId[];
 }
 export class UserEntity{
     id:string;

@@ -21,10 +21,7 @@ export class ChatGroupsRepository {
     async deleteChatGroup(chatGroupId: mongoose.Types.ObjectId){
         await this.ChatGroupsModel.findByIdAndRemove(chatGroupId);
     }
-    async getChatGroupById(chatGroupId:string){
-        return await this.ChatGroupsModel.findById(chatGroupId);
-    }
-    async getChatGroupByObjectId(id:object){
+    async getChatGroupByObjectId(id:mongoose.Types.ObjectId){
         return await this.ChatGroupsModel.findById(id);
     }
     async getChatGroupsUsers(id:mongoose.Types.ObjectId){
@@ -35,15 +32,7 @@ export class ChatGroupsRepository {
         const users: object[] = chatGroup.users.map((user)=>user);
         return users;
     }
-    async getChatGroupsUsersById(id: string){
-        const chatGroup = await this.ChatGroupsModel.findById(id);
-        if (!chatGroup) {
-            throw new Error('Chat group not found');
-          }
-        const users: object[] = chatGroup.users.map((user)=>user);
-        return users;
-  }
-    async addUserToChatGroup(chatGroupId: string, user: User){
+    async addUserToChatGroup(chatGroupId: mongoose.Types.ObjectId, user: User){
         const updatedChatGroup = await this.ChatGroupsModel.findByIdAndUpdate(
             chatGroupId,
             {$push:{users:user}},
@@ -52,7 +41,7 @@ export class ChatGroupsRepository {
         await updatedChatGroup.save();
         return updatedChatGroup;
     }
-    async removeUserFromChatGroup(chatGroupId: string, userId: string){
+    async removeUserFromChatGroup(chatGroupId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId){
         const updatedChatGroup = await this.ChatGroupsModel.findByIdAndUpdate(
             chatGroupId,
             { $pull: { users: { _id: userId } } },
@@ -61,7 +50,7 @@ export class ChatGroupsRepository {
         await updatedChatGroup.save();
         return updatedChatGroup;  
     }
-    async updateChatGroupName(chatGroupId: string, chatGroupName: string) {
+    async updateChatGroupName(chatGroupId: mongoose.Types.ObjectId, chatGroupName: string) {
         const  updatedChatGroup = await this.ChatGroupsModel.findByIdAndUpdate(
             chatGroupId,
             { chatGroupName: chatGroupName},

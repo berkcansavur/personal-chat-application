@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsString } from 'class-validator';
+import mongoose from 'mongoose';
 
 export class CreateMessageDto {
   @IsNotEmpty()
@@ -7,7 +8,7 @@ export class CreateMessageDto {
 
   @IsNotEmpty()
   @IsString()
-  senderUser: string;
+  senderUser: mongoose.Types.ObjectId;
 
   @IsNotEmpty()
   @IsString()

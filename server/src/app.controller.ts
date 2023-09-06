@@ -23,176 +23,163 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
-  
   @UseGuards(AuthGuard('local'))
   @Post('login')
   async login(@Request() req ) {
     return this.authService.loginWithCredentials( req.user );
   }
-  
   @UseGuards( JwtAuthGuard )
   @Get('/me')
   async getUserProfile(@Request() req ){
     try {
       const user = await this.userService.findUser( req.user.userId );
+      const friends = await this.userService.getFriendsOfUser(req.user.userId);
       const { _id, name, email, ChatGroups } = user;
-      const chatGroupDetails = [];
-      const friends = await this.userService.getFriendsOfUser( req.user.userId );
-      const friendsData = [];
-      for( const friend of friends ) {
-        const friendData = await this.userService.getUserData( friend );
-        friendsData.push( friendData );
-      }
-      for( let chatGroupId of ChatGroups ){
-        const chatGroup = await this.chatGroupService.getChatGroupByObjectId( chatGroupId );
-        chatGroupDetails.push({
+      const chatGroupDetails = await Promise.all(ChatGroups.map(async (chatGroupId) => {
+        const chatGroup = await this.chatGroupService.getChatGroup(chatGroupId);
+        return {
           _id: chatGroup._id,
           chatGroupName: chatGroup.chatGroupName,
-        });
-      }
+        };
+      }));
+      const friendsData = await Promise.all(friends.map(async (friend) => {
+        const friendData = await this.userService.getUserData(friend);
+        return friendData;
+      }));
       const userProfileInfo = new UserProfileInfoDTO();
       userProfileInfo.UserId = _id;
       userProfileInfo.UserName = name;
       userProfileInfo.UserEmail = email;
       userProfileInfo.ChatGroups = chatGroupDetails;
       userProfileInfo.Friends = friendsData;
-
-      return userProfileInfo;
       
-  } catch (error) {
+      return userProfileInfo;
+
+    } catch (error) {
       throw new Error(error);
+    }
   }
-  }
-  
   @UseGuards( JwtAuthGuard )
   @Post('/add-friends-to-chat-group/:chatGroupId/:friendId')
-  async addFriendsToChatGroup(@Param('chatGroupId') chatGroupId: string ,@Param('friendId') friendId: mongoose.Types.ObjectId ){
+  async addFriendsToChatGroup(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId ,@Param('friendId') friendId: mongoose.Types.ObjectId ){
     try {
       const friendToAdd = await this.userService.findUser( friendId );
       const updatedChatGroup = await this.chatGroupService.addUserToChatGroup( chatGroupId, friendToAdd );
-      await this.userService.addChatGroupToUser( friendId.toString(), updatedChatGroup );
+      await this.userService.addChatGroupToUser( friendId, updatedChatGroup );
       return updatedChatGroup ;
     } catch (error) {
       throw new Error(error);
     }
   }
-
   @UseGuards( JwtAuthGuard )
   @Post('/remove-friends-from-chat-group/:chatGroupId/:friendId')
-  async removeFriendsFromChatGroup(@Param('chatGroupId') chatGroupId: string, @Param('friendId') friendId: string ){
+  async removeFriendsFromChatGroup(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId, @Param('friendId') friendId: mongoose.Types.ObjectId ){
     try {
-      const friendToRemove = await this.userService.findUserById( friendId );
+      const friendToRemove = await this.userService.findUser( friendId );
       const updatedChatGroup = await this.chatGroupService.removeUserFromChatGroup( chatGroupId, friendId );
       await this.userService.removeChatGroupFromUser(friendToRemove,updatedChatGroup);
-      return updatedChatGroup ;
+      return updatedChatGroup;
     } catch (error) {
       throw new Error(error);
     }
-  }
-    
+  } 
   @UseGuards( JwtAuthGuard )
   @Post('/add-friend/:friendId')
   async addFriend( @Param('friendId') friendId: mongoose.Types.ObjectId, @Request() req ) {
-        if( !req.user ) {
-            throw new UnauthorizedException('You must be logged in for adding friend');
-        }
-        const friend = await this.userService.findUser( friendId );
-        const updatedUser = await this.userService.addFriend( req.user.userId, friend );
-        return updatedUser;
-    }
-    
-    @UseGuards( JwtAuthGuard )
-    @Post('/remove-friend/:friendId')
-    async removeFriend( @Param('friendId') friendId: mongoose.Types.ObjectId, @Request() req ) {
-        if( !req.user ) {
-            throw new UnauthorizedException('You must be logged in for removing friend');
-        }
-        const friend = await this.userService.findUser( friendId );
-        const updatedUser = await this.userService.removeFriend( req.user.userId, friend._id );
-        return updatedUser;
-    }
-    
-    @UseGuards( JwtAuthGuard )
-    @Get('/get-friends')
-    async getFriends( @Request() req ) {
       if( !req.user ) {
-        throw new UnauthorizedException('You must be logged in for view friends');
+        throw new UnauthorizedException('You must be logged in for adding friend');
       }
-      const friends = await this.userService.getFriendsOfUser( req.user.userId );
-      const friendsData = [];
-      for( const friend of friends ) {
-        const friendData = await this.userService.getUserData( friend );
-        friendsData.push( friendData );
+      const friend = await this.userService.findUser( friendId );
+      const updatedUser = await this.userService.addFriend( req.user.userId, friend );
+      return updatedUser;
+  }
+  @UseGuards( JwtAuthGuard )
+  @Post('/remove-friend/:friendId')
+  async removeFriend( @Param('friendId') friendId: mongoose.Types.ObjectId, @Request() req ) {
+      if( !req.user ) {
+        throw new UnauthorizedException('You must be logged in for removing friend');
       }
-      return friendsData;
+      const friend = await this.userService.findUser( friendId );
+      const updatedUser = await this.userService.removeFriend( req.user.userId, friend._id );
+      return updatedUser;
+  }
+  @UseGuards( JwtAuthGuard )
+  @Get('/get-friends')
+  async getFriends(@Request() req) {
+    if (!req.user) {
+      throw new UnauthorizedException('You must be logged in to view friends');
     }
-    
-    @UseGuards( JwtAuthGuard )
-    @Get('/get-chatgroups-friends-data/:chatGroupId')
-    async getChatGroupsUsersInfo( @Param('chatGroupId') chatGroupId:mongoose.Types.ObjectId ) {
-      if( !chatGroupId ) {
-        throw new UnauthorizedException('You must provide an existing chatgroup!');
-      }
-      const friends = await this.chatGroupService.getChatGroupsUsers(chatGroupId);
-      const friendsData = [];
-      for( const friend of friends ) {
-        const friendData = await this.userService.getUserData( friend );
-        friendsData.push( friendData );
-      }
-      return friendsData;
-    }
- 
-    @UseGuards( JwtAuthGuard )
-    @Post('/create-chat-group')
-    async createChatGroup( @Body() body:CreateChatGroupDTO, @Request() req ) {
-        if (!req.user) {
-            throw new UnauthorizedException('You need to login to create a chat group');
-        }
-        const user = await this.userService.findUser( req.user.userId );
-        const newChatGroup = await this.chatGroupService.createChatGroup( body, user );
-        await this.userService.addChatGroupToUser( req.user.userId, newChatGroup );
-        return newChatGroup;
-    }
+    const friends = await this.userService.getFriendsOfUser(req.user.userId);
 
-    @UseGuards( JwtAuthGuard )
-    @Delete('/delete-chat-group/:chatGroupId')
-    async deleteChatGroup( @Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId ) {
-      try {
-        const chatGroupToBeDelete = await this.chatGroupService.getChatGroupByObjectId( chatGroupId );
-        const usersOfChatGroup = await this.chatGroupService.getChatGroupsUsers(chatGroupId);
-        for( let user of usersOfChatGroup){
-          await this.userService.removeChatGroupFromUser(user,chatGroupToBeDelete)
-        }
-        await this.chatGroupService.deleteChatGroup(chatGroupId);
-        
-      } catch (error) {
-        throw new Error(error);
-      }
-    }
+    const friendsData = await Promise.all(friends.map(async (friend) => {
+      const friendData = await this.userService.getUserData(friend);
+      return friendData;
+    }));
 
-    @UseGuards( JwtAuthGuard )
-    @Get('/get-chat-group/:chatGroupId')
-    async getChatGroup( @Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId, @Request() req ) {
+    return friendsData;
+  }
+  @UseGuards( JwtAuthGuard )
+  @Get('/get-chatgroups-friends-data/:chatGroupId')
+  async getChatGroupsUsersInfo(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId) {
+    if (!chatGroupId) {
+      throw new UnauthorizedException('You must provide an existing chatgroup!');
+    }
+    const friends = await this.chatGroupService.getChatGroupsUsers(chatGroupId);
+
+    const friendsData = await Promise.all(friends.map(async (friend) => {
+      const friendData = await this.userService.getUserData(friend);
+      return friendData;
+    }));
+    return friendsData;
+  }
+  @UseGuards( JwtAuthGuard )
+  @Post('/create-chat-group')
+  async createChatGroup( @Body() body:CreateChatGroupDTO, @Request() req ) {
       if (!req.user) {
         throw new UnauthorizedException('You need to login to create a chat group');
       }
-      const chatGroup = await this.chatGroupService.getChatGroupByObjectId( chatGroupId );
-      return chatGroup; 
+      const user = await this.userService.findUser( req.user.userId );
+      const newChatGroup = await this.chatGroupService.createChatGroup( body, user );
+      await this.userService.addChatGroupToUser( req.user.userId, newChatGroup );
+      return newChatGroup;
+  }
+  @UseGuards( JwtAuthGuard )
+  @Delete('/delete-chat-group/:chatGroupId')
+  async deleteChatGroup( @Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId ) {
+    try {
+      const chatGroupToBeDelete = await this.chatGroupService.getChatGroup( chatGroupId );
+      const usersOfChatGroup = await this.chatGroupService.getChatGroupsUsers(chatGroupId);
+      const deleteChatGroupFromUsers = usersOfChatGroup.map(async (user) => {
+        await this.userService.removeChatGroupFromUser(user, chatGroupToBeDelete);
+      });
+      await Promise.all(deleteChatGroupFromUsers);
+      await this.chatGroupService.deleteChatGroup(chatGroupId);
+    } catch (error) {
+      throw new Error(error);
     }
-
-    @UseGuards( JwtAuthGuard )
-    @Get('/search-user')
-    async searchUser( @Query("searchText") searchText: string ) {
-      const users = await this.userService.searchUser( searchText );
-      return users;
+  }
+  @UseGuards( JwtAuthGuard )
+  @Get('/get-chat-group/:chatGroupId')
+  async getChatGroup( @Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId, @Request() req ) {
+    if (!req.user) {
+      throw new UnauthorizedException('You need to login to create a chat group');
     }
-    @UseGuards(JwtAuthGuard)
-    @Get('/get-last-20-messages/:chatGroupId')
-    async getLast20Messages(@Param('chatGroupId') chatGroupId: string, @Request() req){
-      if (!req.user) {
-        throw new UnauthorizedException('You need to login to create a chat group');
-      }
-      const last20Messages = await this.messagesService.getLast20Message(chatGroupId);
-      return last20Messages.reverse();
+    const chatGroup = await this.chatGroupService.getChatGroup( chatGroupId );
+    return chatGroup; 
+  }
+  @UseGuards( JwtAuthGuard )
+  @Get('/search-user')
+  async searchUser( @Query("searchText") searchText: string ) {
+    const users = await this.userService.searchUser( searchText );
+    return users;
+  }
+  @UseGuards(JwtAuthGuard)
+  @Get('/get-last-20-messages/:chatGroupId')
+  async getLast20Messages(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId, @Request() req){
+    if (!req.user) {
+      throw new UnauthorizedException('You need to login to create a chat group');
     }
+    const last20Messages = await this.messagesService.getLast20Message(chatGroupId);
+    return last20Messages.reverse();
+  }
 }

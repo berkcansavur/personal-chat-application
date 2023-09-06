@@ -12,6 +12,7 @@ import { Server,Socket } from 'socket.io';
 import { UsersService } from 'src/users/users.service';
 import { User  } from '../../shared/chat.interface';
 import { ChatGroupsService } from 'src/chat-groups/chat-groups.service';
+import mongoose from 'mongoose';
 
   @WebSocketGateway({
   cors:{
@@ -30,7 +31,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
     @SubscribeMessage('createMessage')
     async create(@MessageBody() createMessageDto: CreateMessageDto) {
       const { chatGroupID, senderUser, text } = createMessageDto;
-      const user = await this.userService.findUserById(senderUser);
+      const user = await this.userService.findUser(senderUser);
       const message = await this.messagesService.create(
         chatGroupID,
         user.name, 
@@ -41,9 +42,9 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
       return message;
     }
     @SubscribeMessage('getFriends')
-    async getFriends(@MessageBody() payload:{ userId:string,}) {
+    async getFriends(@MessageBody() payload:{ userId:mongoose.Types.ObjectId,}) {
       const { userId } = payload;
-      const friends = await this.userService.getFriendsOfUserById(userId);
+      const friends = await this.userService.getFriendsOfUser(userId);
       const friendsData = [];
       for( const friend of friends ) {
         const friendData = await this.userService.getUserData( friend );
@@ -60,9 +61,9 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
       return users;
     }
     @SubscribeMessage('getChatGroupUsers')
-    async getChatGroupUsers(@MessageBody() payload:{chatGroupId: string}){
+    async getChatGroupUsers(@MessageBody() payload:{chatGroupId: mongoose.Types.ObjectId}){
       const { chatGroupId } = payload;
-      const friends = await this.chatGroupService.getChatGroupsUsersById(chatGroupId);
+      const friends = await this.chatGroupService.getChatGroupsUsers(chatGroupId);
       const friendsData = [];
       for( const friend of friends ) {
         const friendData = await this.userService.getUserData( friend );
