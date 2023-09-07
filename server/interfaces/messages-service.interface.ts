@@ -1,6 +1,7 @@
 import mongoose from "mongoose"
+import { MessageDTO } from '../src/messages/dto/message.dto';
 
 export interface IMessagesService {
-    create({chatGroupID, senderUser, text}:{chatGroupID: string, senderUser: string, text: string}): Promise<any>;
+    create({messageDto}:{messageDto:MessageDTO}): Promise<any>;
     getLast20Messages({chatGroupID}:{chatGroupID:mongoose.Types.ObjectId}): Promise<any>;
 }
