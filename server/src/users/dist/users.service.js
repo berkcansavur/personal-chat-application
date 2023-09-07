@@ -50,102 +50,108 @@ var UsersService = /** @class */ (function () {
     function UsersService(usersRepository) {
         this.usersRepository = usersRepository;
     }
-    UsersService.prototype.createUser = function (name, email, password) {
-        return __awaiter(this, void 0, void 0, function () {
+    UsersService.prototype.createUser = function (_a) {
+        var name = _a.name, email = _a.email, password = _a.password;
+        return __awaiter(this, void 0, Promise, function () {
             var newUser;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0: return [4 /*yield*/, this.usersRepository.createUser(name, email, password)];
                     case 1:
-                        newUser = _a.sent();
+                        newUser = _b.sent();
                         return [2 /*return*/, newUser];
                 }
             });
         });
     };
-    UsersService.prototype.findUser = function (id) {
+    UsersService.prototype.findUser = function (_a) {
+        var id = _a.id;
         return __awaiter(this, void 0, void 0, function () {
             var error_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _b.trys.push([0, 2, , 3]);
                         if (!id) {
                             return [2 /*return*/, null];
                         }
                         return [4 /*yield*/, this.usersRepository.findUserByObjectId(id)];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 1: return [2 /*return*/, _b.sent()];
                     case 2:
-                        error_1 = _a.sent();
+                        error_1 = _b.sent();
                         throw new Error(error_1);
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    UsersService.prototype.findUserByEmail = function (email) {
+    UsersService.prototype.findUserByEmail = function (_a) {
+        var email = _a.email;
         return __awaiter(this, void 0, void 0, function () {
             var error_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _b.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, this.usersRepository.findByEmail(email)];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 1: return [2 /*return*/, _b.sent()];
                     case 2:
-                        error_2 = _a.sent();
+                        error_2 = _b.sent();
                         throw new Error(error_2);
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    UsersService.prototype.addChatGroupToUser = function (userId, chatGroup) {
+    UsersService.prototype.addChatGroupToUser = function (_a) {
+        var userId = _a.userId, chatGroup = _a.chatGroup;
         return __awaiter(this, void 0, void 0, function () {
             var error_3;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _b.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, this.usersRepository.addChatGroupToUser(userId, chatGroup)];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 1: return [2 /*return*/, _b.sent()];
                     case 2:
-                        error_3 = _a.sent();
+                        error_3 = _b.sent();
                         throw new Error(error_3);
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    UsersService.prototype.removeChatGroupFromUser = function (user, chatGroup) {
+    UsersService.prototype.removeChatGroupFromUser = function (_a) {
+        var user = _a.user, chatGroup = _a.chatGroup;
         return __awaiter(this, void 0, void 0, function () {
             var error_4;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _b.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, this.usersRepository.removeChatGroupFromUser(user, chatGroup)];
                     case 1:
-                        _a.sent();
+                        _b.sent();
                         return [3 /*break*/, 3];
                     case 2:
-                        error_4 = _a.sent();
+                        error_4 = _b.sent();
                         throw new Error(error_4);
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    UsersService.prototype.addFriend = function (userId, friend) {
+    UsersService.prototype.addFriend = function (_a) {
+        var userId = _a.userId, friend = _a.friend;
         return __awaiter(this, void 0, void 0, function () {
             var processedUser, _id, name, email, ChatGroups, Friends, updatedUserDTO, error_5;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _b.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, this.usersRepository.addFriend(userId, friend)];
                     case 1:
-                        processedUser = _a.sent();
+                        processedUser = _b.sent();
                         _id = processedUser._id, name = processedUser.name, email = processedUser.email, ChatGroups = processedUser.ChatGroups, Friends = processedUser.Friends;
                         updatedUserDTO = new add_or_remove_friend_dto_1.FriendRelatedOperationsDTO();
                         updatedUserDTO._id = _id;
@@ -155,23 +161,24 @@ var UsersService = /** @class */ (function () {
                         updatedUserDTO.Friends = Friends;
                         return [2 /*return*/, updatedUserDTO];
                     case 2:
-                        error_5 = _a.sent();
+                        error_5 = _b.sent();
                         throw new Error(error_5);
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    UsersService.prototype.removeFriend = function (userId, friendId) {
+    UsersService.prototype.removeFriend = function (_a) {
+        var userId = _a.userId, friendId = _a.friendId;
         return __awaiter(this, void 0, void 0, function () {
             var processedUser, _id, name, email, ChatGroups, Friends, updatedUserDTO, error_6;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _b.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, this.usersRepository.removeFriend(userId, friendId)];
                     case 1:
-                        processedUser = _a.sent();
+                        processedUser = _b.sent();
                         _id = processedUser._id, name = processedUser.name, email = processedUser.email, ChatGroups = processedUser.ChatGroups, Friends = processedUser.Friends;
                         updatedUserDTO = new add_or_remove_friend_dto_1.FriendRelatedOperationsDTO();
                         updatedUserDTO._id = _id;
@@ -181,68 +188,72 @@ var UsersService = /** @class */ (function () {
                         updatedUserDTO.Friends = Friends;
                         return [2 /*return*/, updatedUserDTO];
                     case 2:
-                        error_6 = _a.sent();
+                        error_6 = _b.sent();
                         throw new Error(error_6);
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    UsersService.prototype.getFriendsOfUser = function (userId) {
+    UsersService.prototype.getFriendsOfUser = function (_a) {
+        var userId = _a.userId;
         return __awaiter(this, void 0, void 0, function () {
             var error_7;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _b.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, this.usersRepository.getFriendsOfUser(userId)];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 1: return [2 /*return*/, _b.sent()];
                     case 2:
-                        error_7 = _a.sent();
+                        error_7 = _b.sent();
                         throw new Error(error_7);
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    UsersService.prototype.getUserData = function (userObject) {
+    UsersService.prototype.getUserData = function (_a) {
+        var userObject = _a.userObject;
         return __awaiter(this, void 0, void 0, function () {
             var error_8;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _b.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, this.usersRepository.getUserData(userObject)];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 1: return [2 /*return*/, _b.sent()];
                     case 2:
-                        error_8 = _a.sent();
+                        error_8 = _b.sent();
                         throw new Error(error_8);
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    UsersService.prototype.getUsersFriendsData = function (userId) {
+    UsersService.prototype.getUsersFriendsData = function (_a) {
+        var userId = _a.userId;
         return __awaiter(this, void 0, void 0, function () {
             var error_9;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _b.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, this.usersRepository.getUsersFriendsData(userId)];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 1: return [2 /*return*/, _b.sent()];
                     case 2:
-                        error_9 = _a.sent();
+                        error_9 = _b.sent();
                         throw new Error(error_9);
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    UsersService.prototype.getUserProfileInfo = function (id, name, email, chatGroupDetails, friendsData) {
+    UsersService.prototype.getUserProfileInfo = function (_a) {
+        var id = _a.id, name = _a.name, email = _a.email, chatGroupDetails = _a.chatGroupDetails, friendsData = _a.friendsData;
         return __awaiter(this, void 0, void 0, function () {
             var userProfileInfo;
-            return __generator(this, function (_a) {
+            return __generator(this, function (_b) {
                 userProfileInfo = new user_profile_info_dto_1.UserProfileInfoDTO();
                 userProfileInfo.UserId = id;
                 userProfileInfo.UserName = name;
@@ -253,12 +264,13 @@ var UsersService = /** @class */ (function () {
             });
         });
     };
-    UsersService.prototype.searchUser = function (searchText) {
+    UsersService.prototype.searchUser = function (_a) {
+        var searchText = _a.searchText;
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0: return [4 /*yield*/, this.usersRepository.searchUser(searchText)];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 1: return [2 /*return*/, _b.sent()];
                 }
             });
         });
