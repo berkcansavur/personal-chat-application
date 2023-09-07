@@ -4,13 +4,14 @@ import mongoose from "mongoose";
 import { User } from 'src/users/users.model';
 import { ChatGroupsRepository } from './chat-groups.repository';
 import { ChatGroupInfoDTO } from './dtos/chat-group-info.dto';
+import { IChatGroupService } from 'interfaces/chat-groups-service.interface';
 
 @Injectable()
-export class ChatGroupsService {
+export class ChatGroupsService implements IChatGroupService {
     constructor(
         private chatGroupsRepository : ChatGroupsRepository){}
 
-    async createChatGroup(chatGroup: CreateChatGroupDTO, creatorUser){
+    async createChatGroup({chatGroup,creatorUser}:{chatGroup: CreateChatGroupDTO, creatorUser:any}){
         try {
             const createdChatGroup =  await this.chatGroupsRepository.createChatGroup(chatGroup, creatorUser);
             const chatGroupInfo = new ChatGroupInfoDTO();
@@ -23,14 +24,14 @@ export class ChatGroupsService {
             throw new Error(error);
         }
     }
-    async deleteChatGroup(chatGroupId: mongoose.Types.ObjectId){
+    async deleteChatGroup({chatGroupId}:{chatGroupId: mongoose.Types.ObjectId}){
         try {
             await this.chatGroupsRepository.deleteChatGroup(chatGroupId);
         } catch (error) {
             throw new Error(error);
         }
     }
-    async getChatGroup(id: mongoose.Types.ObjectId){
+    async getChatGroup({id}:{id: mongoose.Types.ObjectId}){
         try {
             if(!id){return null;}
 
@@ -44,11 +45,11 @@ export class ChatGroupsService {
             throw new Error(error.message);
         }
     }
-    async getChatGroupDetails( chatGroups: mongoose.Types.ObjectId[] ){
+    async getChatGroupDetails({chatGroups} : {chatGroups: mongoose.Types.ObjectId[]} ){
         try {
 
             const chatGroupDetails = await Promise.all(chatGroups.map( async (chatGroupId)=>{
-                const chatGroup = await this.getChatGroup(chatGroupId);
+                const chatGroup = await this.getChatGroup({id :chatGroupId});
                 const chatGroupInfoDTO = new ChatGroupInfoDTO();
                 chatGroupInfoDTO._id = chatGroup._id;
                 chatGroupInfoDTO.chatGroupName = chatGroup.chatGroupName;
@@ -59,14 +60,14 @@ export class ChatGroupsService {
             throw new Error(error);
         }
     }
-    async getChatGroupsUsers(chatGroupId:mongoose.Types.ObjectId){
+    async getChatGroupsUsers({chatGroupId}:{chatGroupId:mongoose.Types.ObjectId}){
         try {
             return await this.chatGroupsRepository.getChatGroupsUsers(chatGroupId);
           } catch (error) {
             throw new Error(error.message);
           }
     }
-    async addUserToChatGroup(chatGroupId:mongoose.Types.ObjectId, user:User){
+    async addUserToChatGroup( {chatGroupId,user}:{chatGroupId:mongoose.Types.ObjectId, user:User} ){
         try {
             const processedChatGroup = await this.chatGroupsRepository.addUserToChatGroup(chatGroupId, user);
             const chatGroupDTO = new ChatGroupInfoDTO();
@@ -78,7 +79,7 @@ export class ChatGroupsService {
             throw new Error(error.message);
         }
     }
-    async removeUserFromChatGroup(chatGroupId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId){
+    async removeUserFromChatGroup({chatGroupId,userId}:{chatGroupId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId}){
         try {
             const processedChatGroup =  await this.chatGroupsRepository.removeUserFromChatGroup(chatGroupId, userId);
             const chatGroupDTO = new ChatGroupInfoDTO();
@@ -90,7 +91,7 @@ export class ChatGroupsService {
             throw new Error(error);
         }   
     }
-    async updateChatGroupName(chatGroupId: mongoose.Types.ObjectId, chatGroupName: string) {
+    async updateChatGroupName({chatGroupId, chatGroupName}:{chatGroupId: mongoose.Types.ObjectId, chatGroupName: string}) {
         try {
           return await this.chatGroupsRepository.updateChatGroupName(chatGroupId, chatGroupName);
         } catch (error) {

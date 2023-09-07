@@ -36,7 +36,7 @@ export class AppController {
       const user = await this.userService.findUser( {id:req.user.userId} );
       const { _id, name, email, ChatGroups } = user;
       const friendsData = await this.userService.getUsersFriendsData({userId:req.user.userId});
-      const chatGroupDetails = await this.chatGroupService.getChatGroupDetails(ChatGroups);
+      const chatGroupDetails = await this.chatGroupService.getChatGroupDetails({chatGroups:ChatGroups});
       const userProfileInfo = await this.userService.getUserProfileInfo({id:_id, name:name, email:email, chatGroupDetails:chatGroupDetails, friendsData:friendsData});
       
       return userProfileInfo;
@@ -49,7 +49,7 @@ export class AppController {
   async addFriendsToChatGroup(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId ,@Param('friendId') friendId: mongoose.Types.ObjectId ){
     try {
       const friendToAdd = await this.userService.findUser( {id:friendId} );
-      const updatedChatGroup = await this.chatGroupService.addUserToChatGroup( chatGroupId, friendToAdd );
+      const updatedChatGroup = await this.chatGroupService.addUserToChatGroup( {chatGroupId: chatGroupId,user: friendToAdd} );
       await this.userService.addChatGroupToUser( {userId:friendId, chatGroup:updatedChatGroup} );
       return updatedChatGroup ;
     } catch (error) {
@@ -61,7 +61,7 @@ export class AppController {
   async removeFriendsFromChatGroup(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId, @Param('friendId') friendId: mongoose.Types.ObjectId ){
     try {
       const friendToRemove = await this.userService.findUser( {id:friendId} );
-      const updatedChatGroup = await this.chatGroupService.removeUserFromChatGroup( chatGroupId, friendId );
+      const updatedChatGroup = await this.chatGroupService.removeUserFromChatGroup( {chatGroupId:chatGroupId, userId: friendId} );
       await this.userService.removeChatGroupFromUser({user: friendToRemove,chatGroup: updatedChatGroup});
       return updatedChatGroup;
     } catch (error) {
@@ -109,7 +109,7 @@ export class AppController {
     if (!chatGroupId) {
       throw new UnauthorizedException('You must provide an existing chatgroup!');
     }
-    const friends = await this.chatGroupService.getChatGroupsUsers(chatGroupId);
+    const friends = await this.chatGroupService.getChatGroupsUsers({chatGroupId: chatGroupId});
 
     const friendsData = await Promise.all(friends.map(async (friend) => {
       const friendData = await this.userService.getUserData({userObject: friend});
@@ -124,7 +124,7 @@ export class AppController {
         throw new UnauthorizedException('You need to login to create a chat group');
       }
       const user = await this.userService.findUser( req.user.userId );
-      const newChatGroup = await this.chatGroupService.createChatGroup( body, user );
+      const newChatGroup = await this.chatGroupService.createChatGroup( {chatGroup:body,creatorUser: user} );
       await this.userService.addChatGroupToUser( {userId:req.user.userId,chatGroup: newChatGroup });
       return newChatGroup;
   }
@@ -132,13 +132,13 @@ export class AppController {
   @Delete('/delete-chat-group/:chatGroupId')
   async deleteChatGroup( @Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId ) {
     try {
-      const chatGroupToBeDelete = await this.chatGroupService.getChatGroup( chatGroupId );
-      const usersOfChatGroup = await this.chatGroupService.getChatGroupsUsers(chatGroupId);
+      const chatGroupToBeDelete = await this.chatGroupService.getChatGroup( {id:chatGroupId} );
+      const usersOfChatGroup = await this.chatGroupService.getChatGroupsUsers({chatGroupId: chatGroupId});
       const deleteChatGroupFromUsers = usersOfChatGroup.map(async (user) => {
         await this.userService.removeChatGroupFromUser({user:user,chatGroup: chatGroupToBeDelete});
       });
       await Promise.all(deleteChatGroupFromUsers);
-      await this.chatGroupService.deleteChatGroup(chatGroupId);
+      await this.chatGroupService.deleteChatGroup({chatGroupId:chatGroupId});
     } catch (error) {
       throw new Error(error);
     }
@@ -149,7 +149,7 @@ export class AppController {
     if (!req.user) {
       throw new UnauthorizedException('You need to login to create a chat group');
     }
-    const chatGroup = await this.chatGroupService.getChatGroup( chatGroupId );
+    const chatGroup = await this.chatGroupService.getChatGroup( {id:chatGroupId} );
     return chatGroup; 
   }
   @UseGuards( JwtAuthGuard )
