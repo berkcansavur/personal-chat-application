@@ -13,6 +13,7 @@ import { UsersService } from 'src/users/users.service';
 import { User  } from '../../shared/chat.interface';
 import { ChatGroupsService } from 'src/chat-groups/chat-groups.service';
 import mongoose from 'mongoose';
+import { MessageDTO } from './dto/message.dto';
 
   @WebSocketGateway({
   cors:{
@@ -32,7 +33,11 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
     async create(@MessageBody() createMessageDto: CreateMessageDto) {
       const { chatGroupID, senderUser, text } = createMessageDto;
       const user = await this.userService.findUser({id:senderUser});
-      const message = await this.messagesService.create({chatGroupID:chatGroupID, senderUser: user.name, text:text});
+      const messageDto = new MessageDTO()
+      messageDto.chatGroupID = chatGroupID;
+      messageDto.senderUser = user.name;
+      messageDto.text = text;
+      const message = await this.messagesService.create({messageDto});
   
       this.server.to(chatGroupID).emit('message', message);
       return message;
