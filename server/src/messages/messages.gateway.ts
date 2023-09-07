@@ -63,7 +63,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
     @SubscribeMessage('getChatGroupUsers')
     async getChatGroupUsers(@MessageBody() payload:{chatGroupId: mongoose.Types.ObjectId}){
       const { chatGroupId } = payload;
-      const friends = await this.chatGroupService.getChatGroupsUsers(chatGroupId);
+      const friends = await this.chatGroupService.getChatGroupsUsers({chatGroupId: chatGroupId});
       const friendsData = [];
       for( const friend of friends ) {
         const friendData = await this.userService.getUserData( {userObject:friend} );

@@ -24,12 +24,12 @@ export class ChatGroupsController {
             throw new UnauthorizedException('You need to login to create a chat group');
         }
         const user = await this.usersService.findUser(session.CurrentUser._id);
-        const newChatGroup = await this.chatGroupsService.createChatGroup(body,user);
+        const newChatGroup = await this.chatGroupsService.createChatGroup({chatGroup:body,creatorUser:user});
         return newChatGroup;
     }
     @Get('/get-users/:id')
     async getChatGroupUsers(@Param('id') id: mongoose.Types.ObjectId){
-        const users = await this.chatGroupsService.getChatGroupsUsers(id);
+        const users = await this.chatGroupsService.getChatGroupsUsers({chatGroupId :id});
         return users;
     }
     @Post('/add-user')
@@ -37,7 +37,7 @@ export class ChatGroupsController {
         try {
             
             const user = await this.usersService.findUser(session.CurrentUser._id);
-            return await this.chatGroupsService.addUserToChatGroup(body.chatGroupId,user);
+            return await this.chatGroupsService.addUserToChatGroup({chatGroupId :body.chatGroupId,user :user});
         } catch (error) {
             throw new Error(error);
         }
@@ -45,7 +45,7 @@ export class ChatGroupsController {
     @Post('/remove-user/:id')
     async removeUserFromChatGroup(@Param('id') chatGroupId: mongoose.Types.ObjectId, @Body() body:{ userId: mongoose.Types.ObjectId }){
         try {
-            const updatedChatGroup = await this.chatGroupsService.removeUserFromChatGroup(chatGroupId,body.userId);
+            const updatedChatGroup = await this.chatGroupsService.removeUserFromChatGroup({chatGroupId:chatGroupId,userId:body.userId});
             return updatedChatGroup;
         } catch (error) {
             throw new Error(error);
@@ -54,7 +54,7 @@ export class ChatGroupsController {
     @Post('/change-group-name/:id')
     async updateGroupName(@Param('id') chatGroupId: mongoose.Types.ObjectId, @Body() body:{ newName: string}){
         try {
-            const updatedChatGroup = await this.chatGroupsService.updateChatGroupName(chatGroupId,body.newName);
+            const updatedChatGroup = await this.chatGroupsService.updateChatGroupName({chatGroupId :chatGroupId,chatGroupName :body.newName});
             return updatedChatGroup;
         } catch (error) {
             throw new Error(error);
