@@ -44,6 +44,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.UsersService = void 0;
 var common_1 = require("@nestjs/common");
+var user_profile_info_dto_1 = require("./dtos/user-profile-info.dto");
 var UsersService = /** @class */ (function () {
     function UsersService(usersRepository) {
         this.usersRepository = usersRepository;
@@ -199,6 +200,37 @@ var UsersService = /** @class */ (function () {
                         throw new Error(error_8);
                     case 3: return [2 /*return*/];
                 }
+            });
+        });
+    };
+    UsersService.prototype.getUsersFriendsData = function (userId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var error_9;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.usersRepository.getUsersFriendsData(userId)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                    case 2:
+                        error_9 = _a.sent();
+                        throw new Error(error_9);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UsersService.prototype.getUserProfileInfo = function (id, name, email, chatGroupDetails, friendsData) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userProfileInfo;
+            return __generator(this, function (_a) {
+                userProfileInfo = new user_profile_info_dto_1.UserProfileInfoDTO();
+                userProfileInfo.UserId = id;
+                userProfileInfo.UserName = name;
+                userProfileInfo.UserEmail = email;
+                userProfileInfo.ChatGroups = chatGroupDetails;
+                userProfileInfo.Friends = friendsData;
+                return [2 /*return*/, userProfileInfo];
             });
         });
     };

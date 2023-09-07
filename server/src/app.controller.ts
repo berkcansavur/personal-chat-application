@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UseGuards, Request, Body, UnauthorizedException, Param, Query, Delete } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards, Request, Body, UnauthorizedException, Param, Query, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth/auth.service';
@@ -8,7 +8,6 @@ import { ChatGroupsService } from './chat-groups/chat-groups.service';
 import mongoose from 'mongoose';
 import { CreateChatGroupDTO } from './chat-groups/dtos/create-chat-group.dto';
 import { MessagesService } from './messages/messages.service';
-import { UserProfileInfoDTO } from './users/dtos/user-profile-info.dto';
 
 @Controller('app')
 export class AppController {
@@ -17,7 +16,7 @@ export class AppController {
     private authService: AuthService,
     private userService: UsersService,
     private chatGroupService: ChatGroupsService,
-    private messagesService : MessagesService ) {}
+    private messagesService : MessagesService) {}
 
   @Get()
   getHello(): string {
@@ -25,36 +24,22 @@ export class AppController {
   }
   @UseGuards(AuthGuard('local'))
   @Post('login')
+  @UsePipes(ValidationPipe)
   async login(@Request() req ) {
     return this.authService.loginWithCredentials( req.user );
   }
+
   @UseGuards( JwtAuthGuard )
   @Get('/me')
   async getUserProfile(@Request() req ){
     try {
       const user = await this.userService.findUser( req.user.userId );
-      const friends = await this.userService.getFriendsOfUser(req.user.userId);
       const { _id, name, email, ChatGroups } = user;
-      const chatGroupDetails = await Promise.all(ChatGroups.map(async (chatGroupId) => {
-        const chatGroup = await this.chatGroupService.getChatGroup(chatGroupId);
-        return {
-          _id: chatGroup._id,
-          chatGroupName: chatGroup.chatGroupName,
-        };
-      }));
-      const friendsData = await Promise.all(friends.map(async (friend) => {
-        const friendData = await this.userService.getUserData(friend);
-        return friendData;
-      }));
-      const userProfileInfo = new UserProfileInfoDTO();
-      userProfileInfo.UserId = _id;
-      userProfileInfo.UserName = name;
-      userProfileInfo.UserEmail = email;
-      userProfileInfo.ChatGroups = chatGroupDetails;
-      userProfileInfo.Friends = friendsData;
+      const friendsData = await this.userService.getUsersFriendsData(req.user.userId);
+      const chatGroupDetails = await this.chatGroupService.getChatGroupDetails(ChatGroups);
+      const userProfileInfo = await this.userService.getUserProfileInfo(_id,name,email,chatGroupDetails,friendsData);
       
       return userProfileInfo;
-
     } catch (error) {
       throw new Error(error);
     }

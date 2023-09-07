@@ -2,7 +2,6 @@ import { Injectable,NotFoundException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { promisify } from "util";
 import { scrypt as _scrypt} from "crypto";
-import { UserDTO } from 'src/users/dtos/user.dto';
 import { LoginUserDTO } from 'src/users/dtos/login-user.dto';
 const scrypt = promisify(_scrypt);
 import { JwtService } from '@nestjs/jwt';
