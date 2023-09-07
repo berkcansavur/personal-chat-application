@@ -47,63 +47,56 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.UsersController = void 0;
 var common_1 = require("@nestjs/common");
-var serialize_interceptor_1 = require("interceptors/serialize.interceptor");
-var user_dto_1 = require("./dtos/user.dto");
+var user_profile_dto_1 = require("./dtos/user-profile.dto");
 var UsersController = /** @class */ (function () {
-    function UsersController(authService) {
-        this.authService = authService;
+    function UsersController(userService, utilsService) {
+        this.userService = userService;
+        this.utilsService = utilsService;
     }
-    UsersController.prototype.createUser = function (body, session) {
+    UsersController.prototype.createUser = function (body) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, error_1;
+            var hashedPassword, user, userProfileDTO, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.authService.signUp(body)];
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this.utilsService.hashPassword(body.password)];
                     case 1:
-                        user = _a.sent();
-                        session.userId = user.id;
-                        return [2 /*return*/, user];
+                        hashedPassword = _a.sent();
+                        return [4 /*yield*/, this.userService.createUser({ name: body.name, email: body.email, password: hashedPassword })];
                     case 2:
+                        user = _a.sent();
+                        userProfileDTO = new user_profile_dto_1.UserProfileDTO();
+                        userProfileDTO.name = user.name;
+                        userProfileDTO.email = user.email;
+                        return [2 /*return*/, userProfileDTO];
+                    case 3:
                         error_1 = _a.sent();
                         throw new Error(error_1);
-                    case 3: return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
-    UsersController.prototype.loginUser = function (body, session) {
+    UsersController.prototype.logoutUser = function (session) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, error_2;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.authService.login(body)];
-                    case 1:
-                        user = _a.sent();
-                        session.userId = user.id;
-                        return [2 /*return*/, user];
-                    case 2:
-                        error_2 = _a.sent();
-                        throw new Error(error_2.message);
-                    case 3: return [2 /*return*/];
-                }
+                session.userId = null;
+                session.CurrentUser = null;
+                return [2 /*return*/];
             });
         });
     };
     __decorate([
         common_1.Post('/signup'),
-        __param(0, common_1.Body()), __param(1, common_1.Session())
+        __param(0, common_1.Body())
     ], UsersController.prototype, "createUser");
     __decorate([
-        common_1.Post('/login'),
-        __param(0, common_1.Body()), __param(1, common_1.Session())
-    ], UsersController.prototype, "loginUser");
+        common_1.Post('/logout'),
+        __param(0, common_1.Session())
+    ], UsersController.prototype, "logoutUser");
     UsersController = __decorate([
-        common_1.Controller('users'),
-        serialize_interceptor_1.Serialize(user_dto_1.UserDTO)
+        common_1.Controller('users')
     ], UsersController);
     return UsersController;
 }());

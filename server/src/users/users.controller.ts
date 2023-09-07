@@ -17,7 +17,7 @@ export class UsersController {
     async createUser(@Body() body: CreateUserDTO ){
         try {
             const hashedPassword = await this.utilsService.hashPassword(body.password);
-            const user = await this.userService.createUser(body.name,body.email, hashedPassword);
+            const user = await this.userService.createUser({name:body.name,email:body.email, password:hashedPassword});
             const userProfileDTO = new UserProfileDTO();
             userProfileDTO.name = user.name;
             userProfileDTO.email = user.email;

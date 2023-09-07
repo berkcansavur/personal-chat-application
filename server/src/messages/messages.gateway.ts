@@ -31,7 +31,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
     @SubscribeMessage('createMessage')
     async create(@MessageBody() createMessageDto: CreateMessageDto) {
       const { chatGroupID, senderUser, text } = createMessageDto;
-      const user = await this.userService.findUser(senderUser);
+      const user = await this.userService.findUser({id:senderUser});
       const message = await this.messagesService.create(
         chatGroupID,
         user.name, 
@@ -44,10 +44,10 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
     @SubscribeMessage('getFriends')
     async getFriends(@MessageBody() payload:{ userId:mongoose.Types.ObjectId,}) {
       const { userId } = payload;
-      const friends = await this.userService.getFriendsOfUser(userId);
+      const friends = await this.userService.getFriendsOfUser({userId});
       const friendsData = [];
       for( const friend of friends ) {
-        const friendData = await this.userService.getUserData( friend );
+        const friendData = await this.userService.getUserData( {userObject:friend} );
         friendsData.push( friendData );
       }
       this.server.to('getFriendEvent').emit('getFriends', friendsData );
@@ -56,7 +56,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
     @SubscribeMessage('searchUser')
     async searchUser(@MessageBody() payload:{searchText: string}){
       const { searchText } = payload;
-      const users = await this.userService.searchUser( searchText );
+      const users = await this.userService.searchUser( {searchText: searchText} );
       this.server.to('searchUserEvent').emit('searchUser', users  );
       return users;
     }
@@ -66,7 +66,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
       const friends = await this.chatGroupService.getChatGroupsUsers(chatGroupId);
       const friendsData = [];
       for( const friend of friends ) {
-        const friendData = await this.userService.getUserData( friend );
+        const friendData = await this.userService.getUserData( {userObject:friend} );
         friendsData.push( friendData );
       }
       this.server.to('getChatGroupUsersEvent').emit('getChatGroupUsers', friendsData  );
