@@ -164,7 +164,7 @@ export class AppController {
     if (!req.user) {
       throw new UnauthorizedException('You need to login to create a chat group');
     }
-    const last20Messages = await this.messagesService.getLast20Message(chatGroupId);
+    const last20Messages = await this.messagesService.getLast20Messages({chatGroupID:chatGroupId});
     return last20Messages.reverse();
   }
 }
