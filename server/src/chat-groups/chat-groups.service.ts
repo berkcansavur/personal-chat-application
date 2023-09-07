@@ -12,7 +12,13 @@ export class ChatGroupsService {
 
     async createChatGroup(chatGroup: CreateChatGroupDTO, creatorUser){
         try {
-            return await this.chatGroupsRepository.createChatGroup(chatGroup, creatorUser);
+            const createdChatGroup =  await this.chatGroupsRepository.createChatGroup(chatGroup, creatorUser);
+            const chatGroupInfo = new ChatGroupInfoDTO();
+            chatGroupInfo._id = createdChatGroup._id;
+            chatGroupInfo.chatGroupName = createdChatGroup.chatGroupName;
+            chatGroupInfo.users = createdChatGroup.users;
+            return chatGroupInfo;
+
         } catch (error) {
             throw new Error(error);
         }
@@ -27,7 +33,13 @@ export class ChatGroupsService {
     async getChatGroup(id: mongoose.Types.ObjectId){
         try {
             if(!id){return null;}
-            return await this.chatGroupsRepository.getChatGroupByObjectId(id);
+
+            const chatGroup = await this.chatGroupsRepository.getChatGroupByObjectId(id);
+            const chatGroupInfo = new ChatGroupInfoDTO();
+            chatGroupInfo._id = chatGroup._id;
+            chatGroupInfo.chatGroupName = chatGroup.chatGroupName;
+            chatGroupInfo.users = chatGroup.users;
+            return chatGroupInfo;
         } catch (error) {
             throw new Error(error.message);
         }
@@ -56,14 +68,24 @@ export class ChatGroupsService {
     }
     async addUserToChatGroup(chatGroupId:mongoose.Types.ObjectId, user:User){
         try {
-            return await this.chatGroupsRepository.addUserToChatGroup(chatGroupId, user);
+            const processedChatGroup = await this.chatGroupsRepository.addUserToChatGroup(chatGroupId, user);
+            const chatGroupDTO = new ChatGroupInfoDTO();
+            chatGroupDTO._id = processedChatGroup._id;
+            chatGroupDTO.chatGroupName = processedChatGroup.chatGroupName;
+            chatGroupDTO.users = processedChatGroup.users;
+            return chatGroupDTO;
         } catch (error) {
             throw new Error(error.message);
         }
     }
     async removeUserFromChatGroup(chatGroupId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId){
         try {
-            return await this.chatGroupsRepository.removeUserFromChatGroup(chatGroupId, userId);
+            const processedChatGroup =  await this.chatGroupsRepository.removeUserFromChatGroup(chatGroupId, userId);
+            const chatGroupDTO = new ChatGroupInfoDTO();
+            chatGroupDTO._id = processedChatGroup._id;
+            chatGroupDTO.chatGroupName = processedChatGroup.chatGroupName;
+            chatGroupDTO.users = processedChatGroup.users;
+            return chatGroupDTO;
         } catch (error) {
             throw new Error(error);
         }   

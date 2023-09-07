@@ -4,6 +4,7 @@ import { UsersRepository } from './users.repository';
 import { UserProfileInfoDTO } from './dtos/user-profile-info.dto';
 import { ChatGroupInfoDTO } from 'src/chat-groups/dtos/chat-group-info.dto';
 import { UserDataDTO } from './dtos/user-data.dto';
+import { FriendRelatedOperationsDTO } from './dtos/add-or-remove-friend.dto';
 @Injectable()
 export class UsersService {
     
@@ -18,7 +19,7 @@ export class UsersService {
             if(!id){
                 return null;
             }
-            return await this.usersRepository.findUserByObjectId(id);;
+            return await this.usersRepository.findUserByObjectId(id);
         } catch (error) {
             throw new Error(error);
         }
@@ -32,7 +33,7 @@ export class UsersService {
     }
     async addChatGroupToUser(userId:mongoose.Types.ObjectId, chatGroup:object){
         try {
-            return await this.usersRepository.addChatGroupToUser(userId, chatGroup);;
+            return await this.usersRepository.addChatGroupToUser(userId, chatGroup);
         } catch (error) {
             throw new Error(error);
         }
@@ -46,14 +47,31 @@ export class UsersService {
     }
     async addFriend(userId:mongoose.Types.ObjectId, friend:object) {
         try {
-            return await this.usersRepository.addFriend(userId, friend);;
+            const processedUser = await this.usersRepository.addFriend(userId, friend);
+            const { _id, name, email, ChatGroups, Friends } = processedUser;
+            const updatedUserDTO = new FriendRelatedOperationsDTO();
+            updatedUserDTO._id = _id;
+            updatedUserDTO.name = name;
+            updatedUserDTO.email = email;
+            updatedUserDTO.ChatGroups = ChatGroups;
+            updatedUserDTO.Friends = Friends;
+            return updatedUserDTO;
         } catch (error) {
             throw new Error(error);
         }
     }
     async removeFriend(userId:mongoose.Types.ObjectId, friendId:string) {
         try {
-            return await this.usersRepository.removeFriend(userId, friendId);
+            const processedUser = await this.usersRepository.removeFriend(userId, friendId);
+            const { _id, name, email, ChatGroups, Friends } = processedUser;
+            const updatedUserDTO = new FriendRelatedOperationsDTO();
+            updatedUserDTO._id = _id;
+            updatedUserDTO.name = name;
+            updatedUserDTO.email = email;
+            updatedUserDTO.ChatGroups = ChatGroups;
+            updatedUserDTO.Friends = Friends;
+            return updatedUserDTO;
+
         } catch (error) {
             throw new Error(error);
         }
@@ -91,5 +109,5 @@ export class UsersService {
     }
     async searchUser(searchText:string) {
         return await this.usersRepository.searchUser(searchText);
-    }
+    }   
 }
