@@ -3,6 +3,7 @@ import { CreateChatGroupDTO } from './dtos/create-chat-group.dto';
 import mongoose from "mongoose";
 import { User } from 'src/users/users.model';
 import { ChatGroupsRepository } from './chat-groups.repository';
+import { ChatGroupInfoDTO } from './dtos/chat-group-info.dto';
 
 @Injectable()
 export class ChatGroupsService {
@@ -29,6 +30,21 @@ export class ChatGroupsService {
             return await this.chatGroupsRepository.getChatGroupByObjectId(id);
         } catch (error) {
             throw new Error(error.message);
+        }
+    }
+    async getChatGroupDetails( chatGroups: mongoose.Types.ObjectId[] ){
+        try {
+
+            const chatGroupDetails = await Promise.all(chatGroups.map( async (chatGroupId)=>{
+                const chatGroup = await this.getChatGroup(chatGroupId);
+                const chatGroupInfoDTO = new ChatGroupInfoDTO();
+                chatGroupInfoDTO._id = chatGroup._id;
+                chatGroupInfoDTO.chatGroupName = chatGroup.chatGroupName;
+                return chatGroupInfoDTO;
+            }));
+            return chatGroupDetails;
+        } catch (error) {
+            throw new Error(error);
         }
     }
     async getChatGroupsUsers(chatGroupId:mongoose.Types.ObjectId){

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import mongoose, { Model } from 'mongoose';
 import { User } from './users.model';
 import { InjectModel } from '@nestjs/mongoose';
+import { UserDataDTO } from './dtos/user-data.dto';
 @Injectable()
 export class UsersRepository { 
     constructor(@InjectModel('Users') private userModel: Model<User>){}
@@ -63,13 +64,20 @@ export class UsersRepository {
     async getUserData( userObject: Object ){
         const user = await this.userModel.findOne(userObject);
             const { name, email, ChatGroups, _id } = user;
-            const userData = {
-                _id: _id,
-                name: name,
-                email: email,
-                ChatGroups: ChatGroups
-            }
+            const userData = new UserDataDTO();
+            userData._id = _id;
+            userData.name = name;
+            userData.email = email;
+            userData.ChatGroups = ChatGroups;
             return userData;
+    }
+    async getUsersFriendsData( userId:mongoose.Types.ObjectId){
+        const friends = await this.getFriendsOfUser(userId);
+        const friendsData = Promise.all(friends.map( async (friend) => {
+            return await this.getUserData(friend);
+        }));
+        return friendsData;
+
     }
     async searchUser(searchText:string) {
         const users = await this.userModel.find({

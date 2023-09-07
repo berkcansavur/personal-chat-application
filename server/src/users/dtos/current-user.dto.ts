@@ -1,6 +1,4 @@
-import { Expose, Exclude } from "class-transformer";
-import mongoose from "mongoose";
-
+import { Expose } from "class-transformer";
 export class CurrentUserDTO {
     @Expose()
     userId: number;
@@ -8,7 +6,4 @@ export class CurrentUserDTO {
     userEmail: string;
     @Expose()
     userName: string;
-}
-export class AddFriendDTO {
-    friendId: mongoose.Types.ObjectId;
 }

@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import mongoose from 'mongoose';
 import { UsersRepository } from './users.repository';
+import { UserProfileInfoDTO } from './dtos/user-profile-info.dto';
+import { ChatGroupInfoDTO } from 'src/chat-groups/dtos/chat-group-info.dto';
+import { UserDataDTO } from './dtos/user-data.dto';
 @Injectable()
 export class UsersService {
     
@@ -68,6 +71,23 @@ export class UsersService {
         } catch (error) {
             throw new Error(error);
         }
+    }
+    async getUsersFriendsData(userId: mongoose.Types.ObjectId) {
+        try {
+            return await this.usersRepository.getUsersFriendsData(userId);
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+    async getUserProfileInfo(id: string, name: string, email: string, chatGroupDetails: ChatGroupInfoDTO[], friendsData:UserDataDTO[]){
+        const userProfileInfo = new UserProfileInfoDTO();
+        userProfileInfo.UserId = id;
+        userProfileInfo.UserName = name;
+        userProfileInfo.UserEmail = email;
+        userProfileInfo.ChatGroups = chatGroupDetails;
+        userProfileInfo.Friends = friendsData;
+      
+        return userProfileInfo;
     }
     async searchUser(searchText:string) {
         return await this.usersRepository.searchUser(searchText);
