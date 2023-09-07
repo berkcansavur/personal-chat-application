@@ -45,6 +45,7 @@ exports.__esModule = true;
 exports.UsersService = void 0;
 var common_1 = require("@nestjs/common");
 var user_profile_info_dto_1 = require("./dtos/user-profile-info.dto");
+var add_or_remove_friend_dto_1 = require("./dtos/add-or-remove-friend.dto");
 var UsersService = /** @class */ (function () {
     function UsersService(usersRepository) {
         this.usersRepository = usersRepository;
@@ -137,13 +138,22 @@ var UsersService = /** @class */ (function () {
     };
     UsersService.prototype.addFriend = function (userId, friend) {
         return __awaiter(this, void 0, void 0, function () {
-            var error_5;
+            var processedUser, _id, name, email, ChatGroups, Friends, updatedUserDTO, error_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, this.usersRepository.addFriend(userId, friend)];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 1:
+                        processedUser = _a.sent();
+                        _id = processedUser._id, name = processedUser.name, email = processedUser.email, ChatGroups = processedUser.ChatGroups, Friends = processedUser.Friends;
+                        updatedUserDTO = new add_or_remove_friend_dto_1.FriendRelatedOperationsDTO();
+                        updatedUserDTO._id = _id;
+                        updatedUserDTO.name = name;
+                        updatedUserDTO.email = email;
+                        updatedUserDTO.ChatGroups = ChatGroups;
+                        updatedUserDTO.Friends = Friends;
+                        return [2 /*return*/, updatedUserDTO];
                     case 2:
                         error_5 = _a.sent();
                         throw new Error(error_5);
@@ -154,13 +164,22 @@ var UsersService = /** @class */ (function () {
     };
     UsersService.prototype.removeFriend = function (userId, friendId) {
         return __awaiter(this, void 0, void 0, function () {
-            var error_6;
+            var processedUser, _id, name, email, ChatGroups, Friends, updatedUserDTO, error_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, this.usersRepository.removeFriend(userId, friendId)];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 1:
+                        processedUser = _a.sent();
+                        _id = processedUser._id, name = processedUser.name, email = processedUser.email, ChatGroups = processedUser.ChatGroups, Friends = processedUser.Friends;
+                        updatedUserDTO = new add_or_remove_friend_dto_1.FriendRelatedOperationsDTO();
+                        updatedUserDTO._id = _id;
+                        updatedUserDTO.name = name;
+                        updatedUserDTO.email = email;
+                        updatedUserDTO.ChatGroups = ChatGroups;
+                        updatedUserDTO.Friends = Friends;
+                        return [2 /*return*/, updatedUserDTO];
                     case 2:
                         error_6 = _a.sent();
                         throw new Error(error_6);
