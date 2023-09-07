@@ -32,11 +32,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
     async create(@MessageBody() createMessageDto: CreateMessageDto) {
       const { chatGroupID, senderUser, text } = createMessageDto;
       const user = await this.userService.findUser({id:senderUser});
-      const message = await this.messagesService.create(
-        chatGroupID,
-        user.name, 
-        text
-      );
+      const message = await this.messagesService.create({chatGroupID:chatGroupID, senderUser: user.name, text:text});
   
       this.server.to(chatGroupID).emit('message', message);
       return message;
