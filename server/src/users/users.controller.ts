@@ -6,7 +6,7 @@ import {
 import { CreateUserDTO } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
 import { UtilsService } from '../utils/utils.service';
-import { UserProfileDTO } from './dtos/user-profile.dto';
+import { ReturnUserDTO } from './dtos/return-user.dto';
 @Controller('users')
 export class UsersController {
     constructor(
@@ -14,14 +14,17 @@ export class UsersController {
         private utilsService:UtilsService ){}
 
     @Post('/signup')
-    async createUser(@Body() body: CreateUserDTO ){
+    async createUser(@Body() body: CreateUserDTO ) : Promise<ReturnUserDTO>{
         try {
             const hashedPassword = await this.utilsService.hashPassword(body.password);
-            const user = await this.userService.createUser({name:body.name,email:body.email, password:hashedPassword});
-            const userProfileDTO = new UserProfileDTO();
-            userProfileDTO.name = user.name;
-            userProfileDTO.email = user.email;
-            return userProfileDTO;
+            const createUserDTO = {
+                name: body.name,
+                email: body.email,
+                password: hashedPassword,
+                ChatGroups: null,
+                Friends: null,
+            }
+            return await this.userService.createUser({createUserDTO});
         } catch (error) {
             throw new Error(error);
         }

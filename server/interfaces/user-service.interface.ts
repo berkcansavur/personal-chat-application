@@ -2,8 +2,9 @@ import mongoose from 'mongoose';
 import { UserDataDTO } from 'src/users/dtos/user-data.dto';
 import { ChatGroupInfoDTO } from 'src/chat-groups/dtos/chat-group-info.dto';
 import { CreateUserDTO } from 'src/users/dtos/create-user.dto';
+import { ReturnUserDTO } from 'src/users/dtos/return-user.dto';
 export interface IUsersService {
-    createUser({name, email, password} : {name: string, email : string, password: string }):Promise<CreateUserDTO>;
+    createUser({createUserDTO} : {createUserDTO: CreateUserDTO }):Promise<ReturnUserDTO>;
     findUser({id} : {id:mongoose.Types.ObjectId}): Promise<any>
     findUserByEmail({email} : {email:string}):Promise<any>
     addChatGroupToUser({userId, chatGroup} : {userId: mongoose.Types.ObjectId, chatGroup: object}) : Promise<any>;

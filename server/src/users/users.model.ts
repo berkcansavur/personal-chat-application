@@ -33,6 +33,7 @@ export class ReturnUser{
     @Prop({type: [ Object]})
     Friends:any[];
 }
+export type ReturnUserDocument = ReturnUser & Document;
 export const UserSchema = new mongoose.Schema({
     name:{type: String , required: true},
     email: {type: String , required: true},

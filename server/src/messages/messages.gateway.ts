@@ -35,7 +35,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
       const user = await this.userService.findUser({id:senderUser});
       const messageDto = new MessageDTO()
       messageDto.chatGroupID = chatGroupID;
-      messageDto.senderUser = user.name;
+      messageDto.senderUser = user.UserName;
       messageDto.text = text;
       const message = await this.messagesService.create({messageDto});
   
