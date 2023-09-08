@@ -8,6 +8,7 @@ import { ChatGroupsService } from './chat-groups/chat-groups.service';
 import mongoose from 'mongoose';
 import { CreateChatGroupDTO } from './chat-groups/dtos/create-chat-group.dto';
 import { MessagesService } from './messages/messages.service';
+import { UserProfileInfoDTO } from './users/dtos/user-profile-info.dto';
 
 @Controller('app')
 export class AppController {
@@ -31,13 +32,13 @@ export class AppController {
 
   @UseGuards( JwtAuthGuard )
   @Get('/me')
-  async getUserProfile(@Request() req ){
+  async getUserProfile(@Request() req ) : Promise<UserProfileInfoDTO>{
     try {
       const user = await this.userService.findUser( {id:req.user.userId} );
-      const { _id, name, email, ChatGroups } = user;
+      const { UserId, UserName, UserEmail, ChatGroups } = user;
       const friendsData = await this.userService.getUsersFriendsData({userId:req.user.userId});
       const chatGroupDetails = await this.chatGroupService.getChatGroupDetails({chatGroups:ChatGroups});
-      const userProfileInfo = await this.userService.getUserProfileInfo({id:_id, name:name, email:email, chatGroupDetails:chatGroupDetails, friendsData:friendsData});
+      const userProfileInfo = await this.userService.getUserProfileInfo({id:UserId, name:UserName, email:UserEmail, chatGroupDetails:chatGroupDetails, friendsData:friendsData});
       
       return userProfileInfo;
     } catch (error) {
@@ -85,7 +86,7 @@ export class AppController {
         throw new UnauthorizedException('You must be logged in for removing friend');
       }
       const friend = await this.userService.findUser( {id:friendId} );
-      const updatedUser = await this.userService.removeFriend( {userId: req.user.userId,friendId: friend._id });
+      const updatedUser = await this.userService.removeFriend( {userId: req.user.userId,friendId: friend.UserId });
       return updatedUser;
   }
   @UseGuards( JwtAuthGuard )

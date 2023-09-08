@@ -47,15 +47,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.UsersController = void 0;
 var common_1 = require("@nestjs/common");
-var user_profile_dto_1 = require("./dtos/user-profile.dto");
 var UsersController = /** @class */ (function () {
     function UsersController(userService, utilsService) {
         this.userService = userService;
         this.utilsService = utilsService;
     }
     UsersController.prototype.createUser = function (body) {
-        return __awaiter(this, void 0, void 0, function () {
-            var hashedPassword, user, userProfileDTO, error_1;
+        return __awaiter(this, void 0, Promise, function () {
+            var hashedPassword, createUserDTO, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -63,13 +62,15 @@ var UsersController = /** @class */ (function () {
                         return [4 /*yield*/, this.utilsService.hashPassword(body.password)];
                     case 1:
                         hashedPassword = _a.sent();
-                        return [4 /*yield*/, this.userService.createUser({ name: body.name, email: body.email, password: hashedPassword })];
-                    case 2:
-                        user = _a.sent();
-                        userProfileDTO = new user_profile_dto_1.UserProfileDTO();
-                        userProfileDTO.name = user.name;
-                        userProfileDTO.email = user.email;
-                        return [2 /*return*/, userProfileDTO];
+                        createUserDTO = {
+                            name: body.name,
+                            email: body.email,
+                            password: hashedPassword,
+                            ChatGroups: null,
+                            Friends: null
+                        };
+                        return [4 /*yield*/, this.userService.createUser({ createUserDTO: createUserDTO })];
+                    case 2: return [2 /*return*/, _a.sent()];
                     case 3:
                         error_1 = _a.sent();
                         throw new Error(error_1);

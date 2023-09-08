@@ -9,24 +9,27 @@ import { IUsersService } from 'interfaces/user-service.interface';
 import { CreateUserDTO } from './dtos/create-user.dto';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
+import { ReturnUser } from './users.model';
+import { ReturnUserDTO } from './dtos/return-user.dto';
 @Injectable()
 export class UsersService implements IUsersService {
     
     constructor( 
         private usersRepository: UsersRepository,
-        @InjectMapper() private readonly ReturnMapper: Mapper,
+        @InjectMapper() private readonly UserMapper: Mapper,
         ){}
 
-    async createUser({name, email, password}:{name:string, email:string, password:string}): Promise<CreateUserDTO>{
-        const newUser = await this.usersRepository.createUser(name, email, password);
-        return newUser;
+    async createUser({createUserDTO}:{createUserDTO: CreateUserDTO}): Promise<ReturnUserDTO>{
+
+        const {UserMapper} = this;
+        const newUser : ReturnUser = await this.usersRepository.createUser({createUserDTO});
+        return UserMapper.map< ReturnUser, ReturnUserDTO>(newUser,ReturnUser,ReturnUserDTO);
     }
-    async findUser({id}:{id: mongoose.Types.ObjectId} ){
+    async findUser({id}:{id: mongoose.Types.ObjectId} ): Promise<UserProfileInfoDTO>{
         try {
-            if(!id){
-                return null;
-            }
-            return await this.usersRepository.findUserByObjectId(id);
+            const {UserMapper} = this;
+            const user: ReturnUser = await this.usersRepository.findUserByObjectId(id);
+            return UserMapper.map<ReturnUser, UserProfileInfoDTO>(user, ReturnUser, UserProfileInfoDTO);
         } catch (error) {
             throw new Error(error);
         }

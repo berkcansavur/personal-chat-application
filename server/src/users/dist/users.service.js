@@ -50,38 +50,42 @@ var common_1 = require("@nestjs/common");
 var user_profile_info_dto_1 = require("./dtos/user-profile-info.dto");
 var add_or_remove_friend_dto_1 = require("./dtos/add-or-remove-friend.dto");
 var nestjs_1 = require("@automapper/nestjs");
+var users_model_1 = require("./users.model");
+var return_user_dto_1 = require("./dtos/return-user.dto");
 var UsersService = /** @class */ (function () {
-    function UsersService(usersRepository, ReturnMapper) {
+    function UsersService(usersRepository, UserMapper) {
         this.usersRepository = usersRepository;
-        this.ReturnMapper = ReturnMapper;
+        this.UserMapper = UserMapper;
     }
     UsersService.prototype.createUser = function (_a) {
-        var name = _a.name, email = _a.email, password = _a.password;
+        var createUserDTO = _a.createUserDTO;
         return __awaiter(this, void 0, Promise, function () {
-            var newUser;
+            var UserMapper, newUser;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0: return [4 /*yield*/, this.usersRepository.createUser(name, email, password)];
+                    case 0:
+                        UserMapper = this.UserMapper;
+                        return [4 /*yield*/, this.usersRepository.createUser({ createUserDTO: createUserDTO })];
                     case 1:
                         newUser = _b.sent();
-                        return [2 /*return*/, newUser];
+                        return [2 /*return*/, UserMapper.map(newUser, users_model_1.ReturnUser, return_user_dto_1.ReturnUserDTO)];
                 }
             });
         });
     };
     UsersService.prototype.findUser = function (_a) {
         var id = _a.id;
-        return __awaiter(this, void 0, void 0, function () {
-            var error_1;
+        return __awaiter(this, void 0, Promise, function () {
+            var UserMapper, user, error_1;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
-                        if (!id) {
-                            return [2 /*return*/, null];
-                        }
+                        UserMapper = this.UserMapper;
                         return [4 /*yield*/, this.usersRepository.findUserByObjectId(id)];
-                    case 1: return [2 /*return*/, _b.sent()];
+                    case 1:
+                        user = _b.sent();
+                        return [2 /*return*/, UserMapper.map(user, users_model_1.ReturnUser, user_profile_info_dto_1.UserProfileInfoDTO)];
                     case 2:
                         error_1 = _b.sent();
                         throw new Error(error_1);
