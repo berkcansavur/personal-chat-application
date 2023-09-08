@@ -22,7 +22,7 @@ export class UserProfile extends AutomapperProfile{
                 UserProfileInfoDTO,
                 ReturnUserProfile,
                 forMember(
-                    (destination)=>destination._id.toString(),
+                    (destination)=>destination._id,
                     mapFrom((source)=>source.UserId)
                 ),
                 forMember(
@@ -48,7 +48,7 @@ export class UserProfile extends AutomapperProfile{
                 UserProfileInfoDTO,
                 forMember(
                     (destination)=> destination.UserId,
-                    mapFrom((source)=> source._id.toString())
+                    mapFrom((source)=> source._id)
                 ),
                 forMember(
                     (destination)=> destination.UserName,

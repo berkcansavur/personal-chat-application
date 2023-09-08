@@ -11,10 +11,10 @@ export interface IUsersService {
     addChatGroupToUser({userId, chatGroup} : {userId: mongoose.Types.ObjectId, chatGroup: object}) : Promise<any>;
     removeChatGroupFromUser({user, chatGroup} : {user:any, chatGroup:any}):Promise<any>;
     addFriend({userId, friend} : {userId:mongoose.Types.ObjectId, friend: object}) : Promise<any>;
-    removeFriend({userId, friendId} : {userId:mongoose.Types.ObjectId, friendId: string}) : Promise<any>;
+    removeFriend({userId, friendId} : {userId:mongoose.Types.ObjectId, friendId: mongoose.Types.ObjectId}) : Promise<any>;
     getFriendsOfUser({userId} : {userId: mongoose.Types.ObjectId}) :Promise<any>;
     getUserData({userId} : {userId: mongoose.Types.ObjectId}): Promise<any>;
     getUsersFriendsData({userId} : {userId:mongoose.Types.ObjectId}) :Promise<any>;
-    mapUserProfileInfo({id, name, email, chatGroupDetails, friendsData} : {id:string, name: string, email: string, chatGroupDetails: ChatGroupInfoDTO[], friendsData:UserDataDTO[]}) : Promise<ReturnUserProfile>;
+    mapUserProfileInfo({id, name, email, chatGroupDetails, friendsData} : {id:mongoose.Types.ObjectId, name: string, email: string, chatGroupDetails: ChatGroupInfoDTO[], friendsData:UserDataDTO[]}) : Promise<ReturnUserProfile>;
     searchUser({searchText} : {searchText:string}): Promise<any>;
 }

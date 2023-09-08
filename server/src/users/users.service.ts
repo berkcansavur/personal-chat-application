@@ -29,7 +29,7 @@ export class UsersService implements IUsersService {
     async findUser({id}:{id: mongoose.Types.ObjectId} ): Promise<UserProfileInfoDTO>{
         try {
             const {UserMapper} = this;
-            const user: ReturnUser = await this.usersRepository.findUserByObjectId(id);
+            const user = await this.usersRepository.findUserByObjectId(id);
             return UserMapper.map<ReturnUser, UserProfileInfoDTO>(user, ReturnUser, UserProfileInfoDTO);
         } catch (error) {
             throw new Error(error);
@@ -71,7 +71,7 @@ export class UsersService implements IUsersService {
             throw new Error(error);
         }
     }
-    async removeFriend({userId, friendId}:{userId:mongoose.Types.ObjectId, friendId:string}) {
+    async removeFriend({userId, friendId}:{userId:mongoose.Types.ObjectId, friendId:mongoose.Types.ObjectId}) {
         try {
             const processedUser = await this.usersRepository.removeFriend(userId, friendId);
             const { _id, name, email, ChatGroups, Friends } = processedUser;
@@ -125,7 +125,7 @@ export class UsersService implements IUsersService {
             throw new Error(error);
         }
     }
-    async mapUserProfileInfo({id, name, email, chatGroupDetails, friendsData}:{id: string, name: string, email: string, chatGroupDetails: ChatGroupInfoDTO[], friendsData:FriendInfoDTO[]}){
+    async mapUserProfileInfo({id, name, email, chatGroupDetails, friendsData}:{id: mongoose.Types.ObjectId, name: string, email: string, chatGroupDetails: ChatGroupInfoDTO[], friendsData:FriendInfoDTO[]}){
         const {UserMapper} = this;
         const userProfileInfo = new UserProfileInfoDTO();
         userProfileInfo.UserId = id;

@@ -13,8 +13,7 @@ export class UsersRepository {
         return ( await userModel.create(createUserDTO)).toObject();
     }
     async findUserByObjectId( id: mongoose.Types.ObjectId): Promise<ReturnUserDocument>{
-        const user = await this.userModel.findOne({ _id: id });
-        return user.toObject();
+        return await this.userModel.findOne({ _id: id });
     }
     async findByEmail(email: string){
         return this.userModel.findOne({email: email});
@@ -47,7 +46,7 @@ export class UsersRepository {
         await updatedUser.save();
         return updatedUser;
     }
-    async removeFriend(userId:mongoose.Types.ObjectId, friendId:string) {
+    async removeFriend(userId:mongoose.Types.ObjectId, friendId:mongoose.Types.ObjectId) {
         const updatedUser = await this.userModel.findByIdAndUpdate(
             userId,
             { $pull: { Friends: { _id: friendId } } },
