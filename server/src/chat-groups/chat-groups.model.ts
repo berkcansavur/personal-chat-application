@@ -10,6 +10,6 @@ export const ChatGroupsSchema = new mongoose.Schema({
 export interface ChatGroups{
     id: number;
     chatGroupName: string;
-    users: object[];
+    users: mongoose.Types.ObjectId[];
     createdDate: Date;
 }

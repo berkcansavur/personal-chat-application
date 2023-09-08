@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
 
-export class UserDataDTO {
+export class FriendInfoDTO{
     _id: mongoose.Types.ObjectId;
     name: string;
     email: string;
-    ChatGroups: mongoose.Types.ObjectId[];
 }

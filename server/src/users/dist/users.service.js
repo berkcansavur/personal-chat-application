@@ -52,6 +52,7 @@ var add_or_remove_friend_dto_1 = require("./dtos/add-or-remove-friend.dto");
 var nestjs_1 = require("@automapper/nestjs");
 var users_model_1 = require("./users.model");
 var return_user_dto_1 = require("./dtos/return-user.dto");
+var friend_info_dto_1 = require("./dtos/friend-info.dto");
 var UsersService = /** @class */ (function () {
     function UsersService(usersRepository, UserMapper) {
         this.usersRepository = usersRepository;
@@ -223,14 +224,14 @@ var UsersService = /** @class */ (function () {
         });
     };
     UsersService.prototype.getUserData = function (_a) {
-        var userObject = _a.userObject;
+        var userId = _a.userId;
         return __awaiter(this, void 0, void 0, function () {
             var error_8;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.usersRepository.getUserData(userObject)];
+                        return [4 /*yield*/, this.usersRepository.getUserData(userId)];
                     case 1: return [2 /*return*/, _b.sent()];
                     case 2:
                         error_8 = _b.sent();
@@ -240,36 +241,71 @@ var UsersService = /** @class */ (function () {
             });
         });
     };
-    UsersService.prototype.getUsersFriendsData = function (_a) {
-        var userId = _a.userId;
-        return __awaiter(this, void 0, void 0, function () {
-            var error_9;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+    UsersService.prototype.getUsersFriendsInfo = function (userIds) {
+        return __awaiter(this, void 0, Promise, function () {
+            var UserMapper_1, users, usersData, error_9;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
-                        _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.usersRepository.getUsersFriendsData(userId)];
-                    case 1: return [2 /*return*/, _b.sent()];
+                        _a.trys.push([0, 2, , 3]);
+                        UserMapper_1 = this.UserMapper;
+                        return [4 /*yield*/, this.usersRepository.getUserFriends(userIds)];
+                    case 1:
+                        users = _a.sent();
+                        usersData = Promise.all(users.map(function (user) {
+                            return UserMapper_1.map(user, users_model_1.ReturnUser, friend_info_dto_1.FriendInfoDTO);
+                        }));
+                        return [2 /*return*/, usersData];
                     case 2:
-                        error_9 = _b.sent();
+                        error_9 = _a.sent();
                         throw new Error(error_9);
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    UsersService.prototype.getUserProfileInfo = function (_a) {
+    UsersService.prototype.getUsersFriendsData = function (_a) {
+        var userId = _a.userId;
+        return __awaiter(this, void 0, void 0, function () {
+            var friends, friendsData, error_10;
+            var _this = this;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.usersRepository.getFriendsOfUser(userId)];
+                    case 1:
+                        friends = _b.sent();
+                        friendsData = Promise.all(friends.map(function (friendId) { return __awaiter(_this, void 0, void 0, function () {
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0: return [4 /*yield*/, this.getUserData({ userId: friendId })];
+                                    case 1: return [2 /*return*/, _a.sent()];
+                                }
+                            });
+                        }); }));
+                        return [2 /*return*/, friendsData];
+                    case 2:
+                        error_10 = _b.sent();
+                        throw new Error(error_10);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UsersService.prototype.mapUserProfileInfo = function (_a) {
         var id = _a.id, name = _a.name, email = _a.email, chatGroupDetails = _a.chatGroupDetails, friendsData = _a.friendsData;
         return __awaiter(this, void 0, void 0, function () {
-            var userProfileInfo;
+            var UserMapper, userProfileInfo;
             return __generator(this, function (_b) {
+                UserMapper = this.UserMapper;
                 userProfileInfo = new user_profile_info_dto_1.UserProfileInfoDTO();
                 userProfileInfo.UserId = id;
                 userProfileInfo.UserName = name;
                 userProfileInfo.UserEmail = email;
                 userProfileInfo.ChatGroups = chatGroupDetails;
                 userProfileInfo.Friends = friendsData;
-                return [2 /*return*/, userProfileInfo];
+                return [2 /*return*/, UserMapper.map(userProfileInfo, user_profile_info_dto_1.UserProfileInfoDTO, users_model_1.ReturnUserProfile)];
             });
         });
     };

@@ -3,14 +3,15 @@ import mongoose from 'mongoose';
 import { UsersRepository } from './users.repository';
 import { UserProfileInfoDTO } from './dtos/user-profile-info.dto';
 import { ChatGroupInfoDTO } from 'src/chat-groups/dtos/chat-group-info.dto';
-import { UserDataDTO } from './dtos/user-data.dto';
 import { FriendRelatedOperationsDTO } from './dtos/add-or-remove-friend.dto';
 import { IUsersService } from 'interfaces/user-service.interface';
 import { CreateUserDTO } from './dtos/create-user.dto';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
-import { ReturnUser } from './users.model';
+import { ReturnUser, ReturnUserProfile } from './users.model';
 import { ReturnUserDTO } from './dtos/return-user.dto';
+import { FriendInfoDTO } from './dtos/friend-info.dto';
+
 @Injectable()
 export class UsersService implements IUsersService {
     
@@ -93,29 +94,47 @@ export class UsersService implements IUsersService {
             throw new Error(error);
         }
     }
-    async getUserData( {userObject} : {userObject: object} ){
+    async getUserData( {userId} : {userId: mongoose.Types.ObjectId} ){
         try {
-            return await this.usersRepository.getUserData(userObject);
+            return await this.usersRepository.getUserData(userId);
         } catch (error) {
             throw new Error(error);
         }
     }
+    async getUsersFriendsInfo(userIds: mongoose.Types.ObjectId[]): Promise<FriendInfoDTO[]> {
+        try {
+            const {UserMapper} = this;
+            const users = await this.usersRepository.getUserFriends(userIds);
+            const usersData = Promise.all(users.map((user)=>{
+                return UserMapper.map<ReturnUser, FriendInfoDTO>(user, ReturnUser,FriendInfoDTO)
+            }))
+            return usersData;
+        } catch (error) {
+          throw new Error(error);
+        }
+      }
+      
     async getUsersFriendsData({userId} : {userId: mongoose.Types.ObjectId}) {
         try {
-            return await this.usersRepository.getUsersFriendsData(userId);
+            const friends = await this.usersRepository.getFriendsOfUser(userId);
+            const friendsData = Promise.all(friends.map( async (friendId) => {
+                return await this.getUserData({userId:friendId});
+            }));
+            return friendsData;
         } catch (error) {
             throw new Error(error);
         }
     }
-    async getUserProfileInfo({id, name, email, chatGroupDetails, friendsData}:{id: string, name: string, email: string, chatGroupDetails: ChatGroupInfoDTO[], friendsData:UserDataDTO[]}){
+    async mapUserProfileInfo({id, name, email, chatGroupDetails, friendsData}:{id: string, name: string, email: string, chatGroupDetails: ChatGroupInfoDTO[], friendsData:FriendInfoDTO[]}){
+        const {UserMapper} = this;
         const userProfileInfo = new UserProfileInfoDTO();
         userProfileInfo.UserId = id;
         userProfileInfo.UserName = name;
         userProfileInfo.UserEmail = email;
         userProfileInfo.ChatGroups = chatGroupDetails;
         userProfileInfo.Friends = friendsData;
-      
-        return userProfileInfo;
+        return UserMapper.map<UserProfileInfoDTO, ReturnUserProfile>(userProfileInfo, UserProfileInfoDTO,ReturnUserProfile)
+        
     }
     async searchUser({searchText}:{searchText:string}) {
         return await this.usersRepository.searchUser(searchText);

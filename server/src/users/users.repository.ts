@@ -58,19 +58,22 @@ export class UsersRepository {
     }
     async getFriendsOfUser( userId:mongoose.Types.ObjectId) {
         const user = await this.userModel.findOne({ _id: userId });
-        const friends : object[] = user.Friends;
+        const friends = user.Friends;
         return friends;
         
     }
-    async getUserData( userObject: Object ){
-        const user = await this.userModel.findOne(userObject);
-            const { name, email, ChatGroups, _id } = user;
+    async getUserData( userId: mongoose.Types.ObjectId ){
+        const user = await this.userModel.findOne(userId);
+            const { name, email, ChatGroups,  } = user;
             const userData = new UserDataDTO();
-            userData._id = _id;
+            userData._id = userId;
             userData.name = name;
             userData.email = email;
             userData.ChatGroups = ChatGroups;
             return userData;
+    }
+    async getUserFriends(userIds:mongoose.Types.ObjectId[]): Promise<ReturnUserDocument[]>{
+        return this.userModel.find({ _id: { $in: userIds } });
     }
     async getUsersFriendsData( userId:mongoose.Types.ObjectId){
         const friends = await this.getFriendsOfUser(userId);

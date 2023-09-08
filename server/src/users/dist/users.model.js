@@ -6,7 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 exports.__esModule = true;
-exports.UserSchema = exports.ReturnUser = exports.UserEntity = void 0;
+exports.UserSchema = exports.ReturnUserProfile = exports.ReturnUser = exports.UserEntity = void 0;
 var mongoose_1 = require("@nestjs/mongoose");
 var mongoose = require("mongoose");
 var mongoose_2 = require("mongoose");
@@ -29,14 +29,35 @@ var ReturnUser = /** @class */ (function () {
         mongoose_1.Prop({ type: String, required: true })
     ], ReturnUser.prototype, "email");
     __decorate([
-        mongoose_1.Prop({ type: [Object] })
+        mongoose_1.Prop({ type: [] })
     ], ReturnUser.prototype, "ChatGroups");
     __decorate([
-        mongoose_1.Prop({ type: [Object] })
+        mongoose_1.Prop({ type: [] })
     ], ReturnUser.prototype, "Friends");
     return ReturnUser;
 }());
 exports.ReturnUser = ReturnUser;
+var ReturnUserProfile = /** @class */ (function () {
+    function ReturnUserProfile() {
+    }
+    __decorate([
+        mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, auto: true })
+    ], ReturnUserProfile.prototype, "_id");
+    __decorate([
+        mongoose_1.Prop({ type: String, required: true })
+    ], ReturnUserProfile.prototype, "name");
+    __decorate([
+        mongoose_1.Prop({ type: String, required: true })
+    ], ReturnUserProfile.prototype, "email");
+    __decorate([
+        mongoose_1.Prop({ type: [] })
+    ], ReturnUserProfile.prototype, "ChatGroups");
+    __decorate([
+        mongoose_1.Prop({ type: [] })
+    ], ReturnUserProfile.prototype, "Friends");
+    return ReturnUserProfile;
+}());
+exports.ReturnUserProfile = ReturnUserProfile;
 exports.UserSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true },

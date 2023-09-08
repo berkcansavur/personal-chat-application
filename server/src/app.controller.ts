@@ -9,6 +9,7 @@ import mongoose from 'mongoose';
 import { CreateChatGroupDTO } from './chat-groups/dtos/create-chat-group.dto';
 import { MessagesService } from './messages/messages.service';
 import { UserProfileInfoDTO } from './users/dtos/user-profile-info.dto';
+import { ReturnUserProfile } from './users/users.model';
 
 @Controller('app')
 export class AppController {
@@ -32,14 +33,15 @@ export class AppController {
 
   @UseGuards( JwtAuthGuard )
   @Get('/me')
-  async getUserProfile(@Request() req ) : Promise<UserProfileInfoDTO>{
+  async getUserProfile(@Request() req ) : Promise<ReturnUserProfile>{
     try {
       const user = await this.userService.findUser( {id:req.user.userId} );
-      const { UserId, UserName, UserEmail, ChatGroups } = user;
-      const friendsData = await this.userService.getUsersFriendsData({userId:req.user.userId});
-      const chatGroupDetails = await this.chatGroupService.getChatGroupDetails({chatGroups:ChatGroups});
-      const userProfileInfo = await this.userService.getUserProfileInfo({id:UserId, name:UserName, email:UserEmail, chatGroupDetails:chatGroupDetails, friendsData:friendsData});
-      
+      const { UserId, UserName, UserEmail, ChatGroups, Friends } = user;
+      const [chatGroupDetails, friendsData] = await Promise.all([
+        await this.chatGroupService.getChatGroupDetails({chatGroups:ChatGroups}),
+        await this.userService.getUsersFriendsInfo(Friends),
+      ]);
+      const userProfileInfo = await this.userService.mapUserProfileInfo({id:UserId, name:UserName, email:UserEmail, chatGroupDetails:chatGroupDetails, friendsData:friendsData});
       return userProfileInfo;
     } catch (error) {
       throw new Error(error);
@@ -98,7 +100,7 @@ export class AppController {
     const friends = await this.userService.getFriendsOfUser({userId:req.user.userId});
 
     const friendsData = await Promise.all(friends.map(async (friend) => {
-      const friendData = await this.userService.getUserData({userObject:friend});
+      const friendData = await this.userService.getUserData({userId:friend});
       return friendData;
     }));
 
@@ -113,7 +115,7 @@ export class AppController {
     const friends = await this.chatGroupService.getChatGroupsUsers({chatGroupId: chatGroupId});
 
     const friendsData = await Promise.all(friends.map(async (friend) => {
-      const friendData = await this.userService.getUserData({userObject: friend});
+      const friendData = await this.userService.getUserData({userId: friend});
       return friendData;
     }));
     return friendsData;
