@@ -1,4 +1,6 @@
+import { Prop } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
+import { Schema as mSchema, Document, Types } from 'mongoose';
 export interface User {
     _id:string; 
     name: string;
@@ -14,6 +16,22 @@ export class UserEntity{
     password:string;
     Friends: object[];
     ChatGroups:string;
+}
+export class ReturnUser{
+    @Prop({type: mSchema.Types.ObjectId, auto: true})
+    _id:Types.ObjectId;
+
+    @Prop({type: String, required: true})
+    name:string;
+
+    @Prop({type: String, required: true})
+    email:string;
+
+    @Prop({type: [ Object]})
+    ChatGroups:any[];
+
+    @Prop({type: [ Object]})
+    Friends:any[];
 }
 export const UserSchema = new mongoose.Schema({
     name:{type: String , required: true},

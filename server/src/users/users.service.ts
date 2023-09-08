@@ -7,10 +7,15 @@ import { UserDataDTO } from './dtos/user-data.dto';
 import { FriendRelatedOperationsDTO } from './dtos/add-or-remove-friend.dto';
 import { IUsersService } from 'interfaces/user-service.interface';
 import { CreateUserDTO } from './dtos/create-user.dto';
+import { InjectMapper } from '@automapper/nestjs';
+import { Mapper } from '@automapper/core';
 @Injectable()
 export class UsersService implements IUsersService {
     
-    constructor( private usersRepository: UsersRepository ){}
+    constructor( 
+        private usersRepository: UsersRepository,
+        @InjectMapper() private readonly ReturnMapper: Mapper,
+        ){}
 
     async createUser({name, email, password}:{name:string, email:string, password:string}): Promise<CreateUserDTO>{
         const newUser = await this.usersRepository.createUser(name, email, password);

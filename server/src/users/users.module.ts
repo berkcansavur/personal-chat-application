@@ -9,6 +9,8 @@ import { SessionOptions } from 'express-session';
 import { PassportModule } from '@nestjs/passport';
 import { UtilsModule } from 'src/utils/utils.module';
 import { UsersRepository } from './users.repository';
+import { UserProfile } from 'src/mapper/user-mapper';
+
 
 @Module({
     imports:[
@@ -28,7 +30,8 @@ import { UsersRepository } from './users.repository';
     controllers:[UsersController],
     providers:[
         UsersService,
-        UsersRepository
+        UsersRepository,
+        UserProfile,
     ],
     exports:[UsersService]
 })

@@ -10,8 +10,8 @@ import { AuthModule } from './auth/auth.module';
 const cookieSession = require('cookie-session');
 import { SessionModule } from 'nestjs-session';
 import { MessagesModule } from './messages/messages.module';
-
-
+import { AutomapperModule } from '@automapper/nestjs';
+import { classes } from '@automapper/classes';
 @Module({
   imports: [
     ConfigModule.forRoot({}),
@@ -23,6 +23,9 @@ import { MessagesModule } from './messages/messages.module';
       },
     }),
     MongooseModule.forRoot(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.duok4hv.mongodb.net/?retryWrites=true&w=majority`),
+    AutomapperModule.forRoot({
+      strategyInitializer: classes(),
+    }),
     UsersModule,
     ChatGroupsModule,
     AuthModule,

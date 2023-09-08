@@ -5,6 +5,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -46,9 +49,11 @@ exports.UsersService = void 0;
 var common_1 = require("@nestjs/common");
 var user_profile_info_dto_1 = require("./dtos/user-profile-info.dto");
 var add_or_remove_friend_dto_1 = require("./dtos/add-or-remove-friend.dto");
+var nestjs_1 = require("@automapper/nestjs");
 var UsersService = /** @class */ (function () {
-    function UsersService(usersRepository) {
+    function UsersService(usersRepository, ReturnMapper) {
         this.usersRepository = usersRepository;
+        this.ReturnMapper = ReturnMapper;
     }
     UsersService.prototype.createUser = function (_a) {
         var name = _a.name, email = _a.email, password = _a.password;
@@ -276,7 +281,8 @@ var UsersService = /** @class */ (function () {
         });
     };
     UsersService = __decorate([
-        common_1.Injectable()
+        common_1.Injectable(),
+        __param(1, nestjs_1.InjectMapper())
     ], UsersService);
     return UsersService;
 }());
