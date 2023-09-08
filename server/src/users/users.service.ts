@@ -9,8 +9,9 @@ import { IUsersService } from 'interfaces/user-service.interface';
 import { CreateUserDTO } from './dtos/create-user.dto';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
-import { ReturnUser } from './users.model';
+import { ReturnUser, ReturnUserForAuth } from './users.model';
 import { ReturnUserDTO } from './dtos/return-user.dto';
+import { LoginUserDTO } from './dtos/login-user.dto';
 @Injectable()
 export class UsersService implements IUsersService {
     
@@ -34,9 +35,20 @@ export class UsersService implements IUsersService {
             throw new Error(error);
         }
     }
-    async findUserByEmail({email}:{email: string}){
+    async findUserByStringIdForAuth({id}:{id: string} ): Promise<LoginUserDTO>{
         try {
-            return await this.usersRepository.findByEmail(email);
+            const {UserMapper} = this;
+            const user: ReturnUserForAuth = await this.usersRepository.findUserByStringId(id);
+            return UserMapper.map<ReturnUserForAuth, LoginUserDTO>(user, ReturnUserForAuth, LoginUserDTO);
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+    async findUserByEmail({email}:{email: string}): Promise<UserProfileInfoDTO>{
+        try {
+            const {UserMapper} = this;
+            const user = await this.usersRepository.findByEmail(email);
+            return UserMapper.map<ReturnUser, UserProfileInfoDTO>(user, ReturnUser, UserProfileInfoDTO);
         } catch (error) {
             throw new Error(error);
         }

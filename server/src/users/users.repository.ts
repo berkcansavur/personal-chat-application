@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import mongoose, { Model } from 'mongoose';
-import { ReturnUser, ReturnUserDocument, User } from './users.model';
+import { ReturnUser, ReturnUserDocument, ReturnUserForAuthDocument, User } from './users.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserDataDTO } from './dtos/user-data.dto';
 import { CreateUserDTO } from './dtos/create-user.dto';
@@ -13,11 +13,13 @@ export class UsersRepository {
         return ( await userModel.create(createUserDTO)).toObject();
     }
     async findUserByObjectId( id: mongoose.Types.ObjectId): Promise<ReturnUserDocument>{
-        const user = await this.userModel.findOne({ _id: id });
-        return user.toObject();
+        return (await this.userModel.findOne({ _id: id })).toObject();
     }
-    async findByEmail(email: string){
-        return this.userModel.findOne({email: email});
+    async findUserByStringId( id: string): Promise<ReturnUserForAuthDocument>{
+        return (await this.userModel.findOne({ _id: id })).toObject();
+    }
+    async findByEmail(email: string): Promise<ReturnUser>{
+        return (await this.userModel.findOne({email: email})).toObject();
     }
     async addChatGroupToUser(userId:mongoose.Types.ObjectId, chatGroup:object){
         const updatedUser = await this.userModel.findByIdAndUpdate(

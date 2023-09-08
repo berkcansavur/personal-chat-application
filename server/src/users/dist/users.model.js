@@ -6,7 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 exports.__esModule = true;
-exports.UserSchema = exports.ReturnUser = exports.UserEntity = void 0;
+exports.UserSchema = exports.ReturnUserForAuth = exports.ReturnUser = exports.UserEntity = void 0;
 var mongoose_1 = require("@nestjs/mongoose");
 var mongoose = require("mongoose");
 var mongoose_2 = require("mongoose");
@@ -37,6 +37,18 @@ var ReturnUser = /** @class */ (function () {
     return ReturnUser;
 }());
 exports.ReturnUser = ReturnUser;
+var ReturnUserForAuth = /** @class */ (function () {
+    function ReturnUserForAuth() {
+    }
+    __decorate([
+        mongoose_1.Prop({ type: String, required: true })
+    ], ReturnUserForAuth.prototype, "email");
+    __decorate([
+        mongoose_1.Prop({ type: String, required: true })
+    ], ReturnUserForAuth.prototype, "password");
+    return ReturnUserForAuth;
+}());
+exports.ReturnUserForAuth = ReturnUserForAuth;
 exports.UserSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true },

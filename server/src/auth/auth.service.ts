@@ -17,19 +17,21 @@ export class AuthService {
   async validateUser(body: LoginUserDTO): Promise<any> {
     const {email, password } = body;
     const user = await this.userService.findUserByEmail({email});
+    const{ UserId } = user;
+    const userToBeValidate = await this.userService.findUserByStringIdForAuth({id:UserId})
     if(!user){
         throw new NotFoundException('User Not Found');
     }
-    const [salt, storedHash] = user.password.split('.');
+    const [salt, storedHash] = userToBeValidate.password.split('.');
     
     const hashedPart = (await scrypt(password, salt, 32)) as Buffer;
 
     if(storedHash === hashedPart.toString('hex')){
-      const {_id,name,email} = user;
+      const {UserId,UserName,UserEmail} = user;
         return {
-            userId:_id,
-            userName:name,
-            userEmail:email
+            userId:UserId,
+            userName:UserName,
+            userEmail:UserEmail
         };
     }
     return null

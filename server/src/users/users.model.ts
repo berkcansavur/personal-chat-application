@@ -34,6 +34,17 @@ export class ReturnUser{
     Friends:any[];
 }
 export type ReturnUserDocument = ReturnUser & Document;
+
+export class ReturnUserForAuth{
+    @Prop({type: String, required: true})
+    email:string;
+
+    @Prop({type: String, required: true})
+    password:string;
+   
+}
+export type ReturnUserForAuthDocument = ReturnUserForAuth & Document
+
 export const UserSchema = new mongoose.Schema({
     name:{type: String , required: true},
     email: {type: String , required: true},
