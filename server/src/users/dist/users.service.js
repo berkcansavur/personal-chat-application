@@ -152,14 +152,15 @@ var UsersService = /** @class */ (function () {
         });
     };
     UsersService.prototype.addFriend = function (_a) {
-        var userId = _a.userId, friend = _a.friend;
+        var userId = _a.userId, friendId = _a.friendId;
         return __awaiter(this, void 0, void 0, function () {
-            var processedUser, _id, name, email, ChatGroups, Friends, updatedUserDTO, error_5;
+            var UserMapper, processedUser, _id, name, email, ChatGroups, Friends, updatedUserDTO, error_5;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.usersRepository.addFriend(userId, friend)];
+                        UserMapper = this.UserMapper;
+                        return [4 /*yield*/, this.usersRepository.addFriend(userId, friendId)];
                     case 1:
                         processedUser = _b.sent();
                         _id = processedUser._id, name = processedUser.name, email = processedUser.email, ChatGroups = processedUser.ChatGroups, Friends = processedUser.Friends;
@@ -241,23 +242,24 @@ var UsersService = /** @class */ (function () {
             });
         });
     };
-    UsersService.prototype.getUsersFriendsInfo = function (userIds) {
+    UsersService.prototype.getUsersFriendsInfo = function (_a) {
+        var userIds = _a.userIds;
         return __awaiter(this, void 0, Promise, function () {
             var UserMapper_1, users, usersData, error_9;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _b.trys.push([0, 2, , 3]);
                         UserMapper_1 = this.UserMapper;
                         return [4 /*yield*/, this.usersRepository.getUserFriends(userIds)];
                     case 1:
-                        users = _a.sent();
+                        users = _b.sent();
                         usersData = Promise.all(users.map(function (user) {
                             return UserMapper_1.map(user, users_model_1.ReturnUser, friend_info_dto_1.FriendInfoDTO);
                         }));
                         return [2 /*return*/, usersData];
                     case 2:
-                        error_9 = _a.sent();
+                        error_9 = _b.sent();
                         throw new Error(error_9);
                     case 3: return [2 /*return*/];
                 }

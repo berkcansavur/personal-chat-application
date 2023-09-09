@@ -56,9 +56,10 @@ export class UsersService implements IUsersService {
             throw new Error(error);
         }
     }
-    async addFriend({userId, friend}:{userId:mongoose.Types.ObjectId, friend:object}) {
+    async addFriend({userId, friendId}:{userId:mongoose.Types.ObjectId, friendId:mongoose.Types.ObjectId}) {
         try {
-            const processedUser = await this.usersRepository.addFriend(userId, friend);
+            const {UserMapper} = this;
+            const processedUser = await this.usersRepository.addFriend(userId, friendId);
             const { _id, name, email, ChatGroups, Friends } = processedUser;
             const updatedUserDTO = new FriendRelatedOperationsDTO();
             updatedUserDTO._id = _id;
@@ -101,7 +102,7 @@ export class UsersService implements IUsersService {
             throw new Error(error);
         }
     }
-    async getUsersFriendsInfo(userIds: mongoose.Types.ObjectId[]): Promise<FriendInfoDTO[]> {
+    async getUsersFriendsInfo({userIds}:{userIds: mongoose.Types.ObjectId[]}): Promise<FriendInfoDTO[]> {
         try {
             const {UserMapper} = this;
             const users = await this.usersRepository.getUserFriends(userIds);
@@ -112,8 +113,7 @@ export class UsersService implements IUsersService {
         } catch (error) {
           throw new Error(error);
         }
-      }
-      
+    }
     async getUsersFriendsData({userId} : {userId: mongoose.Types.ObjectId}) {
         try {
             const friends = await this.usersRepository.getFriendsOfUser(userId);

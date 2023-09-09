@@ -5,5 +5,5 @@ export class FriendRelatedOperationsDTO{
     name: string;
     email: string;
     ChatGroups: mongoose.Types.ObjectId[];
-    Friends: object[];
+    Friends: mongoose.Types.ObjectId[];
 }

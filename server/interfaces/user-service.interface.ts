@@ -10,7 +10,7 @@ export interface IUsersService {
     findUserByEmail({email} : {email:string}):Promise<any>
     addChatGroupToUser({userId, chatGroup} : {userId: mongoose.Types.ObjectId, chatGroup: object}) : Promise<any>;
     removeChatGroupFromUser({user, chatGroup} : {user:any, chatGroup:any}):Promise<any>;
-    addFriend({userId, friend} : {userId:mongoose.Types.ObjectId, friend: object}) : Promise<any>;
+    addFriend({userId, friendId} : {userId:mongoose.Types.ObjectId, friendId: mongoose.Types.ObjectId}) : Promise<any>;
     removeFriend({userId, friendId} : {userId:mongoose.Types.ObjectId, friendId: mongoose.Types.ObjectId}) : Promise<any>;
     getFriendsOfUser({userId} : {userId: mongoose.Types.ObjectId}) :Promise<any>;
     getUserData({userId} : {userId: mongoose.Types.ObjectId}): Promise<any>;

@@ -37,23 +37,19 @@ export class UsersRepository {
         );
         await updatedUser.save();
     }
-    async addFriend(userId:mongoose.Types.ObjectId, friend:object) {
-        const updatedUser = await this.userModel.findByIdAndUpdate(
+    async addFriend(userId:mongoose.Types.ObjectId, friendId:mongoose.Types.ObjectId): Promise<ReturnUserDocument> {
+        return await this.userModel.findByIdAndUpdate(
             userId,
-            {$push:{Friends:friend}},
+            {$push:{ Friends: { _id:friendId } } },
             {new:true}
         );
-        await updatedUser.save();
-        return updatedUser;
     }
-    async removeFriend(userId:mongoose.Types.ObjectId, friendId:mongoose.Types.ObjectId) {
-        const updatedUser = await this.userModel.findByIdAndUpdate(
+    async removeFriend(userId:mongoose.Types.ObjectId, friendId:mongoose.Types.ObjectId): Promise<ReturnUserDocument> {
+        return await this.userModel.findByIdAndUpdate(
             userId,
             { $pull: { Friends: { _id: friendId } } },
             { new: true }
         );
-        await updatedUser.save();
-        return updatedUser;
     }
     async getFriendsOfUser( userId:mongoose.Types.ObjectId) {
         const user = await this.userModel.findOne({ _id: userId });

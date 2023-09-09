@@ -39,7 +39,7 @@ export class AppController {
       const { UserId, UserName, UserEmail, ChatGroups, Friends } = user;
       const [chatGroupDetails, friendsData] = await Promise.all([
         await this.chatGroupService.getChatGroupDetails({chatGroups:ChatGroups}),
-        await this.userService.getUsersFriendsInfo(Friends),
+        await this.userService.getUsersFriendsInfo({userIds:Friends}),
       ]);
       const userProfileInfo = await this.userService.mapUserProfileInfo({id:UserId, name:UserName, email:UserEmail, chatGroupDetails:chatGroupDetails, friendsData:friendsData});
       return userProfileInfo;
@@ -77,8 +77,7 @@ export class AppController {
       if( !req.user ) {
         throw new UnauthorizedException('You must be logged in for adding friend');
       }
-      const friend = await this.userService.findUser( {id:friendId} );
-      const updatedUser = await this.userService.addFriend( {userId: req.user.userId, friend: friend} );
+      const updatedUser = await this.userService.addFriend( {userId: req.user.userId, friendId: friendId} );
       return updatedUser;
   }
   @UseGuards( JwtAuthGuard )
@@ -87,8 +86,7 @@ export class AppController {
       if( !req.user ) {
         throw new UnauthorizedException('You must be logged in for removing friend');
       }
-      const friend = await this.userService.findUser( {id:friendId} );
-      const updatedUser = await this.userService.removeFriend( {userId: req.user.userId,friendId: friend.UserId });
+      const updatedUser = await this.userService.removeFriend( {userId: req.user.userId,friendId: friendId });
       return updatedUser;
   }
   @UseGuards( JwtAuthGuard )
@@ -97,13 +95,8 @@ export class AppController {
     if (!req.user) {
       throw new UnauthorizedException('You must be logged in to view friends');
     }
-    const friends = await this.userService.getFriendsOfUser({userId:req.user.userId});
-
-    const friendsData = await Promise.all(friends.map(async (friend) => {
-      const friendData = await this.userService.getUserData({userId:friend});
-      return friendData;
-    }));
-
+    const friendIds = await this.userService.getFriendsOfUser({userId:req.user.userId});
+    const friendsData = await this.userService.getUsersFriendsInfo({userIds:friendIds})
     return friendsData;
   }
   @UseGuards( JwtAuthGuard )
