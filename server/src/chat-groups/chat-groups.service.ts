@@ -5,7 +5,7 @@ import { User } from 'src/users/users.model';
 import { ChatGroupsRepository } from './chat-groups.repository';
 import { ChatGroupInfoDTO } from './dtos/chat-group-info.dto';
 import { IChatGroupService } from 'interfaces/chat-groups-service.interface';
-import { ReturnChatGroup, ReturnChatGroupDocument } from './chat-groups.model';
+import { ReturnChatGroup } from './chat-groups.model';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { ReturnChatGroupDTO } from './dtos/return-chat-groups.dto';
@@ -45,13 +45,10 @@ export class ChatGroupsService implements IChatGroupService {
     }
     async getChatGroupDetails({chatGroups} : {chatGroups: mongoose.Types.ObjectId[]} ){
         try {
-
+            const {ChatGroupMapper} = this;
             const chatGroupDetails = await Promise.all(chatGroups.map( async (chatGroupId)=>{
                 const chatGroup = await this.getChatGroup({id :chatGroupId});
-                const chatGroupInfoDTO = new ChatGroupInfoDTO();
-                chatGroupInfoDTO._id = chatGroup._id;
-                chatGroupInfoDTO.chatGroupName = chatGroup.chatGroupName;
-                return chatGroupInfoDTO;
+                return ChatGroupMapper.map<ReturnChatGroupDTO, ChatGroupInfoDTO>(chatGroup,ReturnChatGroupDTO,ChatGroupInfoDTO); 
             }));
             return chatGroupDetails;
         } catch (error) {

@@ -23,8 +23,8 @@ export class ChatGroupsController {
         if (!session.CurrentUser._id) {
             throw new UnauthorizedException('You need to login to create a chat group');
         }
-        const user = await this.usersService.findUser(session.CurrentUser._id);
-        const newChatGroup = await this.chatGroupsService.createChatGroup({chatGroup:body,creatorUser:user});
+        const newChatGroup = await this.chatGroupsService.createChatGroup({createChatGroupDTO:body});
+        await this.chatGroupsService.addUserToChatGroup({chatGroupId:newChatGroup._id,userId:session.CurrentUser._id})
         return newChatGroup;
     }
     @Get('/get-users/:id')

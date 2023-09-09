@@ -11,6 +11,7 @@ import { MessagesService } from './messages/messages.service';
 import { ReturnUserProfile } from './users/users.model';
 import { ChatGroupInfoDTO } from './chat-groups/dtos/chat-group-info.dto';
 import { FriendInfoDTO } from './users/dtos/friend-info.dto';
+import { ReturnChatGroupDTO } from './chat-groups/dtos/return-chat-groups.dto';
 
 @Controller('app')
 export class AppController {
@@ -110,12 +111,13 @@ export class AppController {
   }
   @UseGuards( JwtAuthGuard )
   @Post('/create-chat-group')
-  async createChatGroup( @Body() body:CreateChatGroupDTO, @Request() req ):Promise<ChatGroupInfoDTO> {
+  async createChatGroup( @Body() body:CreateChatGroupDTO, @Request() req ): Promise<ReturnChatGroupDTO> {
       if (!req.user) {
         throw new UnauthorizedException('You need to login to create a chat group');
       }
-      const user = await this.userService.findUser( req.user.userId );
-      const newChatGroup = await this.chatGroupService.createChatGroup( {chatGroup:body,creatorUser: user} );
+
+      const newChatGroup = await this.chatGroupService.createChatGroup( {createChatGroupDTO:body} );
+      await this.chatGroupService.addUserToChatGroup({chatGroupId:newChatGroup._id, userId:req.user.userId });
       await this.userService.addChatGroupToUser( {userId:req.user.userId, chatGroupId: newChatGroup._id });
       return newChatGroup;
   }
