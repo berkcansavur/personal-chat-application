@@ -8,6 +8,8 @@ import { ChatGroupsService } from './chat-groups/chat-groups.service';
 import mongoose from 'mongoose';
 import { CreateChatGroupDTO } from './chat-groups/dtos/create-chat-group.dto';
 import { MessagesService } from './messages/messages.service';
+import { UserProfileInfoDTO } from './users/dtos/user-profile-info.dto';
+import { ReturnUserProfile } from './users/users.model';
 
 @Controller('app')
 export class AppController {
@@ -31,14 +33,15 @@ export class AppController {
 
   @UseGuards( JwtAuthGuard )
   @Get('/me')
-  async getUserProfile(@Request() req ){
+  async getUserProfile(@Request() req ) : Promise<ReturnUserProfile>{
     try {
       const user = await this.userService.findUser( {id:req.user.userId} );
-      const { _id, name, email, ChatGroups } = user;
-      const friendsData = await this.userService.getUsersFriendsData({userId:req.user.userId});
-      const chatGroupDetails = await this.chatGroupService.getChatGroupDetails({chatGroups:ChatGroups});
-      const userProfileInfo = await this.userService.getUserProfileInfo({id:_id, name:name, email:email, chatGroupDetails:chatGroupDetails, friendsData:friendsData});
-      
+      const { UserId, UserName, UserEmail, ChatGroups, Friends } = user;
+      const [chatGroupDetails, friendsData] = await Promise.all([
+        await this.chatGroupService.getChatGroupDetails({chatGroups:ChatGroups}),
+        await this.userService.getUsersFriendsInfo({userIds:Friends}),
+      ]);
+      const userProfileInfo = await this.userService.mapUserProfileInfo({id:UserId, name:UserName, email:UserEmail, chatGroupDetails:chatGroupDetails, friendsData:friendsData});
       return userProfileInfo;
     } catch (error) {
       throw new Error(error);
@@ -74,8 +77,7 @@ export class AppController {
       if( !req.user ) {
         throw new UnauthorizedException('You must be logged in for adding friend');
       }
-      const friend = await this.userService.findUser( {id:friendId} );
-      const updatedUser = await this.userService.addFriend( {userId: req.user.userId, friend: friend} );
+      const updatedUser = await this.userService.addFriend( {userId: req.user.userId, friendId: friendId} );
       return updatedUser;
   }
   @UseGuards( JwtAuthGuard )
@@ -84,8 +86,7 @@ export class AppController {
       if( !req.user ) {
         throw new UnauthorizedException('You must be logged in for removing friend');
       }
-      const friend = await this.userService.findUser( {id:friendId} );
-      const updatedUser = await this.userService.removeFriend( {userId: req.user.userId,friendId: friend._id });
+      const updatedUser = await this.userService.removeFriend( {userId: req.user.userId,friendId: friendId });
       return updatedUser;
   }
   @UseGuards( JwtAuthGuard )
@@ -94,13 +95,8 @@ export class AppController {
     if (!req.user) {
       throw new UnauthorizedException('You must be logged in to view friends');
     }
-    const friends = await this.userService.getFriendsOfUser({userId:req.user.userId});
-
-    const friendsData = await Promise.all(friends.map(async (friend) => {
-      const friendData = await this.userService.getUserData({userObject:friend});
-      return friendData;
-    }));
-
+    const friendIds = await this.userService.getFriendsOfUser({userId:req.user.userId});
+    const friendsData = await this.userService.getUsersFriendsInfo({userIds:friendIds})
     return friendsData;
   }
   @UseGuards( JwtAuthGuard )
@@ -112,7 +108,7 @@ export class AppController {
     const friends = await this.chatGroupService.getChatGroupsUsers({chatGroupId: chatGroupId});
 
     const friendsData = await Promise.all(friends.map(async (friend) => {
-      const friendData = await this.userService.getUserData({userObject: friend});
+      const friendData = await this.userService.getUserData({userId: friend});
       return friendData;
     }));
     return friendsData;

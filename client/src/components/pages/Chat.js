@@ -108,7 +108,7 @@ function Chat() {
 
   const handleSubmitNewMessage = () => {
     if (message.trim() !== "") {
-      socket.emit('createMessage', { chatGroupID: chatGroupId, senderUser:user.UserId, text: message });
+      socket.emit('createMessage', { chatGroupID: chatGroupId, senderUser:user._id, text: message });
       setMessage(""); // Reset the message input
     }
   }

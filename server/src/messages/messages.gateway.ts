@@ -35,7 +35,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
       const user = await this.userService.findUser({id:senderUser});
       const messageDto = new MessageDTO()
       messageDto.chatGroupID = chatGroupID;
-      messageDto.senderUser = user.name;
+      messageDto.senderUser = user.UserName;
       messageDto.text = text;
       const message = await this.messagesService.create({messageDto});
   
@@ -48,7 +48,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
       const friends = await this.userService.getFriendsOfUser({userId});
       const friendsData = [];
       for( const friend of friends ) {
-        const friendData = await this.userService.getUserData( {userObject:friend} );
+        const friendData = await this.userService.getUserData( {userId: friend} );
         friendsData.push( friendData );
       }
       this.server.to('getFriendEvent').emit('getFriends', friendsData );
@@ -67,7 +67,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
       const friends = await this.chatGroupService.getChatGroupsUsers({chatGroupId: chatGroupId});
       const friendsData = [];
       for( const friend of friends ) {
-        const friendData = await this.userService.getUserData( {userObject:friend} );
+        const friendData = await this.userService.getUserData( {userId: friend} );
         friendsData.push( friendData );
       }
       this.server.to('getChatGroupUsersEvent').emit('getChatGroupUsers', friendsData  );

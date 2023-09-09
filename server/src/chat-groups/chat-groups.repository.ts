@@ -29,7 +29,7 @@ export class ChatGroupsRepository {
         if (!chatGroup) {
             throw new Error('Chat group not found');
         }
-        const users: object[] = chatGroup.users.map((user)=>user);
+        const users = chatGroup.users;
         return users;
     }
     async addUserToChatGroup(chatGroupId: mongoose.Types.ObjectId, user: User){
