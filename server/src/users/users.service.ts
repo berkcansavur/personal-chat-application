@@ -17,7 +17,7 @@ export class UsersService implements IUsersService {
     
     constructor( 
         private usersRepository: UsersRepository,
-        @InjectMapper() private readonly UserMapper: Mapper,
+        @InjectMapper() private readonly UserMapper: Mapper
         ){}
 
     async createUser({createUserDTO}:{createUserDTO: CreateUserDTO}): Promise<ReturnUserDTO>{
