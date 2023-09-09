@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import { UsersRepository } from './users.repository';
 import { UserProfileInfoDTO } from './dtos/user-profile-info.dto';
 import { ChatGroupInfoDTO } from 'src/chat-groups/dtos/chat-group-info.dto';
-import { FriendRelatedOperationsDTO } from './dtos/add-or-remove-friend.dto';
 import { IUsersService } from 'interfaces/user-service.interface';
 import { CreateUserDTO } from './dtos/create-user.dto';
 import { InjectMapper } from '@automapper/nestjs';
@@ -56,33 +55,20 @@ export class UsersService implements IUsersService {
             throw new Error(error);
         }
     }
-    async addFriend({userId, friendId}:{userId:mongoose.Types.ObjectId, friendId:mongoose.Types.ObjectId}) {
+    async addFriend({userId, friendId}:{userId:mongoose.Types.ObjectId, friendId:mongoose.Types.ObjectId}): Promise<FriendInfoDTO> {
         try {
             const {UserMapper} = this;
             const processedUser = await this.usersRepository.addFriend(userId, friendId);
-            const { _id, name, email, ChatGroups, Friends } = processedUser;
-            const updatedUserDTO = new FriendRelatedOperationsDTO();
-            updatedUserDTO._id = _id;
-            updatedUserDTO.name = name;
-            updatedUserDTO.email = email;
-            updatedUserDTO.ChatGroups = ChatGroups;
-            updatedUserDTO.Friends = Friends;
-            return updatedUserDTO;
+            return UserMapper.map<ReturnUser,FriendInfoDTO>(processedUser, ReturnUser, FriendInfoDTO)
         } catch (error) {
             throw new Error(error);
         }
     }
-    async removeFriend({userId, friendId}:{userId:mongoose.Types.ObjectId, friendId:mongoose.Types.ObjectId}) {
+    async removeFriend({userId, friendId}:{userId:mongoose.Types.ObjectId, friendId:mongoose.Types.ObjectId}): Promise<FriendInfoDTO> {
         try {
+            const {UserMapper} = this;
             const processedUser = await this.usersRepository.removeFriend(userId, friendId);
-            const { _id, name, email, ChatGroups, Friends } = processedUser;
-            const updatedUserDTO = new FriendRelatedOperationsDTO();
-            updatedUserDTO._id = _id;
-            updatedUserDTO.name = name;
-            updatedUserDTO.email = email;
-            updatedUserDTO.ChatGroups = ChatGroups;
-            updatedUserDTO.Friends = Friends;
-            return updatedUserDTO;
+            return UserMapper.map<ReturnUser,FriendInfoDTO>(processedUser, ReturnUser, FriendInfoDTO)
 
         } catch (error) {
             throw new Error(error);

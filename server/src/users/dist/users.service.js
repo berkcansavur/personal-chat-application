@@ -48,7 +48,6 @@ exports.__esModule = true;
 exports.UsersService = void 0;
 var common_1 = require("@nestjs/common");
 var user_profile_info_dto_1 = require("./dtos/user-profile-info.dto");
-var add_or_remove_friend_dto_1 = require("./dtos/add-or-remove-friend.dto");
 var nestjs_1 = require("@automapper/nestjs");
 var users_model_1 = require("./users.model");
 var return_user_dto_1 = require("./dtos/return-user.dto");
@@ -153,8 +152,8 @@ var UsersService = /** @class */ (function () {
     };
     UsersService.prototype.addFriend = function (_a) {
         var userId = _a.userId, friendId = _a.friendId;
-        return __awaiter(this, void 0, void 0, function () {
-            var UserMapper, processedUser, _id, name, email, ChatGroups, Friends, updatedUserDTO, error_5;
+        return __awaiter(this, void 0, Promise, function () {
+            var UserMapper, processedUser, error_5;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -163,14 +162,7 @@ var UsersService = /** @class */ (function () {
                         return [4 /*yield*/, this.usersRepository.addFriend(userId, friendId)];
                     case 1:
                         processedUser = _b.sent();
-                        _id = processedUser._id, name = processedUser.name, email = processedUser.email, ChatGroups = processedUser.ChatGroups, Friends = processedUser.Friends;
-                        updatedUserDTO = new add_or_remove_friend_dto_1.FriendRelatedOperationsDTO();
-                        updatedUserDTO._id = _id;
-                        updatedUserDTO.name = name;
-                        updatedUserDTO.email = email;
-                        updatedUserDTO.ChatGroups = ChatGroups;
-                        updatedUserDTO.Friends = Friends;
-                        return [2 /*return*/, updatedUserDTO];
+                        return [2 /*return*/, UserMapper.map(processedUser, users_model_1.ReturnUser, friend_info_dto_1.FriendInfoDTO)];
                     case 2:
                         error_5 = _b.sent();
                         throw new Error(error_5);
@@ -181,23 +173,17 @@ var UsersService = /** @class */ (function () {
     };
     UsersService.prototype.removeFriend = function (_a) {
         var userId = _a.userId, friendId = _a.friendId;
-        return __awaiter(this, void 0, void 0, function () {
-            var processedUser, _id, name, email, ChatGroups, Friends, updatedUserDTO, error_6;
+        return __awaiter(this, void 0, Promise, function () {
+            var UserMapper, processedUser, error_6;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
+                        UserMapper = this.UserMapper;
                         return [4 /*yield*/, this.usersRepository.removeFriend(userId, friendId)];
                     case 1:
                         processedUser = _b.sent();
-                        _id = processedUser._id, name = processedUser.name, email = processedUser.email, ChatGroups = processedUser.ChatGroups, Friends = processedUser.Friends;
-                        updatedUserDTO = new add_or_remove_friend_dto_1.FriendRelatedOperationsDTO();
-                        updatedUserDTO._id = _id;
-                        updatedUserDTO.name = name;
-                        updatedUserDTO.email = email;
-                        updatedUserDTO.ChatGroups = ChatGroups;
-                        updatedUserDTO.Friends = Friends;
-                        return [2 /*return*/, updatedUserDTO];
+                        return [2 /*return*/, UserMapper.map(processedUser, users_model_1.ReturnUser, friend_info_dto_1.FriendInfoDTO)];
                     case 2:
                         error_6 = _b.sent();
                         throw new Error(error_6);
