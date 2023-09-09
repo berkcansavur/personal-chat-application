@@ -52,6 +52,7 @@ var nestjs_1 = require("@automapper/nestjs");
 var users_model_1 = require("./users.model");
 var return_user_dto_1 = require("./dtos/return-user.dto");
 var friend_info_dto_1 = require("./dtos/friend-info.dto");
+var user_tobe_validate_dto_1 = require("./dtos/user-tobe-validate.dto");
 var UsersService = /** @class */ (function () {
     function UsersService(usersRepository, UserMapper) {
         this.usersRepository = usersRepository;
@@ -94,16 +95,19 @@ var UsersService = /** @class */ (function () {
             });
         });
     };
-    UsersService.prototype.findUserByEmail = function (_a) {
-        var email = _a.email;
-        return __awaiter(this, void 0, void 0, function () {
-            var error_2;
+    UsersService.prototype.getUserToBeValidate = function (_a) {
+        var id = _a.id;
+        return __awaiter(this, void 0, Promise, function () {
+            var UserMapper, user, error_2;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.usersRepository.findByEmail(email)];
-                    case 1: return [2 /*return*/, _b.sent()];
+                        UserMapper = this.UserMapper;
+                        return [4 /*yield*/, this.usersRepository.findUserByObjectIdForValidating(id)];
+                    case 1:
+                        user = _b.sent();
+                        return [2 /*return*/, UserMapper.map(user, users_model_1.UserToBeValidate, user_tobe_validate_dto_1.UserToBeValidateDTO)];
                     case 2:
                         error_2 = _b.sent();
                         throw new Error(error_2);
@@ -112,16 +116,19 @@ var UsersService = /** @class */ (function () {
             });
         });
     };
-    UsersService.prototype.addChatGroupToUser = function (_a) {
-        var userId = _a.userId, chatGroup = _a.chatGroup;
-        return __awaiter(this, void 0, void 0, function () {
-            var error_3;
+    UsersService.prototype.findUserByEmail = function (_a) {
+        var email = _a.email;
+        return __awaiter(this, void 0, Promise, function () {
+            var UserMapper, user, error_3;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.usersRepository.addChatGroupToUser(userId, chatGroup)];
-                    case 1: return [2 /*return*/, _b.sent()];
+                        UserMapper = this.UserMapper;
+                        return [4 /*yield*/, this.usersRepository.findByEmail(email)];
+                    case 1:
+                        user = _b.sent();
+                        return [2 /*return*/, UserMapper.map(user, users_model_1.ReturnUser, user_profile_info_dto_1.UserProfileInfoDTO)];
                     case 2:
                         error_3 = _b.sent();
                         throw new Error(error_3);
@@ -130,18 +137,19 @@ var UsersService = /** @class */ (function () {
             });
         });
     };
-    UsersService.prototype.removeChatGroupFromUser = function (_a) {
-        var user = _a.user, chatGroup = _a.chatGroup;
-        return __awaiter(this, void 0, void 0, function () {
-            var error_4;
+    UsersService.prototype.addChatGroupToUser = function (_a) {
+        var userId = _a.userId, chatGroupId = _a.chatGroupId;
+        return __awaiter(this, void 0, Promise, function () {
+            var UserMapper, user, error_4;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.usersRepository.removeChatGroupFromUser(user, chatGroup)];
+                        UserMapper = this.UserMapper;
+                        return [4 /*yield*/, this.usersRepository.addChatGroupToUser(userId, chatGroupId)];
                     case 1:
-                        _b.sent();
-                        return [3 /*break*/, 3];
+                        user = _b.sent();
+                        return [2 /*return*/, UserMapper.map(user, users_model_1.ReturnUser, user_profile_info_dto_1.UserProfileInfoDTO)];
                     case 2:
                         error_4 = _b.sent();
                         throw new Error(error_4);
@@ -150,19 +158,19 @@ var UsersService = /** @class */ (function () {
             });
         });
     };
-    UsersService.prototype.addFriend = function (_a) {
-        var userId = _a.userId, friendId = _a.friendId;
+    UsersService.prototype.removeChatGroupFromUser = function (_a) {
+        var userId = _a.userId, chatGroupId = _a.chatGroupId;
         return __awaiter(this, void 0, Promise, function () {
-            var UserMapper, processedUser, error_5;
+            var UserMapper, user, error_5;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
                         UserMapper = this.UserMapper;
-                        return [4 /*yield*/, this.usersRepository.addFriend(userId, friendId)];
+                        return [4 /*yield*/, this.usersRepository.removeChatGroupFromUser(userId, chatGroupId)];
                     case 1:
-                        processedUser = _b.sent();
-                        return [2 /*return*/, UserMapper.map(processedUser, users_model_1.ReturnUser, friend_info_dto_1.FriendInfoDTO)];
+                        user = _b.sent();
+                        return [2 /*return*/, UserMapper.map(user, users_model_1.ReturnUser, user_profile_info_dto_1.UserProfileInfoDTO)];
                     case 2:
                         error_5 = _b.sent();
                         throw new Error(error_5);
@@ -171,7 +179,7 @@ var UsersService = /** @class */ (function () {
             });
         });
     };
-    UsersService.prototype.removeFriend = function (_a) {
+    UsersService.prototype.addFriend = function (_a) {
         var userId = _a.userId, friendId = _a.friendId;
         return __awaiter(this, void 0, Promise, function () {
             var UserMapper, processedUser, error_6;
@@ -180,7 +188,7 @@ var UsersService = /** @class */ (function () {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
                         UserMapper = this.UserMapper;
-                        return [4 /*yield*/, this.usersRepository.removeFriend(userId, friendId)];
+                        return [4 /*yield*/, this.usersRepository.addFriend(userId, friendId)];
                     case 1:
                         processedUser = _b.sent();
                         return [2 /*return*/, UserMapper.map(processedUser, users_model_1.ReturnUser, friend_info_dto_1.FriendInfoDTO)];
@@ -192,16 +200,19 @@ var UsersService = /** @class */ (function () {
             });
         });
     };
-    UsersService.prototype.getFriendsOfUser = function (_a) {
-        var userId = _a.userId;
-        return __awaiter(this, void 0, void 0, function () {
-            var error_7;
+    UsersService.prototype.removeFriend = function (_a) {
+        var userId = _a.userId, friendId = _a.friendId;
+        return __awaiter(this, void 0, Promise, function () {
+            var UserMapper, processedUser, error_7;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.usersRepository.getFriendsOfUser(userId)];
-                    case 1: return [2 /*return*/, _b.sent()];
+                        UserMapper = this.UserMapper;
+                        return [4 /*yield*/, this.usersRepository.removeFriend(userId, friendId)];
+                    case 1:
+                        processedUser = _b.sent();
+                        return [2 /*return*/, UserMapper.map(processedUser, users_model_1.ReturnUser, friend_info_dto_1.FriendInfoDTO)];
                     case 2:
                         error_7 = _b.sent();
                         throw new Error(error_7);
@@ -210,10 +221,28 @@ var UsersService = /** @class */ (function () {
             });
         });
     };
+    UsersService.prototype.getFriendIdsOfUser = function (_a) {
+        var userId = _a.userId;
+        return __awaiter(this, void 0, Promise, function () {
+            var error_8;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.usersRepository.getFriendsOfUser(userId)];
+                    case 1: return [2 /*return*/, _b.sent()];
+                    case 2:
+                        error_8 = _b.sent();
+                        throw new Error(error_8);
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     UsersService.prototype.getUsersFriendsInfo = function (_a) {
         var userIds = _a.userIds;
         return __awaiter(this, void 0, Promise, function () {
-            var UserMapper_1, users, usersData, error_8;
+            var UserMapper_1, users, usersData, error_9;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -227,8 +256,8 @@ var UsersService = /** @class */ (function () {
                         }));
                         return [2 /*return*/, usersData];
                     case 2:
-                        error_8 = _b.sent();
-                        throw new Error(error_8);
+                        error_9 = _b.sent();
+                        throw new Error(error_9);
                     case 3: return [2 /*return*/];
                 }
             });

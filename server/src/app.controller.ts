@@ -50,9 +50,8 @@ export class AppController {
   @Post('/add-friends-to-chat-group/:chatGroupId/:friendId')
   async addFriendsToChatGroup(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId ,@Param('friendId') friendId: mongoose.Types.ObjectId ){
     try {
-      const friendToAdd = await this.userService.findUser( {id:friendId} );
-      const updatedChatGroup = await this.chatGroupService.addUserToChatGroup( {chatGroupId: chatGroupId,user: friendToAdd} );
-      await this.userService.addChatGroupToUser( {userId:friendId, chatGroup:updatedChatGroup} );
+      const updatedChatGroup = await this.chatGroupService.addUserToChatGroup( {chatGroupId: chatGroupId,userId: friendId} );
+      const user = await this.userService.addChatGroupToUser( {userId:friendId, chatGroupId:updatedChatGroup._id} );
       return updatedChatGroup ;
     } catch (error) {
       throw new Error(error);
@@ -62,9 +61,8 @@ export class AppController {
   @Post('/remove-friends-from-chat-group/:chatGroupId/:friendId')
   async removeFriendsFromChatGroup(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId, @Param('friendId') friendId: mongoose.Types.ObjectId ){
     try {
-      const friendToRemove = await this.userService.findUser( {id:friendId} );
       const updatedChatGroup = await this.chatGroupService.removeUserFromChatGroup( {chatGroupId:chatGroupId, userId: friendId} );
-      await this.userService.removeChatGroupFromUser({user: friendToRemove,chatGroup: updatedChatGroup});
+      await this.userService.removeChatGroupFromUser({userId: friendId ,chatGroupId: updatedChatGroup._id});
       return updatedChatGroup;
     } catch (error) {
       throw new Error(error);
@@ -94,7 +92,7 @@ export class AppController {
     if (!req.user) {
       throw new UnauthorizedException('You must be logged in to view friends');
     }
-    const friendIds = await this.userService.getFriendsOfUser({userId:req.user.userId});
+    const friendIds = await this.userService.getFriendIdsOfUser({userId:req.user.userId});
     const friendsData = await this.userService.getUsersFriendsInfo({userIds:friendIds})
     return friendsData;
   }
@@ -116,7 +114,7 @@ export class AppController {
       }
       const user = await this.userService.findUser( req.user.userId );
       const newChatGroup = await this.chatGroupService.createChatGroup( {chatGroup:body,creatorUser: user} );
-      await this.userService.addChatGroupToUser( {userId:req.user.userId,chatGroup: newChatGroup });
+      await this.userService.addChatGroupToUser( {userId:req.user.userId, chatGroupId: newChatGroup._id });
       return newChatGroup;
   }
   @UseGuards( JwtAuthGuard )
@@ -126,7 +124,7 @@ export class AppController {
       const chatGroupToBeDelete = await this.chatGroupService.getChatGroup( {id:chatGroupId} );
       const usersOfChatGroup = await this.chatGroupService.getChatGroupsUsers({chatGroupId: chatGroupId});
       const deleteChatGroupFromUsers = usersOfChatGroup.map(async (user) => {
-        await this.userService.removeChatGroupFromUser({user:user,chatGroup: chatGroupToBeDelete});
+        await this.userService.removeChatGroupFromUser({userId:user,chatGroupId: chatGroupToBeDelete._id});
       });
       await Promise.all(deleteChatGroupFromUsers);
       await this.chatGroupService.deleteChatGroup({chatGroupId:chatGroupId});
