@@ -32,16 +32,16 @@ export class ChatGroupsController {
         const users = await this.chatGroupsService.getChatGroupsUsers({chatGroupId :id});
         return users;
     }
-    @Post('/add-user')
-    async addUserToChatGroup(@Body() body:{ chatGroupId: mongoose.Types.ObjectId }, @Session() session:any){
-        try {
+    // @Post('/add-user')
+    // async addUserToChatGroup(@Body() body:{ chatGroupId: mongoose.Types.ObjectId }, @Session() session:any){
+    //     try {
             
-            const user = await this.usersService.findUser(session.CurrentUser._id);
-            return await this.chatGroupsService.addUserToChatGroup({chatGroupId :body.chatGroupId,user :user});
-        } catch (error) {
-            throw new Error(error);
-        }
-    }
+    //         const user = await this.usersService.findUser(session.CurrentUser._id);
+    //         return await this.chatGroupsService.addUserToChatGroup({chatGroupId :body.chatGroupId,userId :user});
+    //     } catch (error) {
+    //         throw new Error(error);
+    //     }
+    // }
     @Post('/remove-user/:id')
     async removeUserFromChatGroup(@Param('id') chatGroupId: mongoose.Types.ObjectId, @Body() body:{ userId: mongoose.Types.ObjectId }){
         try {

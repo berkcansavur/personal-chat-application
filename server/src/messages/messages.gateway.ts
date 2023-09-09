@@ -45,7 +45,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
     @SubscribeMessage('getFriends')
     async getFriends(@MessageBody() payload:{ userId:mongoose.Types.ObjectId,}) {
       const { userId } = payload;
-      const friendIds = await this.userService.getFriendsOfUser({userId});
+      const friendIds = await this.userService.getFriendIdsOfUser({userId});
       const friendsData = await this.userService.getUsersFriendsInfo({userIds:friendIds});
       this.server.to('getFriendEvent').emit('getFriends', friendsData );
       return friendsData ;

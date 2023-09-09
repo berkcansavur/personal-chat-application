@@ -32,10 +32,10 @@ export class ChatGroupsRepository {
         const users = chatGroup.users;
         return users;
     }
-    async addUserToChatGroup(chatGroupId: mongoose.Types.ObjectId, user: User){
+    async addUserToChatGroup(chatGroupId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId){
         const updatedChatGroup = await this.ChatGroupsModel.findByIdAndUpdate(
             chatGroupId,
-            {$push:{users:user}},
+            {$push: { users: { _id: userId } } },
             {new:true}
         );
         await updatedChatGroup.save();

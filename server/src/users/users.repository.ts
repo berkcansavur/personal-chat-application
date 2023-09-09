@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import mongoose, { Model } from 'mongoose';
-import { ReturnUser, ReturnUserDocument, User } from './users.model';
+import { ReturnUser, ReturnUserDocument, User, UserToBeValidateDocument } from './users.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserDataDTO } from './dtos/user-data.dto';
 import { CreateUserDTO } from './dtos/create-user.dto';
@@ -15,27 +15,26 @@ export class UsersRepository {
     async findUserByObjectId( id: mongoose.Types.ObjectId): Promise<ReturnUserDocument>{
         return await this.userModel.findOne({ _id: id });
     }
-    async findByEmail(email: string){
+    async findUserByObjectIdForValidating( id: mongoose.Types.ObjectId): Promise<UserToBeValidateDocument>{
+        return await this.userModel.findOne({ _id: id });
+    }
+    async findByEmail(email: string): Promise<ReturnUserDocument>{
         return this.userModel.findOne({email: email});
     }
-    async addChatGroupToUser(userId:mongoose.Types.ObjectId, chatGroup:object){
-        const updatedUser = await this.userModel.findByIdAndUpdate(
+    async addChatGroupToUser(userId:mongoose.Types.ObjectId, chatGroupId:mongoose.Types.ObjectId): Promise<ReturnUserDocument>{
+        return await this.userModel.findByIdAndUpdate(
             userId,
-            {$push:{ChatGroups:chatGroup}},
+            {$push:{ ChatGroups: {_id: chatGroupId } }},
             {new:true}
         );
-        await updatedUser.save();
-        return updatedUser;
     }
-    async removeChatGroupFromUser(user , chatGroup ){
-        const userId: string = user._id;
-        const chatGroupId: string = chatGroup._id;
-        const updatedUser = await this.userModel.findByIdAndUpdate(
+    async removeChatGroupFromUser(userId:mongoose.Types.ObjectId, chatGroupId:mongoose.Types.ObjectId ): Promise<ReturnUserDocument>{
+        return await this.userModel.findByIdAndUpdate(
             userId,
             { $pull: { ChatGroups: {_id: chatGroupId } } },
             { new:true }
         );
-        await updatedUser.save();
+        
     }
     async addFriend(userId:mongoose.Types.ObjectId, friendId:mongoose.Types.ObjectId): Promise<ReturnUserDocument> {
         return await this.userModel.findByIdAndUpdate(
@@ -51,7 +50,7 @@ export class UsersRepository {
             { new: true }
         );
     }
-    async getFriendsOfUser( userId:mongoose.Types.ObjectId) {
+    async getFriendsOfUser( userId:mongoose.Types.ObjectId): Promise<mongoose.Types.ObjectId[]> {
         const user = await this.userModel.findOne({ _id: userId });
         const friends = user.Friends;
         return friends;

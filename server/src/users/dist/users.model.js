@@ -6,7 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 exports.__esModule = true;
-exports.UserSchema = exports.ReturnUserProfile = exports.ReturnUser = exports.UserEntity = void 0;
+exports.UserSchema = exports.ReturnUserProfile = exports.UserToBeValidate = exports.ReturnUser = exports.UserEntity = void 0;
 var mongoose_1 = require("@nestjs/mongoose");
 var mongoose = require("mongoose");
 var mongoose_2 = require("mongoose");
@@ -37,6 +37,21 @@ var ReturnUser = /** @class */ (function () {
     return ReturnUser;
 }());
 exports.ReturnUser = ReturnUser;
+var UserToBeValidate = /** @class */ (function () {
+    function UserToBeValidate() {
+    }
+    __decorate([
+        mongoose_1.Prop({ type: mongoose_2.Schema.Types.ObjectId, auto: true })
+    ], UserToBeValidate.prototype, "_id");
+    __decorate([
+        mongoose_1.Prop({ type: String, required: true })
+    ], UserToBeValidate.prototype, "email");
+    __decorate([
+        mongoose_1.Prop({ type: String, required: true })
+    ], UserToBeValidate.prototype, "password");
+    return UserToBeValidate;
+}());
+exports.UserToBeValidate = UserToBeValidate;
 var ReturnUserProfile = /** @class */ (function () {
     function ReturnUserProfile() {
     }

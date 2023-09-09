@@ -67,9 +67,9 @@ export class ChatGroupsService implements IChatGroupService {
             throw new Error(error.message);
           }
     }
-    async addUserToChatGroup( {chatGroupId,user}:{chatGroupId:mongoose.Types.ObjectId, user:any} ){
+    async addUserToChatGroup( {chatGroupId,userId}:{chatGroupId:mongoose.Types.ObjectId, userId:mongoose.Types.ObjectId} ){
         try {
-            const processedChatGroup = await this.chatGroupsRepository.addUserToChatGroup(chatGroupId, user);
+            const processedChatGroup = await this.chatGroupsRepository.addUserToChatGroup(chatGroupId, userId);
             const chatGroupDTO = new ChatGroupInfoDTO();
             chatGroupDTO._id = processedChatGroup._id;
             chatGroupDTO.chatGroupName = processedChatGroup.chatGroupName;

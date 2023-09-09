@@ -7,9 +7,10 @@ import { IUsersService } from 'interfaces/user-service.interface';
 import { CreateUserDTO } from './dtos/create-user.dto';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
-import { ReturnUser, ReturnUserProfile } from './users.model';
+import { ReturnUser, ReturnUserProfile, UserToBeValidate } from './users.model';
 import { ReturnUserDTO } from './dtos/return-user.dto';
 import { FriendInfoDTO } from './dtos/friend-info.dto';
+import { UserToBeValidateDTO } from './dtos/user-tobe-validate.dto';
 
 @Injectable()
 export class UsersService implements IUsersService {
@@ -34,23 +35,38 @@ export class UsersService implements IUsersService {
             throw new Error(error);
         }
     }
-    async findUserByEmail({email}:{email: string}){
+    async getUserToBeValidate({id}:{id: mongoose.Types.ObjectId} ): Promise<UserToBeValidateDTO>{
         try {
-            return await this.usersRepository.findByEmail(email);
+            const {UserMapper} = this;
+            const user = await this.usersRepository.findUserByObjectIdForValidating(id);
+            return UserMapper.map<UserToBeValidate, UserToBeValidateDTO>(user, UserToBeValidate, UserToBeValidateDTO);
         } catch (error) {
             throw new Error(error);
         }
     }
-    async addChatGroupToUser({userId,chatGroup}:{userId:mongoose.Types.ObjectId, chatGroup:object}){
+    async findUserByEmail({email}:{email: string}): Promise<UserProfileInfoDTO>{
         try {
-            return await this.usersRepository.addChatGroupToUser(userId, chatGroup);
+            const {UserMapper} = this;
+            const user = await this.usersRepository.findByEmail(email);
+            return UserMapper.map<ReturnUser, UserProfileInfoDTO>(user, ReturnUser, UserProfileInfoDTO);
         } catch (error) {
             throw new Error(error);
         }
     }
-    async removeChatGroupFromUser({user , chatGroup}:{user:any , chatGroup:any} ){
+    async addChatGroupToUser({userId,chatGroupId}:{userId:mongoose.Types.ObjectId, chatGroupId:mongoose.Types.ObjectId}): Promise<UserProfileInfoDTO>{
         try {
-            await this.usersRepository.removeChatGroupFromUser(user,chatGroup);
+            const {UserMapper} = this;
+            const user = await this.usersRepository.addChatGroupToUser(userId, chatGroupId);
+            return UserMapper.map<ReturnUser, UserProfileInfoDTO>(user, ReturnUser, UserProfileInfoDTO);
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+    async removeChatGroupFromUser({userId,chatGroupId}:{userId:mongoose.Types.ObjectId, chatGroupId:mongoose.Types.ObjectId} ): Promise<UserProfileInfoDTO>{
+        try {
+            const {UserMapper} = this;
+            const user = await this.usersRepository.removeChatGroupFromUser(userId,chatGroupId);
+            return UserMapper.map<ReturnUser, UserProfileInfoDTO>(user, ReturnUser, UserProfileInfoDTO);
         } catch (error) {
             throw new Error(error);
         }
@@ -74,7 +90,7 @@ export class UsersService implements IUsersService {
             throw new Error(error);
         }
     }
-    async getFriendsOfUser( {userId} : {userId: mongoose.Types.ObjectId}) {
+    async getFriendIdsOfUser( {userId} : {userId: mongoose.Types.ObjectId}): Promise<mongoose.Types.ObjectId[]> {
         try {
             return await this.usersRepository.getFriendsOfUser(userId);
         } catch (error) {

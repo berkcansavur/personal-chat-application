@@ -35,6 +35,17 @@ export class ReturnUser{
     @Prop({type: []})
     Friends:any[];
 }
+export class UserToBeValidate{
+    @Prop({type: mSchema.Types.ObjectId, auto: true})
+    _id:Types.ObjectId;
+
+    @Prop({type: String, required: true})
+    email:string;
+
+    @Prop({type: String, required: true})
+    password:string;
+    
+}
 export class ReturnUserProfile{
     @Prop({type: mSchema.Types.ObjectId, auto: true})
     _id:Types.ObjectId;
@@ -52,6 +63,7 @@ export class ReturnUserProfile{
     Friends:FriendInfoDTO[];
 }
 export type ReturnUserProfileDocument = ReturnUserProfile & Document;
+export type UserToBeValidateDocument = UserToBeValidate & Document;
 export type ReturnUserDocument = ReturnUser & Document;
 export const UserSchema = new mongoose.Schema({
     name:{type: String , required: true},
