@@ -81,13 +81,6 @@ export class UsersService implements IUsersService {
             throw new Error(error);
         }
     }
-    async getUserData( {userId} : {userId: mongoose.Types.ObjectId} ){
-        try {
-            return await this.usersRepository.getUserData(userId);
-        } catch (error) {
-            throw new Error(error);
-        }
-    }
     async getUsersFriendsInfo({userIds}:{userIds: mongoose.Types.ObjectId[]}): Promise<FriendInfoDTO[]> {
         try {
             const {UserMapper} = this;
@@ -98,17 +91,6 @@ export class UsersService implements IUsersService {
             return usersData;
         } catch (error) {
           throw new Error(error);
-        }
-    }
-    async getUsersFriendsData({userId} : {userId: mongoose.Types.ObjectId}) {
-        try {
-            const friends = await this.usersRepository.getFriendsOfUser(userId);
-            const friendsData = Promise.all(friends.map( async (friendId) => {
-                return await this.getUserData({userId:friendId});
-            }));
-            return friendsData;
-        } catch (error) {
-            throw new Error(error);
         }
     }
     async mapUserProfileInfo({id, name, email, chatGroupDetails, friendsData}:{id: mongoose.Types.ObjectId, name: string, email: string, chatGroupDetails: ChatGroupInfoDTO[], friendsData:FriendInfoDTO[]}){

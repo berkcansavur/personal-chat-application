@@ -14,8 +14,6 @@ export interface IUsersService {
     addFriend({userId, friendId} : {userId:mongoose.Types.ObjectId, friendId: mongoose.Types.ObjectId}) : Promise<FriendInfoDTO>;
     removeFriend({userId, friendId} : {userId:mongoose.Types.ObjectId, friendId: mongoose.Types.ObjectId}) : Promise<FriendInfoDTO>;
     getFriendsOfUser({userId} : {userId: mongoose.Types.ObjectId}) :Promise<any>;
-    getUserData({userId} : {userId: mongoose.Types.ObjectId}): Promise<any>;
-    getUsersFriendsData({userId} : {userId:mongoose.Types.ObjectId}) :Promise<any>;
     mapUserProfileInfo({id, name, email, chatGroupDetails, friendsData} : {id:mongoose.Types.ObjectId, name: string, email: string, chatGroupDetails: ChatGroupInfoDTO[], friendsData:UserDataDTO[]}) : Promise<ReturnUserProfile>;
     searchUser({searchText} : {searchText:string}): Promise<any>;
 }

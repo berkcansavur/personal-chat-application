@@ -45,12 +45,8 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
     @SubscribeMessage('getFriends')
     async getFriends(@MessageBody() payload:{ userId:mongoose.Types.ObjectId,}) {
       const { userId } = payload;
-      const friends = await this.userService.getFriendsOfUser({userId});
-      const friendsData = [];
-      for( const friend of friends ) {
-        const friendData = await this.userService.getUserData( {userId: friend} );
-        friendsData.push( friendData );
-      }
+      const friendIds = await this.userService.getFriendsOfUser({userId});
+      const friendsData = await this.userService.getUsersFriendsInfo({userIds:friendIds});
       this.server.to('getFriendEvent').emit('getFriends', friendsData );
       return friendsData ;
     }
@@ -64,12 +60,8 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
     @SubscribeMessage('getChatGroupUsers')
     async getChatGroupUsers(@MessageBody() payload:{chatGroupId: mongoose.Types.ObjectId}){
       const { chatGroupId } = payload;
-      const friends = await this.chatGroupService.getChatGroupsUsers({chatGroupId: chatGroupId});
-      const friendsData = [];
-      for( const friend of friends ) {
-        const friendData = await this.userService.getUserData( {userId: friend} );
-        friendsData.push( friendData );
-      }
+      const friendIds = await this.chatGroupService.getChatGroupsUsers({chatGroupId: chatGroupId});
+      const friendsData = await this.userService.getUsersFriendsInfo({userIds:friendIds})
       this.server.to('getChatGroupUsersEvent').emit('getChatGroupUsers', friendsData  );
       return friendsData;
     }
