@@ -9,6 +9,8 @@ import mongoose from 'mongoose';
 import { CreateChatGroupDTO } from './chat-groups/dtos/create-chat-group.dto';
 import { MessagesService } from './messages/messages.service';
 import { ReturnUserProfile } from './users/users.model';
+import { ChatGroupInfoDTO } from './chat-groups/dtos/chat-group-info.dto';
+import { FriendInfoDTO } from './users/dtos/friend-info.dto';
 
 @Controller('app')
 export class AppController {
@@ -48,7 +50,7 @@ export class AppController {
   }
   @UseGuards( JwtAuthGuard )
   @Post('/add-friends-to-chat-group/:chatGroupId/:friendId')
-  async addFriendsToChatGroup(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId ,@Param('friendId') friendId: mongoose.Types.ObjectId ){
+  async addFriendsToChatGroup(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId ,@Param('friendId') friendId: mongoose.Types.ObjectId ): Promise<ChatGroupInfoDTO>{
     try {
       const updatedChatGroup = await this.chatGroupService.addUserToChatGroup( {chatGroupId: chatGroupId,userId: friendId} );
       const user = await this.userService.addChatGroupToUser( {userId:friendId, chatGroupId:updatedChatGroup._id} );
@@ -59,7 +61,7 @@ export class AppController {
   }
   @UseGuards( JwtAuthGuard )
   @Post('/remove-friends-from-chat-group/:chatGroupId/:friendId')
-  async removeFriendsFromChatGroup(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId, @Param('friendId') friendId: mongoose.Types.ObjectId ){
+  async removeFriendsFromChatGroup(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId, @Param('friendId') friendId: mongoose.Types.ObjectId ): Promise<ChatGroupInfoDTO>{
     try {
       const updatedChatGroup = await this.chatGroupService.removeUserFromChatGroup( {chatGroupId:chatGroupId, userId: friendId} );
       await this.userService.removeChatGroupFromUser({userId: friendId ,chatGroupId: updatedChatGroup._id});
@@ -70,7 +72,7 @@ export class AppController {
   } 
   @UseGuards( JwtAuthGuard )
   @Post('/add-friend/:friendId')
-  async addFriend( @Param('friendId') friendId: mongoose.Types.ObjectId, @Request() req ) {
+  async addFriend( @Param('friendId') friendId: mongoose.Types.ObjectId, @Request() req ):Promise<FriendInfoDTO> {
       if( !req.user ) {
         throw new UnauthorizedException('You must be logged in for adding friend');
       }
@@ -79,7 +81,7 @@ export class AppController {
   }
   @UseGuards( JwtAuthGuard )
   @Post('/remove-friend/:friendId')
-  async removeFriend( @Param('friendId') friendId: mongoose.Types.ObjectId, @Request() req ) {
+  async removeFriend( @Param('friendId') friendId: mongoose.Types.ObjectId, @Request() req ): Promise<FriendInfoDTO> {
       if( !req.user ) {
         throw new UnauthorizedException('You must be logged in for removing friend');
       }
@@ -88,7 +90,7 @@ export class AppController {
   }
   @UseGuards( JwtAuthGuard )
   @Get('/get-friends')
-  async getFriends(@Request() req) {
+  async getFriends(@Request() req):Promise<FriendInfoDTO[]> {
     if (!req.user) {
       throw new UnauthorizedException('You must be logged in to view friends');
     }
@@ -98,7 +100,7 @@ export class AppController {
   }
   @UseGuards( JwtAuthGuard )
   @Get('/get-chatgroups-friends-data/:chatGroupId')
-  async getChatGroupsUsersInfo(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId) {
+  async getChatGroupsUsersInfo(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId):Promise<FriendInfoDTO[]> {
     if (!chatGroupId) {
       throw new UnauthorizedException('You must provide an existing chatgroup!');
     }
@@ -108,7 +110,7 @@ export class AppController {
   }
   @UseGuards( JwtAuthGuard )
   @Post('/create-chat-group')
-  async createChatGroup( @Body() body:CreateChatGroupDTO, @Request() req ) {
+  async createChatGroup( @Body() body:CreateChatGroupDTO, @Request() req ):Promise<ChatGroupInfoDTO> {
       if (!req.user) {
         throw new UnauthorizedException('You need to login to create a chat group');
       }
@@ -134,7 +136,7 @@ export class AppController {
   }
   @UseGuards( JwtAuthGuard )
   @Get('/get-chat-group/:chatGroupId')
-  async getChatGroup( @Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId, @Request() req ) {
+  async getChatGroup( @Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId, @Request() req ): Promise<ChatGroupInfoDTO> {
     if (!req.user) {
       throw new UnauthorizedException('You need to login to create a chat group');
     }

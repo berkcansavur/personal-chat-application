@@ -52,8 +52,8 @@ function Profile() {
             <img className="profile__pic profile__pic--default" src="https://www.anagard.com/blog/wp-content/uploads/2014/02/2011-03-12-twitter-egg.png" alt="Profile" />
           </div>
           <div className="profile__details">
-            <p className="profile__name">Name: {user.UserName}</p>
-            <p className="profile__email">Email: {user.UserEmail}</p>
+            <p className="profile__name">Name: {user.name}</p>
+            <p className="profile__email">Email: {user.email}</p>
           </div>
         </div>
         <h6>Chat Groups:</h6>
