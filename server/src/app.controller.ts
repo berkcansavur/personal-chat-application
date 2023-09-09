@@ -8,7 +8,6 @@ import { ChatGroupsService } from './chat-groups/chat-groups.service';
 import mongoose from 'mongoose';
 import { CreateChatGroupDTO } from './chat-groups/dtos/create-chat-group.dto';
 import { MessagesService } from './messages/messages.service';
-import { UserProfileInfoDTO } from './users/dtos/user-profile-info.dto';
 import { ReturnUserProfile } from './users/users.model';
 
 @Controller('app')
@@ -105,12 +104,8 @@ export class AppController {
     if (!chatGroupId) {
       throw new UnauthorizedException('You must provide an existing chatgroup!');
     }
-    const friends = await this.chatGroupService.getChatGroupsUsers({chatGroupId: chatGroupId});
-
-    const friendsData = await Promise.all(friends.map(async (friend) => {
-      const friendData = await this.userService.getUserData({userId: friend});
-      return friendData;
-    }));
+    const friendIds = await this.chatGroupService.getChatGroupsUsers({chatGroupId: chatGroupId});
+    const friendsData = await this.userService.getUsersFriendsInfo({userIds:friendIds})
     return friendsData;
   }
   @UseGuards( JwtAuthGuard )

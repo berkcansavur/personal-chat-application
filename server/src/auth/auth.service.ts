@@ -6,7 +6,6 @@ import { LoginUserDTO } from 'src/users/dtos/login-user.dto';
 const scrypt = promisify(_scrypt);
 import { JwtService } from '@nestjs/jwt';
 import { AuthenticatedUserDTO } from 'src/users/dtos/authenticated-user.dto';
-import { CurrentUserDTO } from 'src/users/dtos/current-user.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -34,7 +33,7 @@ export class AuthService {
     }
     return null
   }
-  async loginWithCredentials(user: CurrentUserDTO){
+  async loginWithCredentials(user: AuthenticatedUserDTO){
     const payload = {
       sub:user.userId,
       email:user.userEmail,

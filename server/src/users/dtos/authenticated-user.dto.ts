@@ -7,7 +7,7 @@ export class AuthenticatedUserDTO {
     
     @Expose()
     @IsEmpty()
-    userId: number;
+    userId: string;
     
     @Expose()
     @IsEmpty()

@@ -210,28 +210,10 @@ var UsersService = /** @class */ (function () {
             });
         });
     };
-    UsersService.prototype.getUserData = function (_a) {
-        var userId = _a.userId;
-        return __awaiter(this, void 0, void 0, function () {
-            var error_8;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.usersRepository.getUserData(userId)];
-                    case 1: return [2 /*return*/, _b.sent()];
-                    case 2:
-                        error_8 = _b.sent();
-                        throw new Error(error_8);
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
     UsersService.prototype.getUsersFriendsInfo = function (_a) {
         var userIds = _a.userIds;
         return __awaiter(this, void 0, Promise, function () {
-            var UserMapper_1, users, usersData, error_9;
+            var UserMapper_1, users, usersData, error_8;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -245,37 +227,8 @@ var UsersService = /** @class */ (function () {
                         }));
                         return [2 /*return*/, usersData];
                     case 2:
-                        error_9 = _b.sent();
-                        throw new Error(error_9);
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    UsersService.prototype.getUsersFriendsData = function (_a) {
-        var userId = _a.userId;
-        return __awaiter(this, void 0, void 0, function () {
-            var friends, friendsData, error_10;
-            var _this = this;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.usersRepository.getFriendsOfUser(userId)];
-                    case 1:
-                        friends = _b.sent();
-                        friendsData = Promise.all(friends.map(function (friendId) { return __awaiter(_this, void 0, void 0, function () {
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0: return [4 /*yield*/, this.getUserData({ userId: friendId })];
-                                    case 1: return [2 /*return*/, _a.sent()];
-                                }
-                            });
-                        }); }));
-                        return [2 /*return*/, friendsData];
-                    case 2:
-                        error_10 = _b.sent();
-                        throw new Error(error_10);
+                        error_8 = _b.sent();
+                        throw new Error(error_8);
                     case 3: return [2 /*return*/];
                 }
             });
