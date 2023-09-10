@@ -17,14 +17,8 @@ export class UsersController {
     async createUser(@Body() body: CreateUserDTO ) : Promise<ReturnUserDTO>{
         try {
             const hashedPassword = await this.utilsService.hashPassword(body.password);
-            const createUserDTO = {
-                name: body.name,
-                email: body.email,
-                password: hashedPassword,
-                ChatGroups: null,
-                Friends: null,
-            }
-            return await this.userService.createUser({createUserDTO});
+            body.password = hashedPassword;
+            return await this.userService.createUser({createUserDTO:body});
         } catch (error) {
             throw new Error(error);
         }

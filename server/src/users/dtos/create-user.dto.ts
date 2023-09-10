@@ -1,4 +1,5 @@
 import { IsEmail, IsString, Length } from "class-validator";
+import mongoose from "mongoose";
 
 export class CreateUserDTO {
     @IsString()
@@ -12,7 +13,7 @@ export class CreateUserDTO {
     @Length(8,25)
     password: string;
 
-    ChatGroups: Object[];
+    ChatGroups: mongoose.Types.ObjectId[];
 
-    Friends: Object[];
+    Friends: mongoose.Types.ObjectId[];
 }

@@ -1,11 +1,10 @@
-import { IsString } from "class-validator";
-import mongoose from "mongoose";
+import { IsString, Length } from "class-validator";
 
 export class CreateChatGroupDTO{
     @IsString()
+    @Length(2,30)
     chatGroupName: string;
     
-    users: mongoose.Types.ObjectId[];
+    users: Object[];
 
-    createdDate: Date;
 }

@@ -11,14 +11,6 @@ export interface User {
     Friends: mongoose.Types.ObjectId[];
     ChatGroups: mongoose.Types.ObjectId[];
 }
-export class UserEntity{
-    id:string;
-    name:string;
-    email:string;
-    password:string;
-    Friends: object[];
-    ChatGroups:string;
-}
 export class ReturnUser{
     @Prop({type: mSchema.Types.ObjectId, auto: true})
     _id:Types.ObjectId;

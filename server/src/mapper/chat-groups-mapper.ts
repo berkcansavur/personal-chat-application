@@ -12,15 +12,56 @@ export class ChatGroupsProfile extends AutomapperProfile{
     }
     get profile(): MappingProfile {
         return(mapper: Mapper)=>{
-            createMap<ReturnChatGroup,ReturnChatGroupDTO >(
+            createMap<ReturnChatGroup, ReturnChatGroupDTO >(
                 mapper,
                 ReturnChatGroup,
-                ReturnChatGroupDTO
+                ReturnChatGroupDTO,
+                forMember(
+                    (destination)=> destination._id,
+                    mapFrom((source)=>source._id.toString())
+                ),
+                forMember(
+                    (destination)=>destination.chatGroupName,
+                    mapFrom((source)=>source.chatGroupName)
+                ),
+                forMember(
+                    (destination)=> destination.users,
+                    mapFrom((source)=>source.users)
+                )
             ),
             createMap<ReturnChatGroupDTO,ChatGroupInfoDTO>(
                 mapper,
                 ReturnChatGroupDTO,
                 ChatGroupInfoDTO,
+                forMember(
+                    (destination)=> destination._id.toString(),
+                    mapFrom((source)=>source._id)
+                ),
+                forMember(
+                    (destination)=>destination.chatGroupName,
+                    mapFrom((source)=>source.chatGroupName)
+                ),
+                forMember(
+                    (destination)=> destination.users,
+                    mapFrom((source)=>source.users)
+                )
+            )
+            createMap<ReturnChatGroup,ChatGroupInfoDTO>(
+                mapper,
+                ReturnChatGroup,
+                ChatGroupInfoDTO,
+                forMember(
+                    (destination)=> destination._id,
+                    mapFrom((source)=>source._id)
+                ),
+                forMember(
+                    (destination)=>destination.chatGroupName,
+                    mapFrom((source)=>source.chatGroupName)
+                ),
+                forMember(
+                    (destination)=> destination.users,
+                    mapFrom((source)=>source.users)
+                )
             )
         }
     }

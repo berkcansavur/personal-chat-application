@@ -6,16 +6,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 exports.__esModule = true;
-exports.UserSchema = exports.ReturnUserProfile = exports.UserToBeValidate = exports.ReturnUser = exports.UserEntity = void 0;
+exports.UserSchema = exports.ReturnUserProfile = exports.UserToBeValidate = exports.ReturnUser = void 0;
 var mongoose_1 = require("@nestjs/mongoose");
 var mongoose = require("mongoose");
 var mongoose_2 = require("mongoose");
-var UserEntity = /** @class */ (function () {
-    function UserEntity() {
-    }
-    return UserEntity;
-}());
-exports.UserEntity = UserEntity;
 var ReturnUser = /** @class */ (function () {
     function ReturnUser() {
     }

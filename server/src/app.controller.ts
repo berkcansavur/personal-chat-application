@@ -11,7 +11,6 @@ import { MessagesService } from './messages/messages.service';
 import { ReturnUserProfile } from './users/users.model';
 import { ChatGroupInfoDTO } from './chat-groups/dtos/chat-group-info.dto';
 import { FriendInfoDTO } from './users/dtos/friend-info.dto';
-import { ReturnChatGroupDTO } from './chat-groups/dtos/return-chat-groups.dto';
 
 @Controller('app')
 export class AppController {
@@ -54,7 +53,7 @@ export class AppController {
   async addFriendsToChatGroup(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId ,@Param('friendId') friendId: mongoose.Types.ObjectId ): Promise<ChatGroupInfoDTO>{
     try {
       const updatedChatGroup = await this.chatGroupService.addUserToChatGroup( {chatGroupId: chatGroupId,userId: friendId} );
-      const user = await this.userService.addChatGroupToUser( {userId:friendId, chatGroupId:updatedChatGroup._id} );
+      await this.userService.addChatGroupToUser( {userId:friendId, chatGroupId:updatedChatGroup._id} );
       return updatedChatGroup ;
     } catch (error) {
       throw new Error(error);
@@ -111,15 +110,15 @@ export class AppController {
   }
   @UseGuards( JwtAuthGuard )
   @Post('/create-chat-group')
-  async createChatGroup( @Body() body:CreateChatGroupDTO, @Request() req ): Promise<ReturnChatGroupDTO> {
+  async createChatGroup( @Body() body:CreateChatGroupDTO, @Request() req ): Promise<ChatGroupInfoDTO> {
       if (!req.user) {
         throw new UnauthorizedException('You need to login to create a chat group');
       }
-
-      const newChatGroup = await this.chatGroupService.createChatGroup( {createChatGroupDTO:body} );
-      await this.chatGroupService.addUserToChatGroup({chatGroupId:newChatGroup._id, userId:req.user.userId });
-      await this.userService.addChatGroupToUser( {userId:req.user.userId, chatGroupId: newChatGroup._id });
-      return newChatGroup;
+      const newChatGroup = await this.chatGroupService.createChatGroup({ createChatGroupDTO: body });
+      const createdChatGroup = await this.chatGroupService.getChatGroupByStringId({ id: newChatGroup._id});
+      const updatedChatGroup = await this.chatGroupService.addUserToChatGroup({ chatGroupId: createdChatGroup._id, userId: req.user.userId });
+      await this.userService.addChatGroupToUser({ userId: req.user.userId, chatGroupId: updatedChatGroup._id });
+      return createdChatGroup;
   }
   @UseGuards( JwtAuthGuard )
   @Delete('/delete-chat-group/:chatGroupId')

@@ -34,21 +34,30 @@ export class ChatGroupsService implements IChatGroupService {
             throw new Error(error);
         }
     }
-    async getChatGroup({id}:{id: mongoose.Types.ObjectId}): Promise<ReturnChatGroupDTO>{
+    async getChatGroup({id}:{id: mongoose.Types.ObjectId}): Promise<ChatGroupInfoDTO>{
         try {
             const {ChatGroupMapper} = this;
             const chatGroup = await this.chatGroupsRepository.getChatGroupByObjectId({id:id});
-            return ChatGroupMapper.map<ReturnChatGroup, ReturnChatGroupDTO>(chatGroup,ReturnChatGroup,ReturnChatGroupDTO);
+            return ChatGroupMapper.map<ReturnChatGroup, ChatGroupInfoDTO>(chatGroup,ReturnChatGroup,ChatGroupInfoDTO);
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }async getChatGroupByStringId({id}:{id: string}): Promise<ChatGroupInfoDTO>{
+        try {
+            const {ChatGroupMapper} = this;
+            const chatGroup = await this.chatGroupsRepository.getChatGroupByStringId({id:id});
+            return ChatGroupMapper.map<ReturnChatGroup, ChatGroupInfoDTO>(chatGroup,ReturnChatGroup,ChatGroupInfoDTO);
         } catch (error) {
             throw new Error(error.message);
         }
     }
-    async getChatGroupDetails({chatGroups} : {chatGroups: mongoose.Types.ObjectId[]} ){
+    async getChatGroupDetails({chatGroups} : {chatGroups: mongoose.Types.ObjectId[]} ): Promise<ChatGroupInfoDTO[]>{
         try {
-            const {ChatGroupMapper} = this;
+            if(!chatGroups){
+                return [];
+            }
             const chatGroupDetails = await Promise.all(chatGroups.map( async (chatGroupId)=>{
-                const chatGroup = await this.getChatGroup({id :chatGroupId});
-                return ChatGroupMapper.map<ReturnChatGroupDTO, ChatGroupInfoDTO>(chatGroup,ReturnChatGroupDTO,ChatGroupInfoDTO); 
+                return await this.getChatGroup({id :chatGroupId});
             }));
             return chatGroupDetails;
         } catch (error) {
@@ -62,23 +71,20 @@ export class ChatGroupsService implements IChatGroupService {
             throw new Error(error.message);
           }
     }
-    async addUserToChatGroup( {chatGroupId,userId}:{chatGroupId:mongoose.Types.ObjectId, userId:mongoose.Types.ObjectId} ): Promise<ReturnChatGroupDTO>{
+    async addUserToChatGroup( {chatGroupId,userId}:{chatGroupId:mongoose.Types.ObjectId, userId:mongoose.Types.ObjectId} ): Promise<ChatGroupInfoDTO>{
         try {
             const {ChatGroupMapper} = this;
-            const processedChatGroup: ReturnChatGroup = await this.chatGroupsRepository.addUserToChatGroup(chatGroupId, userId);
-            return ChatGroupMapper.map<ReturnChatGroup, ReturnChatGroupDTO>(processedChatGroup, ReturnChatGroup, ReturnChatGroupDTO);
+            const processedChatGroup = await this.chatGroupsRepository.addUserToChatGroup(chatGroupId, userId);
+            return ChatGroupMapper.map<ReturnChatGroup, ChatGroupInfoDTO>(processedChatGroup, ReturnChatGroup, ChatGroupInfoDTO);
         } catch (error) {
             throw new Error(error.message);
         }
     }
-    async removeUserFromChatGroup({chatGroupId,userId}:{chatGroupId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId}){
+    async removeUserFromChatGroup({chatGroupId,userId}:{chatGroupId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId}): Promise<ChatGroupInfoDTO>{
         try {
+            const {ChatGroupMapper} = this;
             const processedChatGroup =  await this.chatGroupsRepository.removeUserFromChatGroup(chatGroupId, userId);
-            const chatGroupDTO = new ChatGroupInfoDTO();
-            chatGroupDTO._id = processedChatGroup._id;
-            chatGroupDTO.chatGroupName = processedChatGroup.chatGroupName;
-            chatGroupDTO.users = processedChatGroup.users;
-            return chatGroupDTO;
+            return ChatGroupMapper.map<ReturnChatGroup, ChatGroupInfoDTO>(processedChatGroup, ReturnChatGroup, ChatGroupInfoDTO);
         } catch (error) {
             throw new Error(error);
         }   

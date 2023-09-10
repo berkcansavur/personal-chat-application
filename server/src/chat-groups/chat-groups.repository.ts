@@ -3,7 +3,6 @@ import { InjectModel } from "@nestjs/mongoose";
 import mongoose, { Model } from "mongoose";
 import { CreateChatGroupDTO } from "./dtos/create-chat-group.dto";
 import { ChatGroups, ReturnChatGroupDocument } from "./chat-groups.model";
-import { User } from 'src/users/users.model';
 
 @Injectable()
 export class ChatGroupsRepository {
@@ -18,9 +17,12 @@ export class ChatGroupsRepository {
         return await this.ChatGroupsModel.findByIdAndRemove(chatGroupId);
     }
     async getChatGroupByObjectId({id}:{id:mongoose.Types.ObjectId}) : Promise<ReturnChatGroupDocument>{
-        return await this.ChatGroupsModel.findById(id);
+        return await this.ChatGroupsModel.findOne({_id:id});
     }
-    async getChatGroupsUsers(id:mongoose.Types.ObjectId){
+    async getChatGroupByStringId({id}:{id:string}) : Promise<ReturnChatGroupDocument>{
+        return await this.ChatGroupsModel.findOne({_id:id});
+    }
+    async getChatGroupsUsers(id:mongoose.Types.ObjectId): Promise<mongoose.Types.ObjectId[]>{
         const chatGroup = await this.ChatGroupsModel.findById(id);
         if (!chatGroup) {
             throw new Error('Chat group not found');
@@ -35,14 +37,12 @@ export class ChatGroupsRepository {
             {new:true}
         );
     }
-    async removeUserFromChatGroup(chatGroupId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId){
-        const updatedChatGroup = await this.ChatGroupsModel.findByIdAndUpdate(
+    async removeUserFromChatGroup(chatGroupId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId): Promise<ReturnChatGroupDocument>{
+        return await this.ChatGroupsModel.findByIdAndUpdate(
             chatGroupId,
             { $pull: { users: { _id: userId } } },
             { new: true } 
         );            
-        await updatedChatGroup.save();
-        return updatedChatGroup;  
     }
     async updateChatGroupName(chatGroupId: mongoose.Types.ObjectId, chatGroupName: string) {
         const  updatedChatGroup = await this.ChatGroupsModel.findByIdAndUpdate(
