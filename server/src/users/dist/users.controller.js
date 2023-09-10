@@ -54,7 +54,7 @@ var UsersController = /** @class */ (function () {
     }
     UsersController.prototype.createUser = function (body) {
         return __awaiter(this, void 0, Promise, function () {
-            var hashedPassword, createUserDTO, error_1;
+            var hashedPassword, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -62,14 +62,8 @@ var UsersController = /** @class */ (function () {
                         return [4 /*yield*/, this.utilsService.hashPassword(body.password)];
                     case 1:
                         hashedPassword = _a.sent();
-                        createUserDTO = {
-                            name: body.name,
-                            email: body.email,
-                            password: hashedPassword,
-                            ChatGroups: null,
-                            Friends: null
-                        };
-                        return [4 /*yield*/, this.userService.createUser({ createUserDTO: createUserDTO })];
+                        body.password = hashedPassword;
+                        return [4 /*yield*/, this.userService.createUser({ createUserDTO: body })];
                     case 2: return [2 /*return*/, _a.sent()];
                     case 3:
                         error_1 = _a.sent();

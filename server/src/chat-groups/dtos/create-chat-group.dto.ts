@@ -1,10 +1,10 @@
-import { IsString } from "class-validator";
+import { IsString, Length } from "class-validator";
 
 export class CreateChatGroupDTO{
     @IsString()
+    @Length(2,30)
     chatGroupName: string;
     
-    users: object[];
+    users: Object[];
 
-    createdDate: Date;
 }

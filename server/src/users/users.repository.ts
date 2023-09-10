@@ -6,7 +6,8 @@ import { UserDataDTO } from './dtos/user-data.dto';
 import { CreateUserDTO } from './dtos/create-user.dto';
 @Injectable()
 export class UsersRepository { 
-    constructor(@InjectModel('Users') private userModel: Model<User>){}
+    constructor(
+        @InjectModel('Users') private userModel: Model<User>){}
     
     async createUser( {createUserDTO} : {createUserDTO:CreateUserDTO} ) : Promise<ReturnUserDocument>{
         const { userModel } = this;

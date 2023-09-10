@@ -18,15 +18,15 @@ export class ChatGroupsController {
         private chatGroupsService: ChatGroupsService,
         private usersService: UsersService){}
     
-    @Post('/create-chat-group')
-    async createChatGroup(@Body() body: CreateChatGroupDTO, @Session() session: any){
-        if (!session.CurrentUser._id) {
-            throw new UnauthorizedException('You need to login to create a chat group');
-        }
-        const user = await this.usersService.findUser(session.CurrentUser._id);
-        const newChatGroup = await this.chatGroupsService.createChatGroup({chatGroup:body,creatorUser:user});
-        return newChatGroup;
-    }
+    // @Post('/create-chat-group')
+    // async createChatGroup(@Body() body: CreateChatGroupDTO, @Session() session: any){
+    //     if (!session.CurrentUser._id) {
+    //         throw new UnauthorizedException('You need to login to create a chat group');
+    //     }
+    //     const newChatGroup = await this.chatGroupsService.createChatGroup({createChatGroupDTO:body});
+    //     await this.chatGroupsService.addUserToChatGroup({chatGroupId:newChatGroup._id,userId:session.CurrentUser._id})
+    //     return newChatGroup;
+    // }
     @Get('/get-users/:id')
     async getChatGroupUsers(@Param('id') id: mongoose.Types.ObjectId){
         const users = await this.chatGroupsService.getChatGroupsUsers({chatGroupId :id});

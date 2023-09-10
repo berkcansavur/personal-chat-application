@@ -53,7 +53,7 @@ export class AppController {
   async addFriendsToChatGroup(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId ,@Param('friendId') friendId: mongoose.Types.ObjectId ): Promise<ChatGroupInfoDTO>{
     try {
       const updatedChatGroup = await this.chatGroupService.addUserToChatGroup( {chatGroupId: chatGroupId,userId: friendId} );
-      const user = await this.userService.addChatGroupToUser( {userId:friendId, chatGroupId:updatedChatGroup._id} );
+      await this.userService.addChatGroupToUser( {userId:friendId, chatGroupId:updatedChatGroup._id} );
       return updatedChatGroup ;
     } catch (error) {
       throw new Error(error);
@@ -110,14 +110,15 @@ export class AppController {
   }
   @UseGuards( JwtAuthGuard )
   @Post('/create-chat-group')
-  async createChatGroup( @Body() body:CreateChatGroupDTO, @Request() req ):Promise<ChatGroupInfoDTO> {
+  async createChatGroup( @Body() body:CreateChatGroupDTO, @Request() req ): Promise<ChatGroupInfoDTO> {
       if (!req.user) {
         throw new UnauthorizedException('You need to login to create a chat group');
       }
-      const user = await this.userService.findUser( req.user.userId );
-      const newChatGroup = await this.chatGroupService.createChatGroup( {chatGroup:body,creatorUser: user} );
-      await this.userService.addChatGroupToUser( {userId:req.user.userId, chatGroupId: newChatGroup._id });
-      return newChatGroup;
+      const newChatGroup = await this.chatGroupService.createChatGroup({ createChatGroupDTO: body });
+      const createdChatGroup = await this.chatGroupService.getChatGroupByStringId({ id: newChatGroup._id});
+      const updatedChatGroup = await this.chatGroupService.addUserToChatGroup({ chatGroupId: createdChatGroup._id, userId: req.user.userId });
+      await this.userService.addChatGroupToUser({ userId: req.user.userId, chatGroupId: updatedChatGroup._id });
+      return createdChatGroup;
   }
   @UseGuards( JwtAuthGuard )
   @Delete('/delete-chat-group/:chatGroupId')
