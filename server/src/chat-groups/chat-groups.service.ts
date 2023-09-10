@@ -53,9 +53,6 @@ export class ChatGroupsService implements IChatGroupService {
     }
     async getChatGroupDetails({chatGroups} : {chatGroups: mongoose.Types.ObjectId[]} ): Promise<ChatGroupInfoDTO[]>{
         try {
-            if(!chatGroups){
-                return [];
-            }
             const chatGroupDetails = await Promise.all(chatGroups.map( async (chatGroupId)=>{
                 return await this.getChatGroup({id :chatGroupId});
             }));
@@ -64,7 +61,7 @@ export class ChatGroupsService implements IChatGroupService {
             throw new Error(error);
         }
     }
-    async getChatGroupsUsers({chatGroupId}:{chatGroupId:mongoose.Types.ObjectId}){
+    async getChatGroupsUsers({chatGroupId}:{chatGroupId:mongoose.Types.ObjectId}):Promise<mongoose.Types.ObjectId[]>{
         try {
             return await this.chatGroupsRepository.getChatGroupsUsers(chatGroupId);
           } catch (error) {
@@ -89,9 +86,11 @@ export class ChatGroupsService implements IChatGroupService {
             throw new Error(error);
         }   
     }
-    async updateChatGroupName({chatGroupId, chatGroupName}:{chatGroupId: mongoose.Types.ObjectId, chatGroupName: string}) {
+    async updateChatGroupName({chatGroupId, chatGroupName}:{chatGroupId: mongoose.Types.ObjectId, chatGroupName: string}):Promise<ChatGroupInfoDTO> {
         try {
-          return await this.chatGroupsRepository.updateChatGroupName(chatGroupId, chatGroupName);
+            const {ChatGroupMapper} = this;
+            const processedChatGroup = await this.chatGroupsRepository.updateChatGroupName(chatGroupId, chatGroupName);
+            return ChatGroupMapper.map<ReturnChatGroup, ChatGroupInfoDTO>(processedChatGroup, ReturnChatGroup, ChatGroupInfoDTO);
         } catch (error) {
           throw new Error(error);
         }
