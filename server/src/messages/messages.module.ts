@@ -13,7 +13,14 @@ import { MessagesRepository } from './messages.repository';
     UsersModule,
     ChatGroupsModule
   ],
-  providers: [MessagesGateway, MessagesService, MessagesRepository],
-  exports:[MessagesGateway, MessagesService]
+  providers: [
+    MessagesGateway,
+    MessagesService,
+    MessagesRepository
+  ],
+  exports:[
+    MessagesGateway,
+    MessagesService
+  ]
 })
 export class MessagesModule {}

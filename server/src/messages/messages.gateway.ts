@@ -39,7 +39,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
       messageDto.text = text;
       const message = await this.messagesService.create({messageDto});
   
-      this.server.to(chatGroupID).emit('message', message);
+      this.server.to(chatGroupID.toString()).emit('message', message);
       return message;
     }
     @SubscribeMessage('getFriends')

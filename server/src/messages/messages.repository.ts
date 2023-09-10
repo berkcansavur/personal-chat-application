@@ -6,14 +6,15 @@ import { MessageDTO } from "./dto/message.dto";
 
 @Injectable()
 export class MessagesRepository {
-    constructor(@InjectModel('Messages') private messageModel: Model<Message>){}
-    async create(messageDto:MessageDTO) {
-        const newMessage = new this.messageModel({ 
+    constructor( @InjectModel('Messages') private messageModel: Model<Message> ){}
+    
+    async create(messageDto:MessageDTO)  {
+        const newMessage =  new this.messageModel({ 
           chatGroup: messageDto.chatGroupID,
           senderUser: messageDto.senderUser,
           text:messageDto.text });
-        return await newMessage.save();
-      }
+          return await newMessage.save();
+        }
     getLastMessages(chatGroupID:mongoose.Types.ObjectId, messageCount:number){
         return this.messageModel
           .find({ chatGroup: chatGroupID })

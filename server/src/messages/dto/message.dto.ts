@@ -1,9 +1,10 @@
 import { IsNotEmpty, IsString } from 'class-validator';
+import mongoose from 'mongoose';
 
 export class MessageDTO {
   @IsNotEmpty()
   @IsString()
-  chatGroupID: string;
+  chatGroupID: mongoose.Types.ObjectId;
 
   @IsNotEmpty()
   @IsString()

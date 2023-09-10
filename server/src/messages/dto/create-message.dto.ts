@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 export class CreateMessageDto {
   @IsNotEmpty()
   @IsString()
-  chatGroupID: string;
+  chatGroupID: mongoose.Types.ObjectId;
 
   @IsNotEmpty()
   @IsString()
