@@ -16,3 +16,12 @@ export interface IChatGroupService {
     updateChatGroupName({chatGroupId, chatGroupName}:{chatGroupId: mongoose.Types.ObjectId, chatGroupName: string}): Promise<ChatGroupInfoDTO>;
     
 }
+export interface UserInterfaceForMessaging {
+    UserID:string; 
+    name: string;
+    email: string;
+    password: string;
+    Friends: object[];
+    ChatGroups: object[];
+    socketId: string;
+  }

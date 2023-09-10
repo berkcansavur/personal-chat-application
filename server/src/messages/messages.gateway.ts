@@ -10,7 +10,7 @@ import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { Server,Socket } from 'socket.io';
 import { UsersService } from 'src/users/users.service';
-import { User  } from '../../shared/chat.interface';
+import { UserInterfaceForMessaging } from '../../interfaces/chat-groups-service.interface';
 import { ChatGroupsService } from 'src/chat-groups/chat-groups.service';
 import mongoose from 'mongoose';
 import { MessageDTO } from './dto/message.dto';
@@ -68,14 +68,14 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
     @SubscribeMessage('events')
     async manageEvents(@MessageBody() payload:{ eventName: string, socketId:string}){
       const { socketId, eventName } = payload;
-      await this.server.in(socketId).socketsJoin(eventName);
+      this.server.in(socketId).socketsJoin(eventName);
     }
     @SubscribeMessage('join')
     async joinChatRoom(
-      @MessageBody() payload: { chatGroupID: string, user:User }) {
+      @MessageBody() payload: { chatGroupID: string, user:UserInterfaceForMessaging }) {
         const { chatGroupID, user } = payload;
         const { socketId } = user;
-        await this.server.in(socketId).socketsJoin(chatGroupID);
+        this.server.in(socketId).socketsJoin(chatGroupID);
     }
     async handleConnection(socket: Socket): Promise<void> {
       console.log(`Socket connected: ${socket.id}`)
