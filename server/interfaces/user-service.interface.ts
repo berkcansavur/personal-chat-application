@@ -9,7 +9,7 @@ import { UserToBeValidateDTO } from 'src/users/dtos/user-tobe-validate.dto';
 import { UserProfileInfoDTO } from 'src/users/dtos/user-profile-info.dto';
 export interface IUsersService {
     createUser({createUserDTO} : {createUserDTO: CreateUserDTO }):Promise<ReturnUserDTO>;
-    findUser({id} : {id:mongoose.Types.ObjectId}): Promise<UserProfileInfoDTO>;
+    findUser({userId} : {userId:mongoose.Types.ObjectId}): Promise<UserProfileInfoDTO>;
     findUserByEmail({email} : {email:string}): Promise<UserProfileInfoDTO>;
     addChatGroupToUser({userId, chatGroupId} : {userId: mongoose.Types.ObjectId, chatGroupId: mongoose.Types.ObjectId}) : Promise<UserProfileInfoDTO>;
     removeChatGroupFromUser({userId, chatGroupId} : {userId: mongoose.Types.ObjectId, chatGroupId: mongoose.Types.ObjectId}): Promise<UserProfileInfoDTO>;
@@ -17,6 +17,6 @@ export interface IUsersService {
     removeFriend({userId, friendId} : {userId:mongoose.Types.ObjectId, friendId: mongoose.Types.ObjectId}) : Promise<FriendInfoDTO>;
     getFriendIdsOfUser({userId} : {userId: mongoose.Types.ObjectId}) : Promise<mongoose.Types.ObjectId[]>;
     getUserToBeValidate({id}:{id: mongoose.Types.ObjectId} ) : Promise<UserToBeValidateDTO>
-    mapUserProfileInfo({id, name, email, chatGroupDetails, friendsData} : {id:mongoose.Types.ObjectId, name: string, email: string, chatGroupDetails: ChatGroupInfoDTO[], friendsData:UserDataDTO[]}) : Promise<ReturnUserProfile>;
+    mapUserProfileInfo({userId, name, email, chatGroupDetails, friendsData} : {userId:mongoose.Types.ObjectId, name: string, email: string, chatGroupDetails: ChatGroupInfoDTO[], friendsData:UserDataDTO[]}) : Promise<ReturnUserProfile>;
     searchUser({searchText} : {searchText:string}): Promise<any>;
 }

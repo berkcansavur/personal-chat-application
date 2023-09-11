@@ -78,7 +78,7 @@ var UsersService = /** @class */ (function () {
         });
     };
     UsersService.prototype.findUser = function (_a) {
-        var id = _a.id;
+        var userId = _a.userId;
         return __awaiter(this, void 0, Promise, function () {
             var _b, UserMapper, logger, user, error_1;
             return __generator(this, function (_c) {
@@ -86,8 +86,8 @@ var UsersService = /** @class */ (function () {
                     case 0:
                         _c.trys.push([0, 2, , 3]);
                         _b = this, UserMapper = _b.UserMapper, logger = _b.logger;
-                        logger.debug("[UsersService] findUser: userId: " + JSON.stringify(id));
-                        return [4 /*yield*/, this.usersRepository.findUserByObjectId(id)];
+                        logger.debug("[UsersService] findUser: userId: " + JSON.stringify(userId));
+                        return [4 /*yield*/, this.usersRepository.findUserByObjectId(userId)];
                     case 1:
                         user = _c.sent();
                         return [2 /*return*/, UserMapper.map(user, users_model_1.ReturnUser, user_profile_info_dto_1.UserProfileInfoDTO)];
@@ -277,14 +277,14 @@ var UsersService = /** @class */ (function () {
         });
     };
     UsersService.prototype.mapUserProfileInfo = function (_a) {
-        var id = _a.id, name = _a.name, email = _a.email, chatGroupDetails = _a.chatGroupDetails, friendsData = _a.friendsData;
+        var userId = _a.userId, name = _a.name, email = _a.email, chatGroupDetails = _a.chatGroupDetails, friendsData = _a.friendsData;
         return __awaiter(this, void 0, void 0, function () {
             var _b, UserMapper, logger, userProfileInfo;
             return __generator(this, function (_c) {
                 _b = this, UserMapper = _b.UserMapper, logger = _b.logger;
-                logger.debug("[UsersService] mapUserProfileInfo:" + JSON.stringify({ id: id, name: name, email: email, chatGroupDetails: chatGroupDetails, friendsData: friendsData }));
+                logger.debug("[UsersService] mapUserProfileInfo:" + JSON.stringify({ userId: userId, name: name, email: email, chatGroupDetails: chatGroupDetails, friendsData: friendsData }));
                 userProfileInfo = new user_profile_info_dto_1.UserProfileInfoDTO();
-                userProfileInfo.UserId = id;
+                userProfileInfo.UserId = userId;
                 userProfileInfo.UserName = name;
                 userProfileInfo.UserEmail = email;
                 userProfileInfo.ChatGroups = chatGroupDetails;

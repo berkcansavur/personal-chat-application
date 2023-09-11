@@ -30,14 +30,14 @@ export class UsersService implements IUsersService {
         const newUser : ReturnUser = await this.usersRepository.createUser({createUserDTO});
         return UserMapper.map< ReturnUser, ReturnUserDTO>(newUser,ReturnUser,ReturnUserDTO);
     }
-    async findUser({id}:{id: mongoose.Types.ObjectId} ): Promise<UserProfileInfoDTO>{
+    async findUser({userId}:{userId: mongoose.Types.ObjectId} ): Promise<UserProfileInfoDTO>{
         try {
             const {
                 UserMapper,
                 logger
             } = this;
-            logger.debug(`[UsersService] findUser: userId: ${JSON.stringify(id)}`);
-            const user = await this.usersRepository.findUserByObjectId(id);
+            logger.debug(`[UsersService] findUser: userId: ${JSON.stringify(userId)}`);
+            const user = await this.usersRepository.findUserByObjectId(userId);
             return UserMapper.map<ReturnUser, UserProfileInfoDTO>(user, ReturnUser, UserProfileInfoDTO);
         } catch (error) {
             throw new Error(error);
@@ -147,14 +147,14 @@ export class UsersService implements IUsersService {
           throw new Error(error);
         }
     }
-    async mapUserProfileInfo({id, name, email, chatGroupDetails, friendsData}:{id: mongoose.Types.ObjectId, name: string, email: string, chatGroupDetails: ChatGroupInfoDTO[], friendsData:FriendInfoDTO[]}){
+    async mapUserProfileInfo({userId, name, email, chatGroupDetails, friendsData}:{userId: mongoose.Types.ObjectId, name: string, email: string, chatGroupDetails: ChatGroupInfoDTO[], friendsData:FriendInfoDTO[]}){
         const {
             UserMapper,
             logger
         } = this;
-        logger.debug(`[UsersService] mapUserProfileInfo:${JSON.stringify({id, name, email, chatGroupDetails, friendsData})}`);
+        logger.debug(`[UsersService] mapUserProfileInfo:${JSON.stringify({userId, name, email, chatGroupDetails, friendsData})}`);
         const userProfileInfo = new UserProfileInfoDTO();
-        userProfileInfo.UserId = id;
+        userProfileInfo.UserId = userId;
         userProfileInfo.UserName = name;
         userProfileInfo.UserEmail = email;
         userProfileInfo.ChatGroups = chatGroupDetails;

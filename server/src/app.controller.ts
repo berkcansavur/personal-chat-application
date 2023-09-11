@@ -36,13 +36,13 @@ export class AppController {
   @Get('/me')
   async getUserProfile(@Request() req ) : Promise<ReturnUserProfile>{
     try {
-      const user = await this.userService.findUser( {id:req.user.userId} );
+      const user = await this.userService.findUser( {userId:req.user.userId} );
       const { UserId, UserName, UserEmail, ChatGroups, Friends } = user;
       const [chatGroupDetails, friendsData] = await Promise.all([
         await this.chatGroupService.getChatGroupDetails({chatGroups:ChatGroups}),
         await this.userService.getUsersFriendsInfo({userIds:Friends}),
       ]);
-      const userProfileInfo = await this.userService.mapUserProfileInfo({id:UserId, name:UserName, email:UserEmail, chatGroupDetails:chatGroupDetails, friendsData:friendsData});
+      const userProfileInfo = await this.userService.mapUserProfileInfo({userId:UserId, name:UserName, email:UserEmail, chatGroupDetails:chatGroupDetails, friendsData:friendsData});
       return userProfileInfo;
     } catch (error) {
       throw new Error(error);
