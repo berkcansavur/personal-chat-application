@@ -1,6 +1,5 @@
 import { MiddlewareConsumer, Module , ValidationPipe } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
@@ -32,7 +31,7 @@ import { classes } from '@automapper/classes';
     MessagesModule,
   ],
   controllers: [AppController],
-  providers: [AppService,{
+  providers: [{
     provide:APP_PIPE,
     useValue:new ValidationPipe({
       whitelist:true
