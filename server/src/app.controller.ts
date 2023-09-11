@@ -10,7 +10,7 @@ import { CreateChatGroupDTO } from './chat-groups/dtos/create-chat-group.dto';
 import { MessagesService } from './messages/messages.service';
 import { ReturnUserProfile } from './users/users.model';
 import { ChatGroupInfoDTO } from './chat-groups/dtos/chat-group-info.dto';
-import { FriendInfoDTO } from './users/dtos/friend-info.dto';
+import { FriendInfoDTO } from './users/dtos/user-dtos';
 
 @Controller('app')
 export class AppController {
@@ -37,12 +37,12 @@ export class AppController {
   async getUserProfile(@Request() req ) : Promise<ReturnUserProfile>{
     try {
       const user = await this.userService.findUser( {userId:req.user.userId} );
-      const { UserId, UserName, UserEmail, ChatGroups, Friends } = user;
-      const [chatGroupDetails, friendsData] = await Promise.all([
+      const { UserId, UserName, UserEmail, ChatGroups,Friends } = user;
+      const [ChatGroupDetails, FriendsData] = await Promise.all([
         await this.chatGroupService.getChatGroupDetails({chatGroups:ChatGroups}),
         await this.userService.getUsersFriendsInfo({userIds:Friends}),
       ]);
-      const userProfileInfo = await this.userService.mapUserProfileInfo({userId:UserId, name:UserName, email:UserEmail, chatGroupDetails:chatGroupDetails, friendsData:friendsData});
+      const userProfileInfo = await this.userService.mapUserProfileInfo({mapUserInfoDTO:{UserId, UserName, UserEmail, ChatGroupDetails, FriendsData}});
       return userProfileInfo;
     } catch (error) {
       throw new Error(error);

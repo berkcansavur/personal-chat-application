@@ -47,12 +47,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.UsersService = void 0;
 var common_1 = require("@nestjs/common");
-var user_profile_info_dto_1 = require("./dtos/user-profile-info.dto");
 var nestjs_1 = require("@automapper/nestjs");
+var user_dtos_1 = require("./dtos/user-dtos");
 var users_model_1 = require("./users.model");
-var return_user_dto_1 = require("./dtos/return-user.dto");
-var friend_info_dto_1 = require("./dtos/friend-info.dto");
-var user_tobe_validate_dto_1 = require("./dtos/user-tobe-validate.dto");
+var user_dtos_2 = require("./dtos/user-dtos");
 var UsersService = /** @class */ (function () {
     function UsersService(usersRepository, UserMapper) {
         this.usersRepository = usersRepository;
@@ -72,7 +70,7 @@ var UsersService = /** @class */ (function () {
                         return [4 /*yield*/, this.usersRepository.createUser({ createUserDTO: createUserDTO })];
                     case 1:
                         newUser = _c.sent();
-                        return [2 /*return*/, UserMapper.map(newUser, users_model_1.ReturnUser, return_user_dto_1.ReturnUserDTO)];
+                        return [2 /*return*/, UserMapper.map(newUser, users_model_1.ReturnUser, user_dtos_2.ReturnUserDTO)];
                 }
             });
         });
@@ -90,7 +88,7 @@ var UsersService = /** @class */ (function () {
                         return [4 /*yield*/, this.usersRepository.findUserByObjectId(userId)];
                     case 1:
                         user = _c.sent();
-                        return [2 /*return*/, UserMapper.map(user, users_model_1.ReturnUser, user_profile_info_dto_1.UserProfileInfoDTO)];
+                        return [2 /*return*/, UserMapper.map(user, users_model_1.ReturnUser, user_dtos_2.UserProfileInfoDTO)];
                     case 2:
                         error_1 = _c.sent();
                         throw new Error(error_1);
@@ -100,7 +98,7 @@ var UsersService = /** @class */ (function () {
         });
     };
     UsersService.prototype.getUserToBeValidate = function (_a) {
-        var id = _a.id;
+        var userId = _a.userId;
         return __awaiter(this, void 0, Promise, function () {
             var _b, UserMapper, logger, user, error_2;
             return __generator(this, function (_c) {
@@ -108,11 +106,11 @@ var UsersService = /** @class */ (function () {
                     case 0:
                         _c.trys.push([0, 2, , 3]);
                         _b = this, UserMapper = _b.UserMapper, logger = _b.logger;
-                        logger.debug("[UsersService] getUserToBeValidate: userId: " + JSON.stringify(id));
-                        return [4 /*yield*/, this.usersRepository.findUserByObjectIdForValidating(id)];
+                        logger.debug("[UsersService] getUserToBeValidate: userId: " + JSON.stringify(userId));
+                        return [4 /*yield*/, this.usersRepository.findUserByObjectIdForValidating(userId)];
                     case 1:
                         user = _c.sent();
-                        return [2 /*return*/, UserMapper.map(user, users_model_1.UserToBeValidate, user_tobe_validate_dto_1.UserToBeValidateDTO)];
+                        return [2 /*return*/, UserMapper.map(user, users_model_1.UserToBeValidate, user_dtos_2.UserToBeValidateDTO)];
                     case 2:
                         error_2 = _c.sent();
                         throw new Error(error_2);
@@ -134,7 +132,7 @@ var UsersService = /** @class */ (function () {
                         return [4 /*yield*/, this.usersRepository.findByEmail(email)];
                     case 1:
                         user = _c.sent();
-                        return [2 /*return*/, UserMapper.map(user, users_model_1.ReturnUser, user_profile_info_dto_1.UserProfileInfoDTO)];
+                        return [2 /*return*/, UserMapper.map(user, users_model_1.ReturnUser, user_dtos_2.UserProfileInfoDTO)];
                     case 2:
                         error_3 = _c.sent();
                         throw new Error(error_3);
@@ -156,7 +154,7 @@ var UsersService = /** @class */ (function () {
                         return [4 /*yield*/, this.usersRepository.addChatGroupToUser(userId, chatGroupId)];
                     case 1:
                         user = _c.sent();
-                        return [2 /*return*/, UserMapper.map(user, users_model_1.ReturnUser, user_profile_info_dto_1.UserProfileInfoDTO)];
+                        return [2 /*return*/, UserMapper.map(user, users_model_1.ReturnUser, user_dtos_2.UserProfileInfoDTO)];
                     case 2:
                         error_4 = _c.sent();
                         throw new Error(error_4);
@@ -178,7 +176,7 @@ var UsersService = /** @class */ (function () {
                         return [4 /*yield*/, this.usersRepository.removeChatGroupFromUser(userId, chatGroupId)];
                     case 1:
                         user = _c.sent();
-                        return [2 /*return*/, UserMapper.map(user, users_model_1.ReturnUser, user_profile_info_dto_1.UserProfileInfoDTO)];
+                        return [2 /*return*/, UserMapper.map(user, users_model_1.ReturnUser, user_dtos_2.UserProfileInfoDTO)];
                     case 2:
                         error_5 = _c.sent();
                         throw new Error(error_5);
@@ -200,7 +198,7 @@ var UsersService = /** @class */ (function () {
                         return [4 /*yield*/, this.usersRepository.addFriend(userId, friendId)];
                     case 1:
                         processedUser = _c.sent();
-                        return [2 /*return*/, UserMapper.map(processedUser, users_model_1.ReturnUser, friend_info_dto_1.FriendInfoDTO)];
+                        return [2 /*return*/, UserMapper.map(processedUser, users_model_1.ReturnUser, user_dtos_2.FriendInfoDTO)];
                     case 2:
                         error_6 = _c.sent();
                         throw new Error(error_6);
@@ -222,7 +220,7 @@ var UsersService = /** @class */ (function () {
                         return [4 /*yield*/, this.usersRepository.removeFriend(userId, friendId)];
                     case 1:
                         processedUser = _c.sent();
-                        return [2 /*return*/, UserMapper.map(processedUser, users_model_1.ReturnUser, friend_info_dto_1.FriendInfoDTO)];
+                        return [2 /*return*/, UserMapper.map(processedUser, users_model_1.ReturnUser, user_dtos_2.FriendInfoDTO)];
                     case 2:
                         error_7 = _c.sent();
                         throw new Error(error_7);
@@ -265,7 +263,7 @@ var UsersService = /** @class */ (function () {
                     case 1:
                         users = _c.sent();
                         usersData = Promise.all(users.map(function (user) {
-                            return UserMapper_1.map(user, users_model_1.ReturnUser, friend_info_dto_1.FriendInfoDTO);
+                            return UserMapper_1.map(user, users_model_1.ReturnUser, user_dtos_2.FriendInfoDTO);
                         }));
                         return [2 /*return*/, usersData];
                     case 2:
@@ -277,19 +275,13 @@ var UsersService = /** @class */ (function () {
         });
     };
     UsersService.prototype.mapUserProfileInfo = function (_a) {
-        var userId = _a.userId, name = _a.name, email = _a.email, chatGroupDetails = _a.chatGroupDetails, friendsData = _a.friendsData;
-        return __awaiter(this, void 0, void 0, function () {
-            var _b, UserMapper, logger, userProfileInfo;
+        var mapUserInfoDTO = _a.mapUserInfoDTO;
+        return __awaiter(this, void 0, Promise, function () {
+            var _b, UserMapper, logger;
             return __generator(this, function (_c) {
                 _b = this, UserMapper = _b.UserMapper, logger = _b.logger;
-                logger.debug("[UsersService] mapUserProfileInfo:" + JSON.stringify({ userId: userId, name: name, email: email, chatGroupDetails: chatGroupDetails, friendsData: friendsData }));
-                userProfileInfo = new user_profile_info_dto_1.UserProfileInfoDTO();
-                userProfileInfo.UserId = userId;
-                userProfileInfo.UserName = name;
-                userProfileInfo.UserEmail = email;
-                userProfileInfo.ChatGroups = chatGroupDetails;
-                userProfileInfo.Friends = friendsData;
-                return [2 /*return*/, UserMapper.map(userProfileInfo, user_profile_info_dto_1.UserProfileInfoDTO, users_model_1.ReturnUserProfile)];
+                logger.debug("[UsersService] mapUserProfileInfo:" + JSON.stringify(mapUserInfoDTO));
+                return [2 /*return*/, UserMapper.map(mapUserInfoDTO, user_dtos_1.MapUserInfoDTO, users_model_1.ReturnUserProfile)];
             });
         });
     };

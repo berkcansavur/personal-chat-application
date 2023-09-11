@@ -3,10 +3,11 @@ import {
     Controller, 
     Post, 
     Session, } from '@nestjs/common';
-import { CreateUserDTO } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
 import { UtilsService } from '../utils/utils.service';
-import { ReturnUserDTO } from './dtos/return-user.dto';
+import { 
+    ReturnUserDTO,
+    CreateUserDTO } from './dtos/user-dtos';
 @Controller('users')
 export class UsersController {
     constructor(
