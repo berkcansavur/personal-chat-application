@@ -1,7 +1,7 @@
 import { Prop } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Schema as mSchema, Document, Types } from 'mongoose';
-import { ChatGroupInfoDTO } from 'src/chat-groups/dtos/chat-group-info.dto';
+import { ChatGroupInfoDTO } from 'src/chat-groups/dtos/chat-group-dtos';
 import { FriendInfoDTO } from './dtos/user-dtos';
 export interface User {
     _id:string; 

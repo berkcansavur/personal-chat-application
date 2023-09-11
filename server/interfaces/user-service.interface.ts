@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { ChatGroupInfoDTO } from 'src/chat-groups/dtos/chat-group-info.dto';
+import { ChatGroupInfoDTO } from 'src/chat-groups/dtos/chat-group-dtos';
 import { ReturnUserProfile } from 'src/users/users.model';
 import { 
     UserToBeValidateDTO,

@@ -6,10 +6,11 @@ import { JwtAuthGuard } from './auth/jwt.auth.guard';
 import { UsersService } from './users/users.service';
 import { ChatGroupsService } from './chat-groups/chat-groups.service';
 import mongoose from 'mongoose';
-import { CreateChatGroupDTO } from './chat-groups/dtos/create-chat-group.dto';
+import { 
+  CreateChatGroupDTO,
+  ChatGroupInfoDTO } from './chat-groups/dtos/chat-group-dtos';
 import { MessagesService } from './messages/messages.service';
 import { ReturnUserProfile } from './users/users.model';
-import { ChatGroupInfoDTO } from './chat-groups/dtos/chat-group-info.dto';
 import { FriendInfoDTO } from './users/dtos/user-dtos';
 
 @Controller('app')
@@ -115,7 +116,7 @@ export class AppController {
         throw new UnauthorizedException('You need to login to create a chat group');
       }
       const newChatGroup = await this.chatGroupService.createChatGroup({ createChatGroupDTO: body });
-      const createdChatGroup = await this.chatGroupService.getChatGroupByStringId({ id: newChatGroup._id});
+      const createdChatGroup = await this.chatGroupService.getChatGroupByStringId({ chatGroupId: newChatGroup._id});
       const updatedChatGroup = await this.chatGroupService.addUserToChatGroup({ chatGroupId: createdChatGroup._id, userId: req.user.userId });
       await this.userService.addChatGroupToUser({ userId: req.user.userId, chatGroupId: updatedChatGroup._id });
       return createdChatGroup;
@@ -124,7 +125,7 @@ export class AppController {
   @Delete('/delete-chat-group/:chatGroupId')
   async deleteChatGroup( @Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId ) {
     try {
-      const chatGroupToBeDelete = await this.chatGroupService.getChatGroup( {id:chatGroupId} );
+      const chatGroupToBeDelete = await this.chatGroupService.getChatGroup( {chatGroupId:chatGroupId} );
       const usersOfChatGroup = await this.chatGroupService.getChatGroupsUsers({chatGroupId: chatGroupId});
       const deleteChatGroupFromUsers = usersOfChatGroup.map(async (user) => {
         await this.userService.removeChatGroupFromUser({userId:user,chatGroupId: chatGroupToBeDelete._id});
@@ -141,7 +142,7 @@ export class AppController {
     if (!req.user) {
       throw new UnauthorizedException('You need to login to create a chat group');
     }
-    const chatGroup = await this.chatGroupService.getChatGroup( {id:chatGroupId} );
+    const chatGroup = await this.chatGroupService.getChatGroup( {chatGroupId:chatGroupId} );
     return chatGroup; 
   }
   @UseGuards( JwtAuthGuard )

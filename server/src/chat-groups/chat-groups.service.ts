@@ -1,13 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { CreateChatGroupDTO } from './dtos/create-chat-group.dto';
 import mongoose from "mongoose";
 import { ChatGroupsRepository } from './chat-groups.repository';
-import { ChatGroupInfoDTO } from './dtos/chat-group-info.dto';
 import { IChatGroupService } from 'interfaces/chat-groups-service.interface';
 import { ReturnChatGroup } from './chat-groups.model';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
-import { ReturnChatGroupDTO } from './dtos/return-chat-groups.dto';
+import { 
+    ReturnChatGroupDTO, 
+    CreateChatGroupDTO,
+    ChatGroupInfoDTO, 
+    UpdateChatGroupsNameDTO} from './dtos/chat-group-dtos';
 
 @Injectable()
 export class ChatGroupsService implements IChatGroupService {
@@ -16,113 +18,199 @@ export class ChatGroupsService implements IChatGroupService {
         private chatGroupsRepository : ChatGroupsRepository,
         @InjectMapper() private readonly ChatGroupMapper: Mapper){}
 
-    async createChatGroup({createChatGroupDTO}:{createChatGroupDTO:CreateChatGroupDTO}): Promise<ReturnChatGroupDTO>{
+    async createChatGroup({
+        createChatGroupDTO
+    }:{
+        createChatGroupDTO:CreateChatGroupDTO
+    }): Promise<ReturnChatGroupDTO> {
         try {
             const {
                 ChatGroupMapper,
                 logger
             } = this;
+
             logger.debug(`[ChatGroupsService] createChatGroup: ${JSON.stringify(createChatGroupDTO)}`);
+
             const newChatGroup: ReturnChatGroup =  await this.chatGroupsRepository.createChatGroup({createChatGroupDTO});
+
             return ChatGroupMapper.map<ReturnChatGroup, ReturnChatGroupDTO>(newChatGroup,ReturnChatGroup,ReturnChatGroupDTO);
+
         } catch (error) {
             throw new Error(error);
         }
     }
-    async deleteChatGroup({chatGroupId}:{chatGroupId: mongoose.Types.ObjectId}): Promise<ReturnChatGroupDTO>{
+
+    async deleteChatGroup({
+        chatGroupId
+    }:{
+        chatGroupId: mongoose.Types.ObjectId
+    }): Promise<ReturnChatGroupDTO> {
         try {
             const {
                 ChatGroupMapper,
                 logger
             } = this;
+
             logger.debug(`[ChatGroupsService] deleteChatGroup: chatGroupId: ${JSON.stringify(chatGroupId)}`);
+
             const chatGroup = await this.chatGroupsRepository.deleteChatGroup({chatGroupId: chatGroupId});
+
             return ChatGroupMapper.map<ReturnChatGroup, ReturnChatGroupDTO>(chatGroup,ReturnChatGroup,ReturnChatGroupDTO);
+
         } catch (error) {
             throw new Error(error);
         }
     }
-    async getChatGroup({id}:{id: mongoose.Types.ObjectId}): Promise<ChatGroupInfoDTO>{
+
+    async getChatGroup({
+        chatGroupId
+    }:{
+        chatGroupId: mongoose.Types.ObjectId
+    }): Promise<ChatGroupInfoDTO> {
         try {
             const {
                 ChatGroupMapper,
                 logger
             } = this;
-            logger.debug(`[ChatGroupsService] getChatGroup: chatGroupId: ${JSON.stringify(id)}`);
-            const chatGroup = await this.chatGroupsRepository.getChatGroupByObjectId({id:id});
+
+            logger.debug(`[ChatGroupsService] getChatGroup: chatGroupId: ${JSON.stringify(chatGroupId)}`);
+
+            const chatGroup = await this.chatGroupsRepository.getChatGroupByObjectId({id:chatGroupId});
+
             return ChatGroupMapper.map<ReturnChatGroup, ChatGroupInfoDTO>(chatGroup,ReturnChatGroup,ChatGroupInfoDTO);
-        } catch (error) {
-            throw new Error(error.message);
-        }
-    }async getChatGroupByStringId({id}:{id: string}): Promise<ChatGroupInfoDTO>{
-        try {
-            const {
-                ChatGroupMapper,
-                logger
-            } = this;
-            logger.debug(`[ChatGroupsService] getChatGroupByStringId: chatGroupId: ${JSON.stringify(id)}`);
-            const chatGroup = await this.chatGroupsRepository.getChatGroupByStringId({id:id});
-            return ChatGroupMapper.map<ReturnChatGroup, ChatGroupInfoDTO>(chatGroup,ReturnChatGroup,ChatGroupInfoDTO);
+
         } catch (error) {
             throw new Error(error.message);
         }
     }
-    async getChatGroupDetails({chatGroups} : {chatGroups: mongoose.Types.ObjectId[]} ): Promise<ChatGroupInfoDTO[]>{
+    
+    async getChatGroupByStringId({
+        chatGroupId
+    }:{
+        chatGroupId: string
+    }): Promise<ChatGroupInfoDTO> {
+        try {
+            const {
+                ChatGroupMapper,
+                logger
+            } = this;
+
+            logger.debug(`[ChatGroupsService] getChatGroupByStringId: chatGroupId: ${JSON.stringify(chatGroupId)}`);
+
+            const chatGroup = await this.chatGroupsRepository.getChatGroupByStringId({id:chatGroupId});
+            
+            return ChatGroupMapper.map<ReturnChatGroup, ChatGroupInfoDTO>(chatGroup,ReturnChatGroup,ChatGroupInfoDTO);
+
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
+    async getChatGroupDetails({
+        chatGroups
+    } : {
+        chatGroups: mongoose.Types.ObjectId[]
+    } ): Promise<ChatGroupInfoDTO[]> {
         try {
             const{ logger } = this;
+
             logger.debug(`[ChatGroupsService] getChatGroupDetails: chatGroups: ${JSON.stringify(chatGroups)}`);
+
             const chatGroupDetails = await Promise.all(chatGroups.map( async (chatGroupId)=>{
-                return await this.getChatGroup({id :chatGroupId});
+
+                return await this.getChatGroup({chatGroupId :chatGroupId});
             }));
+
             return chatGroupDetails;
+
         } catch (error) {
             throw new Error(error);
         }
     }
-    async getChatGroupsUsers({chatGroupId}:{chatGroupId:mongoose.Types.ObjectId}):Promise<mongoose.Types.ObjectId[]>{
+
+    async getChatGroupsUsers({
+        chatGroupId
+    }:{
+        chatGroupId:mongoose.Types.ObjectId
+    }):Promise<mongoose.Types.ObjectId[]> {
         try {
             const { logger } = this;
+
             logger.debug(`[ChatGroupsService] getChatGroupsUsers: chatGroupId: ${JSON.stringify(chatGroupId)}`);
+            
             return await this.chatGroupsRepository.getChatGroupsUsers(chatGroupId);
+
           } catch (error) {
             throw new Error(error.message);
           }
     }
-    async addUserToChatGroup( {chatGroupId,userId}:{chatGroupId:mongoose.Types.ObjectId, userId:mongoose.Types.ObjectId} ): Promise<ChatGroupInfoDTO>{
+
+    async addUserToChatGroup({
+        chatGroupId,
+        userId
+    }:{
+        chatGroupId:mongoose.Types.ObjectId, 
+        userId:mongoose.Types.ObjectId
+    }): Promise<ChatGroupInfoDTO> {
         try {
             const {
                 ChatGroupMapper,
                 logger
             } = this;
+
             logger.debug(`[ChatGroupsService] addUserToChatGroup: ${JSON.stringify({chatGroupId,userId})}`);
+
             const processedChatGroup = await this.chatGroupsRepository.addUserToChatGroup(chatGroupId, userId);
+
             return ChatGroupMapper.map<ReturnChatGroup, ChatGroupInfoDTO>(processedChatGroup, ReturnChatGroup, ChatGroupInfoDTO);
+
         } catch (error) {
             throw new Error(error.message);
         }
     }
-    async removeUserFromChatGroup({chatGroupId,userId}:{chatGroupId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId}): Promise<ChatGroupInfoDTO>{
+
+    async removeUserFromChatGroup({
+        chatGroupId,
+        userId
+    }:{
+        chatGroupId: mongoose.Types.ObjectId, 
+        userId: mongoose.Types.ObjectId
+    }): Promise<ChatGroupInfoDTO> {
         try {
             const {
                 ChatGroupMapper,
                 logger
             } = this;
+
             logger.debug(`[ChatGroupsService] removeUserFromChatGroup: ${JSON.stringify({chatGroupId,userId})}`);
+
             const processedChatGroup =  await this.chatGroupsRepository.removeUserFromChatGroup(chatGroupId, userId);
+            
             return ChatGroupMapper.map<ReturnChatGroup, ChatGroupInfoDTO>(processedChatGroup, ReturnChatGroup, ChatGroupInfoDTO);
+            
         } catch (error) {
             throw new Error(error);
         }   
     }
-    async updateChatGroupName({chatGroupId, chatGroupName}:{chatGroupId: mongoose.Types.ObjectId, chatGroupName: string}):Promise<ChatGroupInfoDTO> {
+
+    async updateChatGroupName({
+        updateChatGroupsNameDto
+    }:{
+        updateChatGroupsNameDto:UpdateChatGroupsNameDTO
+    }):Promise<ChatGroupInfoDTO> {
         try {
             const {
                 ChatGroupMapper,
                 logger
             } = this;
-            logger.debug(`[ChatGroupsService] updateChatGroupName: ${JSON.stringify({chatGroupId,chatGroupName})}`);
+
+            logger.debug(`[ChatGroupsService] updateChatGroupName: ${JSON.stringify(updateChatGroupsNameDto)}`);
+
+            const {chatGroupId, chatGroupName} = updateChatGroupsNameDto; 
             const processedChatGroup = await this.chatGroupsRepository.updateChatGroupName(chatGroupId, chatGroupName);
+
             return ChatGroupMapper.map<ReturnChatGroup, ChatGroupInfoDTO>(processedChatGroup, ReturnChatGroup, ChatGroupInfoDTO);
+
         } catch (error) {
           throw new Error(error);
         }

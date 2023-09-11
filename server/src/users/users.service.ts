@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import mongoose from 'mongoose';
 import { UsersRepository } from './users.repository';
-import { ChatGroupInfoDTO } from 'src/chat-groups/dtos/chat-group-info.dto';
+import { ChatGroupInfoDTO } from 'src/chat-groups/dtos/chat-group-dtos';
 import { IUsersService } from 'interfaces/user-service.interface';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
