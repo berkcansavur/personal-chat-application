@@ -14,8 +14,8 @@ export class UsersRepository {
         const { userModel } = this;
         return ( await userModel.create(createUserDTO)).toObject();
     }
-    async findUserByObjectId( id: mongoose.Types.ObjectId): Promise<ReturnUserDocument>{
-        return await this.userModel.findOne({ _id: id });
+    async findUserByObjectId( userId: mongoose.Types.ObjectId): Promise<ReturnUserDocument>{
+        return await this.userModel.findOne({ _id: userId });
     }
     async findUserByObjectIdForValidating( id: mongoose.Types.ObjectId): Promise<UserToBeValidateDocument>{
         return await this.userModel.findOne({ _id: id });
@@ -52,12 +52,18 @@ export class UsersRepository {
             { new: true }
         );
     }
-    async getFriendsOfUser( userId:mongoose.Types.ObjectId): Promise<mongoose.Types.ObjectId[]> {
+    async getFriendIdsOfUser( userId:mongoose.Types.ObjectId): Promise<mongoose.Types.ObjectId[]> {
         const user = await this.userModel.findOne({ _id: userId });
         const friends = user.Friends;
         return friends;
         
     }
+
+    async getUserFriends(userIds:mongoose.Types.ObjectId[]): Promise<ReturnUserDocument[]>{
+        
+        return await this.userModel.find({ _id: { $in: userIds } });
+    }
+
     async getUserData( userId: mongoose.Types.ObjectId ){
         const user = await this.userModel.findOne(userId);
             const { name, email, ChatGroups,  } = user;
@@ -68,14 +74,12 @@ export class UsersRepository {
             userData.ChatGroups = ChatGroups;
             return userData;
     }
-    async getUserFriends(userIds:mongoose.Types.ObjectId[]): Promise<ReturnUserDocument[]>{
-        return this.userModel.find({ _id: { $in: userIds } });
-    }
+    
     async getUsersFriendsData( userId:mongoose.Types.ObjectId){
-        const friends = await this.getFriendsOfUser(userId);
-        const friendsData = Promise.all(friends.map( async (friend) => {
-            return await this.getUserData(friend);
-        }));
+        const friendIds = await this.getFriendIdsOfUser(userId);
+        const friendsData = friendIds.map( async (friendId) => {
+            return await this.getUserData(friendId);
+        });
         return friendsData;
 
     }

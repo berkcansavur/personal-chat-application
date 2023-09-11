@@ -206,7 +206,7 @@ export class UsersService implements IUsersService {
 
             logger.debug(`[UsersService] getFriendIdsOfUser: userId: ${JSON.stringify(userId)}`);
 
-            return await this.usersRepository.getFriendsOfUser(userId);
+            return await this.usersRepository.getFriendIdsOfUser(userId);
 
         } catch (error) {
             throw new Error(error);
@@ -227,9 +227,9 @@ export class UsersService implements IUsersService {
 
             const users = await this.usersRepository.getUserFriends(userIds);
 
-            const usersData = Promise.all(users.map((user)=>{
+            const usersData = users.map((user)=>{
                 return UserMapper.map<ReturnUser, FriendInfoDTO>(user, ReturnUser,FriendInfoDTO)
-            }));
+            });
 
             return usersData;
         } catch (error) {

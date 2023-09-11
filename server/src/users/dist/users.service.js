@@ -239,7 +239,7 @@ var UsersService = /** @class */ (function () {
                         _b.trys.push([0, 2, , 3]);
                         logger = this.logger;
                         logger.debug("[UsersService] getFriendIdsOfUser: userId: " + JSON.stringify(userId));
-                        return [4 /*yield*/, this.usersRepository.getFriendsOfUser(userId)];
+                        return [4 /*yield*/, this.usersRepository.getFriendIdsOfUser(userId)];
                     case 1: return [2 /*return*/, _b.sent()];
                     case 2:
                         error_8 = _b.sent();
@@ -262,9 +262,9 @@ var UsersService = /** @class */ (function () {
                         return [4 /*yield*/, this.usersRepository.getUserFriends(userIds)];
                     case 1:
                         users = _c.sent();
-                        usersData = Promise.all(users.map(function (user) {
+                        usersData = users.map(function (user) {
                             return UserMapper_1.map(user, users_model_1.ReturnUser, user_dtos_2.FriendInfoDTO);
-                        }));
+                        });
                         return [2 /*return*/, usersData];
                     case 2:
                         error_9 = _c.sent();
