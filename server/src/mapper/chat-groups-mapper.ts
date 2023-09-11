@@ -2,8 +2,10 @@ import { Mapper, MappingProfile, createMap, forMember, mapFrom } from "@automapp
 import { AutomapperProfile, InjectMapper } from "@automapper/nestjs";
 import { Injectable } from "@nestjs/common";
 import { ReturnChatGroup } from "src/chat-groups/chat-groups.model";
-import { ChatGroupInfoDTO } from "src/chat-groups/dtos/chat-group-info.dto";
-import { ReturnChatGroupDTO } from "src/chat-groups/dtos/return-chat-groups.dto";
+
+import { 
+    ReturnChatGroupDTO,
+    ChatGroupInfoDTO } from "src/chat-groups/dtos/chat-group-dtos";
 
 @Injectable()
 export class ChatGroupsProfile extends AutomapperProfile{

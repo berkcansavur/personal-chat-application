@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import mongoose, { Model } from "mongoose";
-import { CreateChatGroupDTO } from "./dtos/create-chat-group.dto";
+import { CreateChatGroupDTO } from "./dtos/chat-group-dtos";
 import { ChatGroups, ReturnChatGroupDocument } from "./chat-groups.model";
 
 @Injectable()

@@ -1,7 +1,7 @@
 import { IsEmail, IsEmpty, IsString, IsMongoId, Length } from "class-validator";
 import { Expose, Exclude } from "class-transformer";
 import mongoose from "mongoose";
-import { ChatGroupInfoDTO } from "src/chat-groups/dtos/chat-group-info.dto";
+import { ChatGroupInfoDTO } from "src/chat-groups/dtos/chat-group-dtos";
 
 export class UserToBeValidateDTO {
     

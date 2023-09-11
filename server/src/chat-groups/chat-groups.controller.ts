@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ChatGroupsService } from './chat-groups.service';
 import { UsersService } from 'src/users/users.service';
-import { CreateChatGroupDTO } from './dtos/create-chat-group.dto';
+import { CreateChatGroupDTO } from './dtos/chat-group-dtos';
 import mongoose from 'mongoose';
 
 @Controller('chat-groups')
@@ -54,7 +54,7 @@ export class ChatGroupsController {
     @Post('/change-group-name/:id')
     async updateGroupName(@Param('id') chatGroupId: mongoose.Types.ObjectId, @Body() body:{ newName: string}){
         try {
-            const updatedChatGroup = await this.chatGroupsService.updateChatGroupName({chatGroupId :chatGroupId,chatGroupName :body.newName});
+            const updatedChatGroup = await this.chatGroupsService.updateChatGroupName({updateChatGroupsNameDto:{chatGroupId :chatGroupId,chatGroupName :body.newName}});
             return updatedChatGroup;
         } catch (error) {
             throw new Error(error);
