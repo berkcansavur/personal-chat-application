@@ -10,7 +10,7 @@ import { CreateChatGroupDTO } from './chat-groups/dtos/create-chat-group.dto';
 import { MessagesService } from './messages/messages.service';
 import { ReturnUserProfile } from './users/users.model';
 import { ChatGroupInfoDTO } from './chat-groups/dtos/chat-group-info.dto';
-import { FriendInfoDTO } from './users/dtos/friend-info.dto';
+import { FriendInfoDTO } from './users/dtos/user-dtos';
 
 @Controller('app')
 export class AppController {

@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 import mongoose, { Model } from 'mongoose';
 import { ReturnUserDocument, User, UserToBeValidateDocument } from './users.model';
 import { InjectModel } from '@nestjs/mongoose';
-import { UserDataDTO } from './dtos/user-data.dto';
-import { CreateUserDTO } from './dtos/create-user.dto';
+import { 
+    UserDataDTO,
+    CreateUserDTO } from './dtos/user-dtos';
 @Injectable()
 export class UsersRepository { 
     constructor(

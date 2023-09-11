@@ -2,10 +2,11 @@ import { Injectable,NotFoundException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { promisify } from "util";
 import { scrypt as _scrypt} from "crypto";
-import { LoginUserDTO } from 'src/users/dtos/login-user.dto';
+import { 
+  LoginUserDTO,
+  AuthenticatedUserDTO } from 'src/users/dtos/user-dtos';
 const scrypt = promisify(_scrypt);
 import { JwtService } from '@nestjs/jwt';
-import { AuthenticatedUserDTO } from 'src/users/dtos/authenticated-user.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -17,7 +18,7 @@ export class AuthService {
     const {email, password } = body;
     const user = await this.userService.findUserByEmail({email});
     const { UserId }=user
-    const userToBeValidated = await this.userService.getUserToBeValidate({id:UserId})
+    const userToBeValidated = await this.userService.getUserToBeValidate({userId:UserId})
     if(!user){
         throw new NotFoundException('User Not Found');
     }
