@@ -25,7 +25,11 @@ export class UsersService implements IUsersService {
         @InjectMapper() private readonly UserMapper: Mapper
         ){}
 
-    async createUser({createUserDTO}:{createUserDTO: CreateUserDTO}): Promise<ReturnUserDTO>{
+    async createUser({
+        createUserDTO
+    }:{
+        createUserDTO: CreateUserDTO
+    }): Promise<ReturnUserDTO> {
 
         const {
             UserMapper,
@@ -38,7 +42,12 @@ export class UsersService implements IUsersService {
 
         return UserMapper.map< ReturnUser, ReturnUserDTO>(newUser,ReturnUser,ReturnUserDTO);
     }
-    async findUser({userId}:{userId: mongoose.Types.ObjectId} ): Promise<UserProfileInfoDTO>{
+
+    async findUser({
+        userId
+    }:{
+        userId: mongoose.Types.ObjectId
+    }): Promise<UserProfileInfoDTO> {
         try {
             const {
                 UserMapper,
@@ -54,7 +63,12 @@ export class UsersService implements IUsersService {
             throw new Error(error);
         }
     }
-    async getUserToBeValidate({userId}:{userId: mongoose.Types.ObjectId} ): Promise<UserToBeValidateDTO>{
+
+    async getUserToBeValidate({
+        userId
+    }:{
+        userId: mongoose.Types.ObjectId
+    } ): Promise<UserToBeValidateDTO> {
         try {
             const {
                 UserMapper,
@@ -70,7 +84,12 @@ export class UsersService implements IUsersService {
             throw new Error(error);
         }
     }
-    async findUserByEmail({email}:{email: string}): Promise<UserProfileInfoDTO>{
+
+    async findUserByEmail({
+        email
+    }:{
+        email: string
+    }): Promise<UserProfileInfoDTO> {
         try {
             const {
                 UserMapper,
@@ -86,7 +105,14 @@ export class UsersService implements IUsersService {
             throw new Error(error);
         }
     }
-    async addChatGroupToUser({userId,chatGroupId}:{userId:mongoose.Types.ObjectId, chatGroupId:mongoose.Types.ObjectId}): Promise<UserProfileInfoDTO>{
+
+    async addChatGroupToUser({
+        userId,
+        chatGroupId
+    }:{
+        userId:mongoose.Types.ObjectId,
+        chatGroupId:mongoose.Types.ObjectId
+    }): Promise<UserProfileInfoDTO> {
         try {
             const {
                 UserMapper,
@@ -102,7 +128,14 @@ export class UsersService implements IUsersService {
             throw new Error(error);
         }
     }
-    async removeChatGroupFromUser({userId,chatGroupId}:{userId:mongoose.Types.ObjectId, chatGroupId:mongoose.Types.ObjectId} ): Promise<UserProfileInfoDTO>{
+
+    async removeChatGroupFromUser({
+        userId,
+        chatGroupId
+    }:{
+        userId:mongoose.Types.ObjectId, 
+        chatGroupId:mongoose.Types.ObjectId
+    }): Promise<UserProfileInfoDTO> {
         try {
             const {
                 UserMapper,
@@ -118,7 +151,13 @@ export class UsersService implements IUsersService {
             throw new Error(error);
         }
     }
-    async addFriend({userId, friendId}:{userId:mongoose.Types.ObjectId, friendId:mongoose.Types.ObjectId}): Promise<FriendInfoDTO> {
+    async addFriend({
+        userId, 
+        friendId
+    }:{
+        userId:mongoose.Types.ObjectId, 
+        friendId:mongoose.Types.ObjectId
+    }): Promise<FriendInfoDTO> {
         try {
             const {
                 UserMapper,
@@ -134,7 +173,13 @@ export class UsersService implements IUsersService {
             throw new Error(error);
         }
     }
-    async removeFriend({userId, friendId}:{userId:mongoose.Types.ObjectId, friendId:mongoose.Types.ObjectId}): Promise<FriendInfoDTO> {
+    async removeFriend({
+        userId, 
+        friendId
+    }:{
+        userId:mongoose.Types.ObjectId, 
+        friendId:mongoose.Types.ObjectId
+    }): Promise<FriendInfoDTO> {
         try {
             const {
                 UserMapper,
@@ -151,7 +196,11 @@ export class UsersService implements IUsersService {
             throw new Error(error);
         }
     }
-    async getFriendIdsOfUser( {userId} : {userId: mongoose.Types.ObjectId}): Promise<mongoose.Types.ObjectId[]> {
+    async getFriendIdsOfUser({
+        userId
+    } : {
+        userId: mongoose.Types.ObjectId
+    }): Promise<mongoose.Types.ObjectId[]> {
         try {
             const { logger } = this;
 
@@ -163,7 +212,11 @@ export class UsersService implements IUsersService {
             throw new Error(error);
         }
     }
-    async getUsersFriendsInfo({userIds}:{userIds: mongoose.Types.ObjectId[]}): Promise<FriendInfoDTO[]> {
+    async getUsersFriendsInfo({
+        userIds
+    }:{
+        userIds: mongoose.Types.ObjectId[]
+    }): Promise<FriendInfoDTO[]> {
         try {
             const {
                 UserMapper,
@@ -183,7 +236,11 @@ export class UsersService implements IUsersService {
           throw new Error(error);
         }
     }
-    async mapUserProfileInfo({mapUserInfoDTO}:{mapUserInfoDTO:MapUserInfoDTO}): Promise<ReturnUserProfile>{
+    async mapUserProfileInfo({
+        mapUserInfoDTO
+    }:{
+        mapUserInfoDTO:MapUserInfoDTO
+    }): Promise<ReturnUserProfile> {
         const {
             UserMapper,
             logger
@@ -195,7 +252,11 @@ export class UsersService implements IUsersService {
         
     }
 
-    async searchUser({searchText}:{searchText:string}) {
+    async searchUser({
+        searchText
+    }:{
+        searchText:string
+    }) {
         return await this.usersRepository.searchUser(searchText);
     }   
 }
