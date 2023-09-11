@@ -1,5 +1,4 @@
 import { Controller, Get, Post, UseGuards, Request, Body, UnauthorizedException, Param, Query, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
-import { AppService } from './app.service';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth/auth.service';
 import { JwtAuthGuard } from './auth/jwt.auth.guard';
@@ -16,16 +15,11 @@ import { FriendInfoDTO } from './users/dtos/user-dtos';
 @Controller('app')
 export class AppController {
   constructor(
-    private readonly appService: AppService,
     private authService: AuthService,
     private userService: UsersService,
     private chatGroupService: ChatGroupsService,
     private messagesService : MessagesService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
   @UseGuards(AuthGuard('local'))
   @Post('login')
   @UsePipes(ValidationPipe)
