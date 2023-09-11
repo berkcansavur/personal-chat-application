@@ -7,7 +7,8 @@ import {
     UserProfileInfoDTO,
     UserDataDTO,
     ReturnUserDTO,
-    CreateUserDTO
+    CreateUserDTO,
+    MapUserInfoDTO
      } from 'src/users/dtos/user-dtos';
 export interface IUsersService {
     createUser({createUserDTO} : {createUserDTO: CreateUserDTO }):Promise<ReturnUserDTO>;
@@ -19,6 +20,6 @@ export interface IUsersService {
     removeFriend({userId, friendId} : {userId:mongoose.Types.ObjectId, friendId: mongoose.Types.ObjectId}) : Promise<FriendInfoDTO>;
     getFriendIdsOfUser({userId} : {userId: mongoose.Types.ObjectId}) : Promise<mongoose.Types.ObjectId[]>;
     getUserToBeValidate({userId}:{userId: mongoose.Types.ObjectId} ) : Promise<UserToBeValidateDTO>
-    mapUserProfileInfo({userId, name, email, chatGroupDetails, friendsData} : {userId:mongoose.Types.ObjectId, name: string, email: string, chatGroupDetails: ChatGroupInfoDTO[], friendsData:UserDataDTO[]}) : Promise<ReturnUserProfile>;
+    mapUserProfileInfo({mapUserInfoDTO}:{mapUserInfoDTO:MapUserInfoDTO}) : Promise<ReturnUserProfile>;
     searchUser({searchText} : {searchText:string}): Promise<any>;
 }

@@ -5,6 +5,7 @@ import { ChatGroupInfoDTO } from 'src/chat-groups/dtos/chat-group-info.dto';
 import { IUsersService } from 'interfaces/user-service.interface';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
+import { MapUserInfoDTO } from './dtos/user-dtos';
 import { 
     ReturnUser, 
     ReturnUserProfile, 
@@ -182,22 +183,15 @@ export class UsersService implements IUsersService {
           throw new Error(error);
         }
     }
-    async mapUserProfileInfo({userId, name, email, chatGroupDetails, friendsData}:{userId: mongoose.Types.ObjectId, name: string, email: string, chatGroupDetails: ChatGroupInfoDTO[], friendsData:FriendInfoDTO[]}){
+    async mapUserProfileInfo({mapUserInfoDTO}:{mapUserInfoDTO:MapUserInfoDTO}): Promise<ReturnUserProfile>{
         const {
             UserMapper,
             logger
         } = this;
+        
+        logger.debug(`[UsersService] mapUserProfileInfo:${JSON.stringify(mapUserInfoDTO)}`);
 
-        logger.debug(`[UsersService] mapUserProfileInfo:${JSON.stringify({userId, name, email, chatGroupDetails, friendsData})}`);
-
-        const userProfileInfo = new UserProfileInfoDTO();
-        userProfileInfo.UserId = userId;
-        userProfileInfo.UserName = name;
-        userProfileInfo.UserEmail = email;
-        userProfileInfo.ChatGroups = chatGroupDetails;
-        userProfileInfo.Friends = friendsData;
-
-        return UserMapper.map<UserProfileInfoDTO, ReturnUserProfile>(userProfileInfo, UserProfileInfoDTO,ReturnUserProfile)
+        return UserMapper.map<MapUserInfoDTO, ReturnUserProfile>(mapUserInfoDTO, MapUserInfoDTO, ReturnUserProfile)
         
     }
 

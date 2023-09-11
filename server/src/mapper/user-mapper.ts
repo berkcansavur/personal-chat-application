@@ -6,7 +6,8 @@ import {
     UserToBeValidateDTO,
     UserProfileInfoDTO,
     ReturnUserDTO,
-    FriendInfoDTO
+    FriendInfoDTO,
+    MapUserInfoDTO
  } from "src/users/dtos/user-dtos";
 @Injectable()
 export class UserProfile extends AutomapperProfile{
@@ -60,6 +61,31 @@ export class UserProfile extends AutomapperProfile{
                 forMember(
                     (destination)=>destination.Friends,
                     mapFrom((source)=>source.Friends)
+                )
+            )
+            createMap<MapUserInfoDTO, ReturnUserProfile>(
+                mapper,
+                MapUserInfoDTO,
+                ReturnUserProfile,
+                forMember(
+                    (destination)=>destination._id,
+                    mapFrom((source)=>source.UserId)
+                ),
+                forMember(
+                    (destination)=>destination.name,
+                    mapFrom((source)=>source.UserName)
+                ),
+                forMember(
+                    (destination)=>destination.email,
+                    mapFrom((source)=>source.UserEmail)
+                ),
+                forMember(
+                    (destination)=>destination.ChatGroups,
+                    mapFrom((source)=>source.ChatGroupDetails)
+                ),
+                forMember(
+                    (destination)=>destination.Friends,
+                    mapFrom((source)=>source.FriendsData)
                 )
             )
             createMap<ReturnUser, UserProfileInfoDTO>(
