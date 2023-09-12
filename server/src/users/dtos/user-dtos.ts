@@ -66,11 +66,11 @@ export class FriendInfoDTO{
 
 export class CurrentUserDTO {
     @Expose()
-    userId: number;
-    @Expose()
-    userEmail: string;
+    userId: mongoose.Types.ObjectId;
     @Expose()
     userName: string;
+    @Expose()
+    userEmail: string;
 }
 
 export class CreateUserDTO {
