@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from './Button';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
+import axios from 'axios';
 
 function Navbar() {
   const [click, setClick] = useState(false);
@@ -19,15 +20,45 @@ function Navbar() {
       setButton(true);
     }
   };
-
+  const getAccessToken = async () => {
+    await axios.get(`http://localhost:3001/app/getAuthToken`,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((res)=>{
+      sessionStorage.setItem("token",res.data.access_token);
+      if(res.data.access_token==null){
+        setLoggedIn(false);
+      }
+      setLoggedIn(true);
+    }).catch((err)=>{
+      console.log(err);
+    console.log('Access Token could not retrieved.')
+    });
+}
   useEffect(() => {
     showButton();
   }, []);
-
+  useEffect(()=> {
+    
+    getAccessToken();
+  },[token]);
   window.addEventListener('resize', showButton);
-  const handleLogout = () => {
-    sessionStorage.removeItem("token");
-    setLoggedIn(false);
+  window.addEventListener('scroll', getAccessToken);
+  
+  const handleLogout = async() => {
+
+      await axios.get("http://localhost:3001/app/logout",{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then((res)=>{
+        sessionStorage.setItem("token",res.data.access_token);
+        setLoggedIn(false);
+      }).catch((err) => {
+        console.error(err);
+        console.error('Token was not deleted');
+      });
   };
   return (
     <>
@@ -72,13 +103,6 @@ function Navbar() {
               >
                 Profile
               </Link>
-            </li>
-            <li>
-              <Link
-                to='/log-in'
-                className='nav-links-mobile'
-                onClick={closeMobileMenu}
-              ></Link>
             </li>
           </ul>
           {button && !loggedIn ? ( 

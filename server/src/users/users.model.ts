@@ -27,6 +27,19 @@ export class ReturnUser{
     @Prop({type: []})
     Friends:any[];
 }
+export class ReturnUserToBeAuth{
+    @Prop({type: mSchema.Types.ObjectId, auto: true})
+    _id:Types.ObjectId;
+
+    @Prop({type: String, required: true})
+    name:string;
+
+    @Prop({type: String, required: true})
+    email:string;
+
+    @Prop({type: String})
+    accessToken:string;
+}
 export class UserToBeValidate{
     @Prop({type: mSchema.Types.ObjectId, auto: true})
     _id:Types.ObjectId;
@@ -57,6 +70,7 @@ export class ReturnUserProfile{
 export type ReturnUserProfileDocument = ReturnUserProfile & Document;
 export type UserToBeValidateDocument = UserToBeValidate & Document;
 export type ReturnUserDocument = ReturnUser & Document;
+export type ReturnUserToBeAuthDocument = ReturnUserToBeAuth & Document;
 export const UserSchema = new mongoose.Schema({
     name:{type: String , required: true},
     email: {type: String , required: true},
@@ -66,6 +80,7 @@ export const UserSchema = new mongoose.Schema({
     }],
     Friends:[{
         friend:{type:Object}
-    }]
+    }],
+    accessToken: {type: String }
     
 },{timestamps:true})

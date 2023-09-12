@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import mongoose, { Model } from 'mongoose';
-import { ReturnUserDocument, User, UserToBeValidateDocument } from './users.model';
+import { ReturnUserDocument, ReturnUserToBeAuthDocument, User, UserToBeValidateDocument } from './users.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { 
     UserDataDTO,
@@ -82,6 +82,27 @@ export class UsersRepository {
         });
         return friendsData;
 
+    }
+    async setUsersAccessToken(userId: string, accessToken: string): Promise<ReturnUserToBeAuthDocument>{
+        const { userModel } = this;
+        return await userModel.findByIdAndUpdate(
+            userId,
+            {accessToken:accessToken},
+            {new:true}
+        );
+    }
+    async getUsersAccessToken(userId: string): Promise<ReturnUserToBeAuthDocument>{
+        const { userModel } = this;
+        return await userModel.findOne({ _id: userId });
+    }
+    async removeUsersAccessToken(userId: string): Promise<ReturnUserToBeAuthDocument>{
+        const { userModel } = this;
+        const user =  await userModel.findByIdAndUpdate(
+            userId,
+            {accessToken:null},
+            {new:true}
+        );
+        return user.toObject();
     }
     async searchUser(searchText:string) {
         const users = await this.userModel.find({

@@ -4,10 +4,11 @@ import { UsersRepository } from './users.repository';
 import { IUsersService } from 'interfaces/user-service.interface';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
-import { MapUserInfoDTO } from './dtos/user-dtos';
+import { AuthenticatedUserDTO, MapUserInfoDTO } from './dtos/user-dtos';
 import { 
     ReturnUser, 
     ReturnUserProfile, 
+    ReturnUserToBeAuth, 
     UserToBeValidate } from './users.model';
 import { 
     UserToBeValidateDTO, 
@@ -250,7 +251,60 @@ export class UsersService implements IUsersService {
         return UserMapper.map<MapUserInfoDTO, ReturnUserProfile>(mapUserInfoDTO, MapUserInfoDTO, ReturnUserProfile)
         
     }
+    async setUsersAccessToken({
+        authenticatedUserDto
+    }:{
+        authenticatedUserDto : AuthenticatedUserDTO
+    }): Promise<AuthenticatedUserDTO> {
 
+        const {
+            UserMapper,
+            logger
+        } = this;
+        logger.debug(`[UsersService] setUsersAccessToken: ${JSON.stringify(authenticatedUserDto)}`);
+
+        const {userId, access_token} = authenticatedUserDto;
+
+        const updatedUser = await this.usersRepository.setUsersAccessToken(userId, access_token)
+
+        return UserMapper.map<ReturnUserToBeAuth, AuthenticatedUserDTO>(updatedUser, ReturnUserToBeAuth, AuthenticatedUserDTO);
+    }
+
+    async getAccessToken({
+        userId
+    }:{
+        userId : string
+    }): Promise<AuthenticatedUserDTO> {
+
+        const {
+            UserMapper,
+            logger
+        } = this;
+
+        logger.debug(`[UsersService] getAccessToken: ${JSON.stringify(userId)}`);
+
+        const updatedUser = await this.usersRepository.getUsersAccessToken(userId);
+        
+        return UserMapper.map<ReturnUserToBeAuth, AuthenticatedUserDTO>(updatedUser, ReturnUserToBeAuth, AuthenticatedUserDTO);
+    }
+
+    async removeUsersAccessToken({
+        userId
+    }:{
+        userId : string
+    }): Promise<AuthenticatedUserDTO> {
+
+        const {
+            UserMapper,
+            logger
+        } = this;
+
+        logger.debug(`[UsersService] removeUsersAccessToken: ${JSON.stringify(userId)}`);
+
+        const updatedUser = await this.usersRepository.setUsersAccessToken(userId,null);
+        
+        return UserMapper.map<ReturnUserToBeAuth, AuthenticatedUserDTO>(updatedUser, ReturnUserToBeAuth, AuthenticatedUserDTO);
+    }
     async searchUser({
         searchText
     }:{

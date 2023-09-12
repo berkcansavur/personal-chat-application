@@ -7,10 +7,10 @@ function Login() {
   const [ email, setEmail] = useState('')
   const [ password, setPassword] = useState('')
   const navigate = useNavigate();
-  const handleSubmit = (e)=>{
+  const handleSubmit = async (e)=>{
     e.preventDefault();
     console.log(email,password);
-    axios.post('http://localhost:3001/app/login',{
+    await axios.post('http://localhost:3001/app/login',{
       email: email,
       password: password
     },{ withCredentials: true })
