@@ -4,37 +4,40 @@ import { promisify } from "util";
 import { scrypt as _scrypt} from "crypto";
 import { 
   LoginUserDTO,
-  AuthenticatedUserDTO } from 'src/users/dtos/user-dtos';
+  AuthenticatedUserDTO, 
+  UserProfileInfoDTO,
+  CurrentUserDTO} from 'src/users/dtos/user-dtos';
 const scrypt = promisify(_scrypt);
 import { JwtService } from '@nestjs/jwt';
+import { InjectMapper } from '@automapper/nestjs';
+import { Mapper } from '@automapper/core';
 @Injectable()
 export class AuthService {
   constructor(
+    @InjectMapper() private readonly AuthMapper: Mapper,
     private readonly userService: UsersService,
     private jwtTokenService :JwtService
     ) {}
   
-  async validateUser(body: LoginUserDTO): Promise<any> {
-    const {email, password } = body;
-    const user = await this.userService.findUserByEmail({email});
-    const { UserId } = user
-    const userToBeValidated = await this.userService.getUserToBeValidate({userId:UserId})
-    if(!user){
-        throw new NotFoundException('User Not Found');
-    }
-    const [salt, storedHash] = userToBeValidated.password.split('.');
-    
-    const hashedPart = (await scrypt(password, salt, 32)) as Buffer;
+  async validateUser(
+    body: LoginUserDTO
+    ): Promise<any> {
+      const { AuthMapper } = this;
+      const {email, password } = body;
+      const user = await this.userService.findUserByEmail({email});
+      const { UserId } = user
+      const userToBeValidated = await this.userService.getUserToBeValidate({userId:UserId})
+      if(!user){
+          throw new NotFoundException('User Not Found');
+      }
+      const [salt, storedHash] = userToBeValidated.password.split('.');
+      
+      const hashedPart = (await scrypt(password, salt, 32)) as Buffer;
 
-    if(storedHash === hashedPart.toString('hex')){
-      const {UserId,UserName,UserEmail} = user;
-        return {
-            userId:UserId,
-            userName:UserName,
-            userEmail:UserEmail
-        };
-    }
-    return null
+      if(storedHash === hashedPart.toString('hex')){
+        return AuthMapper.map<UserProfileInfoDTO,CurrentUserDTO>(user,UserProfileInfoDTO,CurrentUserDTO);
+      }
+      return null
   }
   async loginWithCredentials(user: AuthenticatedUserDTO){
     const payload = {
