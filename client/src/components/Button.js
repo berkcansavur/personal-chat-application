@@ -13,7 +13,9 @@ export const Button = ({
   buttonStyle,
   buttonSize,
   toOperation
+  
 }) => {
+  
   const checkButtonStyle = STYLES.includes(buttonStyle)
     ? buttonStyle
     : STYLES[0];
@@ -33,6 +35,19 @@ export const Button = ({
   if(toOperation==='login'){
     return (
         <Link to='/log-in' className='btn-mobile'>
+          <button
+            className={`btn ${checkButtonStyle} ${checkButtonSize}`}
+            onClick={onClick}
+            type={type}
+          >
+            {children}
+          </button>
+        </Link>
+      );
+  }
+  if(toOperation==='logout'){
+    return (
+        <Link to='/' className='btn-mobile'>
           <button
             className={`btn ${checkButtonStyle} ${checkButtonSize}`}
             onClick={onClick}
@@ -107,4 +122,4 @@ export const Button = ({
       );
   }
   
-};
+}; 

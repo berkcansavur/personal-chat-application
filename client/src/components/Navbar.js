@@ -6,7 +6,9 @@ import './Navbar.css';
 function Navbar() {
   const [click, setClick] = useState(false);
   const [button, setButton] = useState(true);
-
+  const token = sessionStorage.getItem("token");
+  const [loggedIn, setLoggedIn] = useState(!!token);
+  
   const handleClick = () => setClick(!click);
   const closeMobileMenu = () => setClick(false);
 
@@ -23,7 +25,10 @@ function Navbar() {
   }, []);
 
   window.addEventListener('resize', showButton);
-
+  const handleLogout = () => {
+    sessionStorage.removeItem("token");
+    setLoggedIn(false);
+  };
   return (
     <>
       <nav className='navbar'>
@@ -73,12 +78,12 @@ function Navbar() {
                 to='/log-in'
                 className='nav-links-mobile'
                 onClick={closeMobileMenu}
-              >
-                Sign Up
-              </Link>
+              ></Link>
             </li>
           </ul>
-          {button && <Button toOperation='login' buttonStyle='btn--outline'>Log In</Button>}
+          {button && !loggedIn ? ( 
+          <Button toOperation='login' buttonStyle='btn--outline'>Log In</Button>) : 
+          (<Button toOperation='logout' onClick={handleLogout} buttonStyle='btn--outline'>Log Out</Button>)}
         </div>
       </nav>
     </>
