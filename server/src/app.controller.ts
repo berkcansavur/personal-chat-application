@@ -36,11 +36,11 @@ export class AppController {
   }
 
   @UseGuards( JwtAuthGuard )
-  @Get('/getAuthToken')
+  @Get('/getAuthenticatedUser')
   async getAuthenticatedUser(@Request() req ) {
     return await this.userService.getAccessToken({userId: req.user.userId});
   }
-
+  
   @UseGuards( JwtAuthGuard )
   @Get('/me')
   async getUserProfile(@Request() req ) : Promise<ReturnUserProfile>{

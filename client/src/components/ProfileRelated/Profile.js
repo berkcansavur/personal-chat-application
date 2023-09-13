@@ -3,6 +3,7 @@ import axios from "axios";
 import CardItem from "../CardItem";
 import FriendsList from "./FriendsList";
 import "./Profile.css";
+import Navbar from "../Navbar";
 
 function Profile() {
   const [ user, setUser ] = useState({});

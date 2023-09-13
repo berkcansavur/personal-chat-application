@@ -3,19 +3,22 @@ import {useState} from "react"
 import axios from 'axios';
 import { Button } from './Button';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './Contexts/auth.context';
+
 function Login() {
   const [ email, setEmail] = useState('')
   const [ password, setPassword] = useState('')
   const navigate = useNavigate();
+  const { login }  = useAuth();
   const handleSubmit = async (e)=>{
     e.preventDefault();
-    console.log(email,password);
     await axios.post('http://localhost:3001/app/login',{
       email: email,
       password: password
     },{ withCredentials: true })
     .then((res)=>{
       sessionStorage.setItem("token", res.data.access_token);
+      login();
     })
     .catch((err)=>{
       console.log(err);

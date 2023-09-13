@@ -285,7 +285,9 @@ export class UsersService implements IUsersService {
 
         const updatedUser = await this.usersRepository.getUsersAccessToken(userId);
         
-        return UserMapper.map<ReturnUserToBeAuth, AuthenticatedUserDTO>(updatedUser, ReturnUserToBeAuth, AuthenticatedUserDTO);
+        const map = UserMapper.map<ReturnUserToBeAuth, AuthenticatedUserDTO>(updatedUser, ReturnUserToBeAuth, AuthenticatedUserDTO);
+        logger.debug(`[UsersService] getAccessToken: data: ${JSON.stringify(map)}`);
+        return map;
     }
 
     async removeUsersAccessToken({
@@ -301,9 +303,9 @@ export class UsersService implements IUsersService {
 
         logger.debug(`[UsersService] removeUsersAccessToken: ${JSON.stringify(userId)}`);
 
-        const updatedUser = await this.usersRepository.setUsersAccessToken(userId,null);
+        const user = await this.usersRepository.setUsersAccessToken(userId,null);
         
-        return UserMapper.map<ReturnUserToBeAuth, AuthenticatedUserDTO>(updatedUser, ReturnUserToBeAuth, AuthenticatedUserDTO);
+        return UserMapper.map<ReturnUserToBeAuth, AuthenticatedUserDTO>(user, ReturnUserToBeAuth, AuthenticatedUserDTO);
     }
     async searchUser({
         searchText

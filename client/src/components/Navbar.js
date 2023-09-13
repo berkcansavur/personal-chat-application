@@ -3,14 +3,15 @@ import { Button } from './Button';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 import axios from 'axios';
+import { useAuth } from './Contexts/auth.context';
 
 function Navbar() {
   const [click, setClick] = useState(false);
   const [button, setButton] = useState(true);
+  const { loggedIn, logout } = useAuth();
   const token = sessionStorage.getItem("token");
-  const [loggedIn, setLoggedIn] = useState(!!token);
-  
   const handleClick = () => setClick(!click);
+
   const closeMobileMenu = () => setClick(false);
 
   const showButton = () => {
@@ -20,53 +21,50 @@ function Navbar() {
       setButton(true);
     }
   };
-  const getAccessToken = async () => {
-    await axios.get(`http://localhost:3001/app/getAuthToken`,{
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }).then((res)=>{
-      sessionStorage.setItem("token",res.data.access_token);
-      if(res.data.access_token==null){
-        setLoggedIn(false);
-      }
-      setLoggedIn(true);
-    }).catch((err)=>{
-      console.log(err);
-    console.log('Access Token could not retrieved.')
-    });
-}
+
   useEffect(() => {
     showButton();
   }, []);
-  useEffect(()=> {
-    
-    getAccessToken();
-  },[token]);
-  window.addEventListener('resize', showButton);
-  window.addEventListener('scroll', getAccessToken);
-  
-  const handleLogout = async() => {
 
-      await axios.get("http://localhost:3001/app/logout",{
+  const handleLogout = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/app/logout", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }).then((res)=>{
-        sessionStorage.setItem("token",res.data.access_token);
-        setLoggedIn(false);
-      }).catch((err) => {
-        console.error(err);
-        console.error('Token was not deleted');
       });
+      sessionStorage.setItem("token", response.data.access_token);
+      logout();
+    } catch (err) {
+      console.error(err);
+      console.error('Token was not deleted');
+    }
   };
+  
+  const getAndSetAccessToken = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/app/getAuthenticatedUser", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      sessionStorage.setItem("token", response.data.access_token);
+    } catch (err) {
+      console.error('Token was not retrieved.');
+    }
+  };
+  useEffect(()=>{
+    getAndSetAccessToken();
+  },[token]);
+  
+
   return (
     <>
       <nav className='navbar'>
         <div className='navbar-container'>
           <Link to='/' className='navbar-logo' onClick={closeMobileMenu}>
             JumpIn
-            <i class='fab fa-typo3' />
+            <i className='fab fa-typo3' />
           </Link>
           <div className='menu-icon' onClick={handleClick}>
             <i className={click ? 'fas fa-times' : 'fas fa-bars'} />
@@ -105,9 +103,15 @@ function Navbar() {
               </Link>
             </li>
           </ul>
-          {button && !loggedIn ? ( 
-          <Button toOperation='login' buttonStyle='btn--outline'>Log In</Button>) : 
-          (<Button toOperation='logout' onClick={handleLogout} buttonStyle='btn--outline'>Log Out</Button>)}
+          {button ? (
+            loggedIn ? 
+            (
+              <Button toOperation='logout' onClick={handleLogout} buttonStyle='btn--outline'>Log Out</Button>
+            ) : 
+            (
+              <Button toOperation='login' buttonStyle='btn--outline'>Log In</Button>
+            )
+          ) : null}
         </div>
       </nav>
     </>
