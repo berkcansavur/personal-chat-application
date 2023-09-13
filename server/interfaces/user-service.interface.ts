@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { ChatGroupInfoDTO } from 'src/chat-groups/dtos/chat-group-dtos';
 import { ReturnUserProfile } from 'src/users/users.model';
+import { AuthenticatedUserDTO } from '../src/users/dtos/user-dtos';
 import { 
     UserToBeValidateDTO,
     FriendInfoDTO,
@@ -21,5 +22,7 @@ export interface IUsersService {
     getFriendIdsOfUser({userId} : {userId: mongoose.Types.ObjectId}) : Promise<mongoose.Types.ObjectId[]>;
     getUserToBeValidate({userId}:{userId: mongoose.Types.ObjectId} ) : Promise<UserToBeValidateDTO>
     mapUserProfileInfo({mapUserInfoDTO}:{mapUserInfoDTO:MapUserInfoDTO}) : Promise<ReturnUserProfile>;
+    setUsersAccessToken({authenticatedUserDto}:{authenticatedUserDto:AuthenticatedUserDTO}): Promise<AuthenticatedUserDTO>;
+    removeUsersAccessToken({userId}:{userId:string}): Promise<AuthenticatedUserDTO>;
     searchUser({searchText} : {searchText:string}): Promise<any>;
 }

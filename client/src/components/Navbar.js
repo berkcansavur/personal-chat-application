@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Button } from './Button';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
+import axios from 'axios';
+import { useAuth } from './Contexts/auth.context';
 
 function Navbar() {
   const [click, setClick] = useState(false);
   const [button, setButton] = useState(true);
+  const { loggedIn, logout } = useAuth();
   const token = sessionStorage.getItem("token");
-  const [loggedIn, setLoggedIn] = useState(!!token);
-  
   const handleClick = () => setClick(!click);
+
   const closeMobileMenu = () => setClick(false);
 
   const showButton = () => {
@@ -24,18 +26,45 @@ function Navbar() {
     showButton();
   }, []);
 
-  window.addEventListener('resize', showButton);
-  const handleLogout = () => {
-    sessionStorage.removeItem("token");
-    setLoggedIn(false);
+  const handleLogout = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/app/logout", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      sessionStorage.setItem("token", response.data.access_token);
+      logout();
+    } catch (err) {
+      console.error(err);
+      console.error('Token was not deleted');
+    }
   };
+  
+  const getAndSetAccessToken = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/app/getAuthenticatedUser", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      sessionStorage.setItem("token", response.data.access_token);
+    } catch (err) {
+      console.error('Token was not retrieved.');
+    }
+  };
+  useEffect(()=>{
+    getAndSetAccessToken();
+  },[token]);
+  
+
   return (
     <>
       <nav className='navbar'>
         <div className='navbar-container'>
           <Link to='/' className='navbar-logo' onClick={closeMobileMenu}>
             JumpIn
-            <i class='fab fa-typo3' />
+            <i className='fab fa-typo3' />
           </Link>
           <div className='menu-icon' onClick={handleClick}>
             <i className={click ? 'fas fa-times' : 'fas fa-bars'} />
@@ -73,17 +102,16 @@ function Navbar() {
                 Profile
               </Link>
             </li>
-            <li>
-              <Link
-                to='/log-in'
-                className='nav-links-mobile'
-                onClick={closeMobileMenu}
-              ></Link>
-            </li>
           </ul>
-          {button && !loggedIn ? ( 
-          <Button toOperation='login' buttonStyle='btn--outline'>Log In</Button>) : 
-          (<Button toOperation='logout' onClick={handleLogout} buttonStyle='btn--outline'>Log Out</Button>)}
+          {button ? (
+            loggedIn ? 
+            (
+              <Button toOperation='logout' onClick={handleLogout} buttonStyle='btn--outline'>Log Out</Button>
+            ) : 
+            (
+              <Button toOperation='login' buttonStyle='btn--outline'>Log In</Button>
+            )
+          ) : null}
         </div>
       </nav>
     </>

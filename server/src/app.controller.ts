@@ -21,12 +21,26 @@ export class AppController {
     private messagesService : MessagesService) {}
 
   @UseGuards(AuthGuard('local'))
-  @Post('login')
+  @Post('/login')
   @UsePipes(ValidationPipe)
   async login(@Request() req ) {
-    return this.authService.loginWithCredentials( req.user );
+    const userToBeauthenticate =  await this.authService.loginWithCredentials( req.user );
+    const authenticatedUser = await this.userService.setUsersAccessToken({authenticatedUserDto: userToBeauthenticate})
+    return authenticatedUser;
   }
 
+  @UseGuards( JwtAuthGuard )
+  @Get('/logout')
+  async logout(@Request() req ) {
+    return await this.userService.removeUsersAccessToken({userId: req.user.userId});
+  }
+
+  @UseGuards( JwtAuthGuard )
+  @Get('/getAuthenticatedUser')
+  async getAuthenticatedUser(@Request() req ) {
+    return await this.userService.getAccessToken({userId: req.user.userId});
+  }
+  
   @UseGuards( JwtAuthGuard )
   @Get('/me')
   async getUserProfile(@Request() req ) : Promise<ReturnUserProfile>{

@@ -11,22 +11,26 @@ import UserProfile from './components/pages/UserProfile';
 import CreateChatGroupPage from './components/pages/CreatechatGroup';
 import Network from './components/pages/Network';
 import ChatGroupSettings from './components/pages/ChatGroupSettings';
+import { AuthProvider } from './components/Contexts/auth.context';
 function App() {
   return(
     <>
     <Router>
-    <Navbar/>
-    <Routes>
-      <Route path='/' exact Component={Home}/>
-      <Route path='/chats' Component={Chats}/>
-      <Route path='/network' Component={Network}/>
-      <Route path='/sign-up' Component={SignUp}/>
-      <Route path='/log-in' Component={LogIn}/>
-      <Route path='/chat/:chatGroupId' Component={Chat}/>
-      <Route path='/profile' Component={UserProfile}/>
-      <Route path='/create-chat-group' Component={CreateChatGroupPage}/>
-      <Route path='/chat-group/:chatGroupId' Component={ChatGroupSettings}/>
-    </Routes>
+      <AuthProvider>
+      <Navbar/>
+        <Routes>
+          <Route path='/' exact Component={Home}/>
+          <Route path='/chats' Component={Chats}/>
+          <Route path='/network' Component={Network}/>
+          <Route path='/sign-up' Component={SignUp}/>
+          <Route path='/log-in' Component={LogIn}/>
+          <Route path='/chat/:chatGroupId' Component={Chat}/>
+          <Route path='/profile' Component={UserProfile}/>
+          <Route path='/create-chat-group' Component={CreateChatGroupPage}/>
+          <Route path='/chat-group/:chatGroupId' Component={ChatGroupSettings}/>
+        </Routes>
+      </AuthProvider>
+    
     </Router>
     </>
       
