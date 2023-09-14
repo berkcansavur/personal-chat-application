@@ -11,6 +11,7 @@ import { SessionModule } from 'nestjs-session';
 import { MessagesModule } from './messages/messages.module';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
+import { NotificationsModule } from './notifications/notifications.module';
 @Module({
   imports: [
     ConfigModule.forRoot({}),
@@ -29,6 +30,7 @@ import { classes } from '@automapper/classes';
     ChatGroupsModule,
     AuthModule,
     MessagesModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [{

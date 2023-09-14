@@ -3,15 +3,13 @@ import axios from "axios";
 import CardItem from "../CardItem";
 import FriendsList from "./FriendsList";
 import "./Profile.css";
-import Navbar from "../Navbar";
-
 function Profile() {
   const [ user, setUser ] = useState({});
   const [ friends, setFriends ] = useState([]);
   const [ friendToAdd, setFriendToAdd ] = useState(null);
   const [selectedChatGroup, setSelectedChatGroup] = useState(null);
   const token = sessionStorage.getItem("token");
-
+  
   useEffect(() => {
     const getProfileData = async () => {
       try {
@@ -29,7 +27,7 @@ function Profile() {
     };
     getProfileData();
   }, [token]);
-
+  
 
   const handleSelectChatGroup = async (chatGroupId) => {
     try {

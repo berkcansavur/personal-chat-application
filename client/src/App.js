@@ -12,11 +12,13 @@ import CreateChatGroupPage from './components/pages/CreatechatGroup';
 import Network from './components/pages/Network';
 import ChatGroupSettings from './components/pages/ChatGroupSettings';
 import { AuthProvider } from './components/Contexts/auth.context';
+import { NotificationProvider } from './components/Contexts/notification.context';
 function App() {
   return(
     <>
     <Router>
       <AuthProvider>
+        <NotificationProvider>
       <Navbar/>
         <Routes>
           <Route path='/' exact Component={Home}/>
@@ -29,6 +31,7 @@ function App() {
           <Route path='/create-chat-group' Component={CreateChatGroupPage}/>
           <Route path='/chat-group/:chatGroupId' Component={ChatGroupSettings}/>
         </Routes>
+        </NotificationProvider>
       </AuthProvider>
     
     </Router>
