@@ -12,6 +12,7 @@ function Network() {
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [currentUserFriends, setCurrentUserFriends] = useState([]);
+  
   useEffect(() => {
     const fetchFriends = async () => {
       try {
@@ -28,12 +29,13 @@ function Network() {
     fetchFriends();
   }, [token]);
 
+  
   useEffect(()=>{
     socket.emit('events', { eventName: 'searchUserEvent', socketId:socket.id });
     socket.on('searchUser',(users)=>{
       setSearchResults(users);
     })
-    return ()=>{
+    return () => {
       socket.off('searchUser');
     }
   },[socket.id]);
@@ -42,6 +44,8 @@ function Network() {
     handleSearchFriendsOfUser();
   }, [searchText]);
   
+  
+
   const handleSearchFriendsOfUser = async ()=>{
     if (searchText.trim() === "") {
       setSearchResults([]);

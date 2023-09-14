@@ -1,12 +1,10 @@
 import mongoose from 'mongoose';
-import { ChatGroupInfoDTO } from 'src/chat-groups/dtos/chat-group-dtos';
 import { ReturnUserProfile } from 'src/users/users.model';
 import { AuthenticatedUserDTO } from '../src/users/dtos/user-dtos';
 import { 
     UserToBeValidateDTO,
     FriendInfoDTO,
     UserProfileInfoDTO,
-    UserDataDTO,
     ReturnUserDTO,
     CreateUserDTO,
     MapUserInfoDTO

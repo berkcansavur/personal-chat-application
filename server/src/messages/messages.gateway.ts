@@ -26,8 +26,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
   
   constructor(
     private readonly messagesService: MessagesService,
-    private readonly userService: UsersService,
-    private readonly chatGroupService : ChatGroupsService) {}
+    private readonly userService: UsersService) {}
 
     @SubscribeMessage('createMessage')
     async create(@MessageBody() createMessageDto: CreateMessageDto) {
@@ -42,13 +41,17 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
       this.server.to(chatGroupID.toString()).emit('message', message);
       return message;
     }
-    @SubscribeMessage('getFriends')
-    async getFriends(@MessageBody() payload:{ userId:mongoose.Types.ObjectId,}) {
-      const { userId } = payload;
-      const friendIds = await this.userService.getFriendIdsOfUser({userId});
-      const friendsData = await this.userService.getUsersFriendsInfo({userIds:friendIds});
-      this.server.to('getFriendEvent').emit('getFriends', friendsData );
-      return friendsData ;
+    @SubscribeMessage('join')
+    async joinChatRoom(
+      @MessageBody() payload: { chatGroupID: string, user:UserInterfaceForMessaging }) {
+        const { chatGroupID, user } = payload;
+        const { socketId } = user;
+        this.server.in(socketId).socketsJoin(chatGroupID);
+    }
+    @SubscribeMessage('events')
+    async manageEvents(@MessageBody() payload:{ eventName: string, socketId:string}){
+      const { socketId, eventName } = payload;
+      this.server.in(socketId).socketsJoin(eventName);
     }
     @SubscribeMessage('searchUser')
     async searchUser(@MessageBody() payload:{searchText: string}){
@@ -56,26 +59,6 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
       const users = await this.userService.searchUser( {searchText: searchText} );
       this.server.to('searchUserEvent').emit('searchUser', users  );
       return users;
-    }
-    @SubscribeMessage('getChatGroupUsers')
-    async getChatGroupUsers(@MessageBody() payload:{chatGroupId: mongoose.Types.ObjectId}){
-      const { chatGroupId } = payload;
-      const friendIds = await this.chatGroupService.getChatGroupsUsers({chatGroupId: chatGroupId});
-      const friendsData = await this.userService.getUsersFriendsInfo({userIds:friendIds})
-      this.server.to('getChatGroupUsersEvent').emit('getChatGroupUsers', friendsData  );
-      return friendsData;
-    }
-    @SubscribeMessage('events')
-    async manageEvents(@MessageBody() payload:{ eventName: string, socketId:string}){
-      const { socketId, eventName } = payload;
-      this.server.in(socketId).socketsJoin(eventName);
-    }
-    @SubscribeMessage('join')
-    async joinChatRoom(
-      @MessageBody() payload: { chatGroupID: string, user:UserInterfaceForMessaging }) {
-        const { chatGroupID, user } = payload;
-        const { socketId } = user;
-        this.server.in(socketId).socketsJoin(chatGroupID);
     }
     async handleConnection(socket: Socket): Promise<void> {
       console.log(`Socket connected: ${socket.id}`)
