@@ -1,9 +1,6 @@
 import {createContext, useContext, useEffect, useState } from 'react';
-import io from 'socket.io-client';
 import axios from "axios";
-const socket = io("http://localhost:3001");
 const NotificationsContext = createContext()
-
 export function useNotification() {
     return useContext(NotificationsContext);
 }
@@ -29,25 +26,7 @@ export function NotificationProvider({children}){
       };
       getProfileData();
     }, [token]);
-    useEffect(()=>{
-      socket.emit('createNotification', {
-        UserIdToBeNotified:user._id, 
-        socketId:socket.id
-      });
-      socket.on('addFriend', ({
-        UserIdToBeNotified,
-        ReturnNotificationMessage,
-        NotificationType}) => {
-          if(UserIdToBeNotified===user._id) {
-            handleNotification({
-            UserIdToBeNotified,
-            ReturnNotificationMessage,
-            NotificationType
-          });}
-          
-        })
-    })
-    const handleNotification = (newNotification) => {
+    const createNotification = (newNotification) => {
       if(!notificationsList.some(
         ntf => ntf.UserIdToBeNotified === newNotification.UserIdToBeNotified &&
         ntf.ReturnNotificationMessage === newNotification.ReturnNotificationMessage &&
@@ -57,10 +36,6 @@ export function NotificationProvider({children}){
           newNotification
         ]);} 
     }
-    
-    const createNotification = () =>{
-        setNotificationsList();
-    };
     return (
         <NotificationsContext.Provider value={{ notificationsList, createNotification }}>
           {children}
