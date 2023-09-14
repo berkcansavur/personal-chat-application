@@ -5,12 +5,13 @@ import { INotificationsService } from 'interfaces/notification-service.interface
 import { Notification } from './entities/notification.entity';
 import { Socket } from 'socket.io';
 import { UsersService } from 'src/users/users.service';
+import { NotificationsRepository } from './notifications.repository';
 
 @Injectable()
 export class NotificationsService implements INotificationsService {
   private readonly logger =  new Logger(NotificationsService.name);
 
-  constructor(
+  constructor( private notificationsRepository: NotificationsRepository
   ){}
   private readonly connectedClients: Map<string, Socket> = new Map();
   create(createNotificationDto: CreateNotificationDto) {
@@ -32,28 +33,31 @@ export class NotificationsService implements INotificationsService {
   remove(id: number) {
     return `This action removes a #${id} notification`;
   }
-  createAddedByFriendNotification({
+  async createAddedByFriendNotification({
     addFriendNotificationDto
   }:{
     addFriendNotificationDto:AddFriendNotificationDto
   }){
+
     const { logger } = this;
+
     const {
       UserToBeAdded,
       AddedByFriendName,
       AddedTime
     } = addFriendNotificationDto;
-    const returnMessage:string =  `${AddedByFriendName} added you as a friend at: ${AddedTime}`;
-    const returnDTO = new ReturnAddFriendNotificationDto();
-    returnDTO.UserIdToBeNotified = UserToBeAdded;
-    returnDTO.ReturnNotificationMessage = returnMessage;
-    returnDTO.NotificationType = 'AddFriendNotification';
-    logger.debug(`[NotificationsService] createAddedByFriendNotification: ${JSON.stringify(addFriendNotificationDto)}`)
-    
-    return returnDTO;
 
+    logger.debug(`[NotificationsService] createAddedByFriendNotification: ${JSON.stringify(addFriendNotificationDto)}`)
+
+    const returnMessage:string =  `${AddedByFriendName} added you as a friend at: ${AddedTime}`;
+    
+    return await this.notificationsRepository.create({
+      UserIdToBeNotified:UserToBeAdded,
+      ReturnNotificationMessage:returnMessage,
+      NotificationType:'AddFriendNotification'
+    });
   }
-  createRemovedByFriendNotification({
+  async createRemovedByFriendNotification({
     removeFriendNotificationDto
   }:{
     removeFriendNotificationDto:RemoveFriendNotificationDto
@@ -64,14 +68,20 @@ export class NotificationsService implements INotificationsService {
       RemovedByFriendName,
       RemovedTime
     } = removeFriendNotificationDto;
-    const returnMessage:string =  `${RemovedByFriendName} removed you from friends at: ${RemovedTime}`;
-    const returnDTO = new ReturnAddFriendNotificationDto();
-    returnDTO.UserIdToBeNotified = UserToBeRemoved;
-    returnDTO.ReturnNotificationMessage = returnMessage;
-    returnDTO.NotificationType = 'AddFriendNotification';
-    logger.debug(`[NotificationsService] createRemovedByFriendNotification: ${JSON.stringify(removeFriendNotificationDto)}`)
-    
-    return returnDTO;
 
+    logger.debug(`[NotificationsService] createRemovedByFriendNotification: ${JSON.stringify(removeFriendNotificationDto)}`)
+
+    const returnMessage:string =  `${RemovedByFriendName} removed you from friends at: ${RemovedTime}`;
+
+    return await this.notificationsRepository.create({
+      UserIdToBeNotified:UserToBeRemoved,
+      ReturnNotificationMessage:returnMessage,
+      NotificationType:'RemoveFriendNotification'
+    });
+  }
+  async getLast10NotificationsOfUser({userId}:{userId:string}){
+    const { logger } = this;
+    logger.debug(`[NotificationsService] getLast10NotificationsOfUser: ${JSON.stringify(userId)}`);
+    return await this.notificationsRepository.getLastNotifications(userId,10)
   }
 }

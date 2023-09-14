@@ -23,3 +23,8 @@ export class ReturnAddFriendNotificationDto {
     ReturnNotificationMessage: string;
     NotificationType: string;
 }
+export class NotificationDto {
+    UserIdToBeNotified: String;
+    ReturnNotificationMessage: string;
+    NotificationType: string;
+}

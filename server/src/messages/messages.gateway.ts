@@ -26,8 +26,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
   
   constructor(
     private readonly messagesService: MessagesService,
-    private readonly userService: UsersService,
-    private readonly chatGroupService : ChatGroupsService) {}
+    private readonly userService: UsersService) {}
 
     @SubscribeMessage('createMessage')
     async create(@MessageBody() createMessageDto: CreateMessageDto) {

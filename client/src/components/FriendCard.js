@@ -82,8 +82,6 @@ function FriendCard({ friend, currentUserFriends, onFriendAdded, onFriendRemoved
       AddedByFriendName: user.name, 
       AddedTime: Date.now(),
     };
-    console.log(friend._id);
-    console.log(user.name);
     socket.emit('addFriendNotification', {
       UserToBeAdded:newNotification.UserToBeAdded,
       AddedByFriendName:newNotification.AddedByFriendName,
@@ -96,8 +94,7 @@ function FriendCard({ friend, currentUserFriends, onFriendAdded, onFriendRemoved
       RemovedByFriendName: user.name, 
       RemovedTime: Date.now(),
     };
-    console.log(friend._id);
-    console.log(user.name);
+    
     socket.emit('removeFriendNotification', {
       UserToBeRemoved:newNotification.UserToBeRemoved,
       RemovedByFriendName:newNotification.RemovedByFriendName,
