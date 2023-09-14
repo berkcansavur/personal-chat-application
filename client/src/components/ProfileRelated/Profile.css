@@ -1,17 +1,34 @@
-.container {
-  padding: 2rem;
+.profile-container {
+  display: flex;
+  flex-direction: row;
   background-image: url('../../../public/images/profile-background.jpg');
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
   color: #fff;
-  font-size: 50px;
+  font-size: 35px;
+  padding: 2rem;
+}
+.cards__container {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+}
+.cards__wrapper {
+  position: relative;
+  margin: 50px 0 45px;
 }
 
+.cards__items {
+  margin-bottom: 24px;
+}
 .profile__info {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  flex-wrap: wrap;
   margin-bottom: 2rem;
 }
 
@@ -20,7 +37,7 @@
   height: 80px;
   border-radius: 50%;
   overflow: hidden;
-  margin-right: 1rem;
+  margin-bottom: 1rem;
 }
 
 .profile__pic {
@@ -31,7 +48,8 @@
 
 .profile__name,
 .profile__email {
-  margin: 0;
+  margin: 2px;
+  text-align: center;
 }
 
 .profile__name {
@@ -52,30 +70,29 @@
   color: #888;
 }
 
-.profile__info {
-  flex-wrap: wrap;
-  align-items: flex-start;
-  width: 100%;
+.notification-area {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  float:left;
+  border-radius: 10px;
+  margin-top: 1rem;
+  text-align: center;
 }
 
-.profile__details {
-  flex: 1;
+.notification-area h6 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
 }
 
-.cards__container {
-  display: flex;
-  overflow-x: auto; 
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1rem;
-  width: 100%;
-  max-width: 100vw;
-  border-top: 2px solid #ccc; 
-  padding-top: 0rem;
+.notification-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
-.cards__wrapper {
-  width: max-content;
-  display: flex;
-  flex-flow: row nowrap; 
-  align-items: center;
+.notification-list li {
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
 }

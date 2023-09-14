@@ -7,6 +7,7 @@ export function useNotification() {
 
 export function NotificationProvider({children}){
     const [notificationsList, setNotificationsList] = useState([]);
+    const [ isNotificationExists, setIsNotificationExists] = useState(false);
     const token = sessionStorage.getItem("token");
     const [ user, setUser ] = useState({});
 
@@ -20,12 +21,20 @@ export function NotificationProvider({children}){
           });
     
           setUser(response.data);
+          
         } catch (error) {
           console.error(error);
         }
       };
       getProfileData();
     }, [token]);
+
+    const checkNotificationExists = () => {
+      if(notificationsList.some(ntf => ntf.UserIdToBeNotified === user._id)){
+        setIsNotificationExists(true);
+      }
+    }
+
     const createNotification = (newNotification) => {
       if(!notificationsList.some(
         ntf => ntf.UserIdToBeNotified === newNotification.UserIdToBeNotified &&
@@ -37,7 +46,7 @@ export function NotificationProvider({children}){
         ]);} 
     }
     return (
-        <NotificationsContext.Provider value={{ notificationsList, createNotification }}>
+        <NotificationsContext.Provider value={{ notificationsList, createNotification, checkNotificationExists,isNotificationExists }}>
           {children}
         </NotificationsContext.Provider>
       );
