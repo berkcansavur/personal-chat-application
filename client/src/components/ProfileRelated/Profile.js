@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import CardItem from "../CardItem";
-import FriendsList from "./FriendsList";
 import FriendCard from "./FriendCard";
 import "./Profile.css";
 import { useNotification } from '../Contexts/notification.context';

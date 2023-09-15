@@ -14,25 +14,11 @@ export class NotificationsService implements INotificationsService {
   constructor( private notificationsRepository: NotificationsRepository
   ){}
   private readonly connectedClients: Map<string, Socket> = new Map();
-  create(createNotificationDto: CreateNotificationDto) {
-    return 'This action adds a new notification';
-  }
-
-  findAll() {
-    return `This action returns all notifications`;
-  }
-
+  
   findOne(id: number) {
     return `This action returns a #${id} notification`;
   }
 
-  update(id: number, updateNotificationDto: UpdateNotificationDto) {
-    return `This action updates a #${id} notification`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} notification`;
-  }
   async createAddedByFriendNotification({
     addFriendNotificationDto
   }:{
@@ -57,6 +43,11 @@ export class NotificationsService implements INotificationsService {
       NotificationType:'AddFriendNotification'
     });
   }
+  
+  remove(id: number) {
+    return `This action removes a #${id} notification`;
+  }
+  
   async createRemovedByFriendNotification({
     removeFriendNotificationDto
   }:{

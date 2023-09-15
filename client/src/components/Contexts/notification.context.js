@@ -40,7 +40,9 @@ export function NotificationProvider({children}){
               },
             }
           );
-          setNotificationsList(last10Notifications.data.ReturnNotificationMessage);
+          setNotificationsList(prevNotifications => [
+            ...prevNotifications,
+            last10Notifications.data]);
         } catch (error) {
           console.log(error);
         }
@@ -65,7 +67,11 @@ export function NotificationProvider({children}){
         ]);} 
     }
     return (
-        <NotificationsContext.Provider value={{ notificationsList, createNotification, checkNotificationExists,isNotificationExists }}>
+        <NotificationsContext.Provider value={{ 
+          createNotification, 
+          notificationsList, 
+          checkNotificationExists,
+          isNotificationExists }}>
           {children}
         </NotificationsContext.Provider>
       );

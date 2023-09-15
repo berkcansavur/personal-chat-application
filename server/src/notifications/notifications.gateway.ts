@@ -51,17 +51,7 @@ export class NotificationsGateway implements OnGatewayConnection, OnGatewayDisco
       const { UserIdToBeNotified, socketId} = createNotificationDto;
       this.server.in(socketId).socketsJoin( UserIdToBeNotified );
   }
-
-  @SubscribeMessage('addedChatGroupNotification')
-  addedChatGroupNotification(@MessageBody() id: number) {
-
-  }
-
-  @SubscribeMessage('updateNotification')
-  update(@MessageBody() updateNotificationDto: UpdateNotificationDto) {
-    return this.notificationsService.update(updateNotificationDto.id, updateNotificationDto);
-  }
-
+  
   @SubscribeMessage('removeNotification')
   remove(@MessageBody() id: number) {
     return this.notificationsService.remove(id);
