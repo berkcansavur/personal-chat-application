@@ -28,6 +28,25 @@ export function NotificationProvider({children}){
       };
       getProfileData();
     }, [token]);
+    
+    useEffect(() => {
+      const getlast10Notifications = async () => {
+        try {
+          const last10Notifications = await axios.get(
+            `http://localhost:3001/app/get-last-10-notifications/${user._id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setNotificationsList(last10Notifications.data.ReturnNotificationMessage);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      getlast10Notifications();
+    }, [user, token]);
 
     const checkNotificationExists = () => {
       if(notificationsList.some(ntf => ntf.UserIdToBeNotified === user._id)){

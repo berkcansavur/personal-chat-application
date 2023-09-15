@@ -11,6 +11,7 @@ import {
 import { MessagesService } from './messages/messages.service';
 import { ReturnUserProfile } from './users/users.model';
 import { FriendInfoDTO } from './users/dtos/user-dtos';
+import { NotificationsService } from './notifications/notifications.service';
 
 @Controller('app')
 export class AppController {
@@ -18,7 +19,8 @@ export class AppController {
     private authService: AuthService,
     private userService: UsersService,
     private chatGroupService: ChatGroupsService,
-    private messagesService : MessagesService) {}
+    private messagesService : MessagesService,
+    private notificationsService: NotificationsService) {}
 
   @UseGuards(AuthGuard('local'))
   @Post('/login')
@@ -86,6 +88,14 @@ export class AppController {
         throw new UnauthorizedException('You must be logged in for adding friend');
       }
       const updatedUser = await this.userService.addFriend( {userId: req.user.userId, friendId: friendId} );
+      const t = new Date();
+      const now = t.toUTCString();
+      const addFriendNotificationDto = {
+        UserToBeAdded: friendId.toString(),
+        AddedByFriendName:updatedUser.name,
+        AddedTime:now
+    }
+      //await this.notificationsService.createAddedByFriendNotification({addFriendNotificationDto});
       return updatedUser;
   }
   @UseGuards( JwtAuthGuard )
@@ -95,6 +105,15 @@ export class AppController {
         throw new UnauthorizedException('You must be logged in for removing friend');
       }
       const updatedUser = await this.userService.removeFriend( {userId: req.user.userId,friendId: friendId });
+      const t = new Date();
+      const now = t.toUTCString();
+      const removeFriendNotificationDto = {
+          UserToBeRemoved: friendId.toString(),
+          RemovedByFriendName:updatedUser.name,
+          RemovedTime:now
+      }
+      
+      //await this.notificationsService.createRemovedByFriendNotification({removeFriendNotificationDto});
       return updatedUser;
   }
   @UseGuards( JwtAuthGuard )
@@ -167,5 +186,11 @@ export class AppController {
     }
     const last20Messages = await this.messagesService.getLast20Messages({chatGroupID:chatGroupId});
     return last20Messages.reverse();
+  }
+  @UseGuards(JwtAuthGuard)
+  @Get('get-last-10-notifications/:userId')
+  async getLast10NotificationsOfCurrentUser(@Param('userId') userId:string, @Request() req){
+    const last10Notifications = await this.notificationsService.getLast10NotificationsOfUser({userId:userId});
+    return last10Notifications.reverse();
   }
 }
