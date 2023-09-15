@@ -3,6 +3,7 @@ import axios from "axios";
 import './FriendCard.css';
 import { useNotification } from "./Contexts/notification.context";
 import io from 'socket.io-client';
+
 const socket = io("http://localhost:3001");
 
 function FriendCard({ friend, currentUserFriends, onFriendAdded, onFriendRemoved }) {
@@ -58,10 +59,10 @@ function FriendCard({ friend, currentUserFriends, onFriendAdded, onFriendRemoved
             NotificationType
           });}
         })
-      return () => {
-        socket.off('addFriend');
-        socket.off('removeFriend');
-      }
+      // return () => {
+      //   socket.off('addFriend');
+      //   socket.off('removeFriend');
+      // }
   })
   
   useEffect(() => {

@@ -165,7 +165,7 @@ export class UsersService implements IUsersService {
             } = this;
 
             logger.debug(`[UsersService] addFriend: userId: ${JSON.stringify(userId)}, friendId: ${JSON.stringify(friendId)}`);
-
+            
             const processedUser = await this.usersRepository.addFriend(userId, friendId);
 
             return UserMapper.map<ReturnUser,FriendInfoDTO>(processedUser, ReturnUser, FriendInfoDTO)
@@ -188,7 +188,9 @@ export class UsersService implements IUsersService {
 
             logger.debug(`[UsersService] removeFriend: userId: ${JSON.stringify(userId)}, friendId: ${JSON.stringify(friendId)}`);
 
+
             const processedUser = await this.usersRepository.removeFriend(userId, friendId);
+
             
             return UserMapper.map<ReturnUser,FriendInfoDTO>(processedUser, ReturnUser, FriendInfoDTO)
 

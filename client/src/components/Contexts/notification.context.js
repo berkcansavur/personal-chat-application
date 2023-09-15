@@ -28,6 +28,27 @@ export function NotificationProvider({children}){
       };
       getProfileData();
     }, [token]);
+    
+    useEffect(() => {
+      const getlast10Notifications = async () => {
+        try {
+          const last10Notifications = await axios.get(
+            `http://localhost:3001/app/get-last-10-notifications/${user._id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setNotificationsList(prevNotifications => [
+            ...prevNotifications,
+            last10Notifications.data]);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      getlast10Notifications();
+    }, [user, token]);
 
     const checkNotificationExists = () => {
       if(notificationsList.some(ntf => ntf.UserIdToBeNotified === user._id)){
@@ -46,7 +67,11 @@ export function NotificationProvider({children}){
         ]);} 
     }
     return (
-        <NotificationsContext.Provider value={{ notificationsList, createNotification, checkNotificationExists,isNotificationExists }}>
+        <NotificationsContext.Provider value={{ 
+          createNotification, 
+          notificationsList, 
+          checkNotificationExists,
+          isNotificationExists }}>
           {children}
         </NotificationsContext.Provider>
       );

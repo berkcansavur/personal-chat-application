@@ -10,12 +10,12 @@ export class CreateNotificationDto {
 export class AddFriendNotificationDto {
     UserToBeAdded : string;
     AddedByFriendName: string;
-    AddedTime: Date;
+    AddedTime: String;
 };
 export class RemoveFriendNotificationDto {
     UserToBeRemoved : string;
     RemovedByFriendName: string;
-    RemovedTime: Date;
+    RemovedTime: String;
 };
 
 export class ReturnAddFriendNotificationDto {
