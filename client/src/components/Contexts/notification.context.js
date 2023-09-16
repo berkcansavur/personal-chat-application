@@ -10,7 +10,7 @@ export function NotificationProvider({children}){
     const [ isNotificationExists, setIsNotificationExists] = useState(false);
     const token = sessionStorage.getItem("token");
     const [ user, setUser ] = useState({});
-
+    console.log(notificationsList);
     useEffect(() => {
       const getProfileData = async () => {
         try {
@@ -29,26 +29,24 @@ export function NotificationProvider({children}){
       getProfileData();
     }, [token]);
     
-    useEffect(() => {
-      const getlast10Notifications = async () => {
-        try {
-          const last10Notifications = await axios.get(
-            `http://localhost:3001/app/get-last-10-notifications/${user._id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          setNotificationsList(prevNotifications => [
-            ...prevNotifications,
-            last10Notifications.data]);
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      getlast10Notifications();
-    }, [user, token]);
+    const getlast10Notifications = async () => {
+      try {
+        const last10Notifications = await axios.get(
+          `http://localhost:3001/app/get-last-10-notifications/${user._id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setNotificationsList(prevNotifications => [
+          ...prevNotifications,
+          last10Notifications.data]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    
 
     const checkNotificationExists = () => {
       if(notificationsList.some(ntf => ntf.UserIdToBeNotified === user._id)){
@@ -71,7 +69,8 @@ export function NotificationProvider({children}){
           createNotification, 
           notificationsList, 
           checkNotificationExists,
-          isNotificationExists }}>
+          isNotificationExists,
+          getlast10Notifications }}>
           {children}
         </NotificationsContext.Provider>
       );
