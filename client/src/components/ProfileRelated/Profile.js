@@ -10,8 +10,8 @@ function Profile() {
   const [ friendToAdd, setFriendToAdd ] = useState(null);
   const [selectedChatGroup, setSelectedChatGroup] = useState(null);
   const token = sessionStorage.getItem("token");
-  const { notificationsList } = useNotification();
-  
+  const { notificationsList, getlast10Notifications } = useNotification();
+  console.log("Notification List: ",notificationsList);
   useEffect(() => {
     const getProfileData = async () => {
       try {
@@ -28,6 +28,7 @@ function Profile() {
       }
     };
     getProfileData();
+    getlast10Notifications();
   }, [token]);
   
 
@@ -58,7 +59,10 @@ function Profile() {
         <h6>Notifications:</h6>
         <ul className="notification-list">
           {notificationsList.map((notification, index) => (
-            <li key={index}>{notification.ReturnNotificationMessage}</li>
+            console.log("Notification of notification list: ",notification),
+            <li key={index}>
+              <span>{notification.ReturnNotificationMessage}</span>
+              </li>
           ))}
         </ul>
       </div>
