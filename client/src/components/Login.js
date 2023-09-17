@@ -4,7 +4,6 @@ import axios from 'axios';
 import { Button } from './Button';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './Contexts/auth.context';
-
 function Login() {
   const [ email, setEmail] = useState('')
   const [ password, setPassword] = useState('')
@@ -19,6 +18,7 @@ function Login() {
     .then((res)=>{
       sessionStorage.setItem("token", res.data.access_token);
       login();
+      // getlast10Notifications();
     })
     .catch((err)=>{
       console.log(err);

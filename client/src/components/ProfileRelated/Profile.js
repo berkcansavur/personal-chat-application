@@ -7,7 +7,6 @@ import { useNotification } from '../Contexts/notification.context';
 function Profile() {
   const [ user, setUser ] = useState({});
   const [ friends, setFriends ] = useState([]);
-  const [ friendToAdd, setFriendToAdd ] = useState(null);
   const [selectedChatGroup, setSelectedChatGroup] = useState(null);
   const token = sessionStorage.getItem("token");
   const { notificationsList, getlast10Notifications } = useNotification();
@@ -22,13 +21,14 @@ function Profile() {
         });
 
         setUser(response.data);
-        setFriends(response.data.Friends); 
+        setFriends(response.data.Friends);
+        
       } catch (error) {
         console.error(error);
       }
     };
     getProfileData();
-    getlast10Notifications();
+    getlast10Notifications(); 
   }, [token]);
   
 
@@ -67,12 +67,7 @@ function Profile() {
         </ul>
       </div>
       </div>
-
-      
-
       <div className="content-container">
-        
-        
         <div className="cards-container">
           <h6>Chat Groups:</h6>
           <div className="cards__container">
