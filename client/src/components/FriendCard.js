@@ -10,9 +10,8 @@ function FriendCard({ friend, currentUserFriends, onFriendAdded, onFriendRemoved
   const token = sessionStorage.getItem("token");
   const [isFriend, setIsFriend] = useState(currentUserFriends.includes(friend.email));
   const {notificationsList, createNotification} = useNotification();
-  const [notification, setNotification] = useState([]);
   const [ user, setUser ] = useState({});
-  console.log(notificationsList);
+  console.log("Friend Card Notifications List",notificationsList);
   useEffect(() => {
     const getProfileData = async () => {
       try {
@@ -46,7 +45,8 @@ function FriendCard({ friend, currentUserFriends, onFriendAdded, onFriendRemoved
           UserIdToBeNotified,
           ReturnNotificationMessage,
           NotificationType
-        });}
+        })
+        ;}
       })
       socket.on('removeFriend', ({
         UserIdToBeNotified,
@@ -59,11 +59,11 @@ function FriendCard({ friend, currentUserFriends, onFriendAdded, onFriendRemoved
             NotificationType
           });}
         })
-      // return () => {
-      //   socket.off('addFriend');
-      //   socket.off('removeFriend');
-      // }
-  })
+      return () => {
+        socket.off('addFriend');
+        socket.off('removeFriend');
+      }
+  });
   
   useEffect(() => {
     setIsFriend(currentUserFriends.includes(friend.email));

@@ -188,7 +188,7 @@ export class AppController {
     return last20Messages.reverse();
   }
   @UseGuards(JwtAuthGuard)
-  @Get('get-last-10-notifications/:userId')
+  @Get('/get-last-10-notifications/:userId')
   async getLast10NotificationsOfCurrentUser(@Param('userId') userId:string, @Request() req){
     const last10Notifications = await this.notificationsService.getLast10NotificationsOfUser({userId:userId});
     return last10Notifications.reverse();

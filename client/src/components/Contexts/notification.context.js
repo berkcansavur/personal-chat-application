@@ -10,7 +10,7 @@ export function NotificationProvider({children}){
     const [ isNotificationExists, setIsNotificationExists] = useState(false);
     const token = sessionStorage.getItem("token");
     const [ user, setUser ] = useState({});
-    console.log(notificationsList);
+    console.log("General scope navigation provider: ",notificationsList);
     useEffect(() => {
       const getProfileData = async () => {
         try {
@@ -27,10 +27,13 @@ export function NotificationProvider({children}){
         }
       };
       getProfileData();
+      getlast10Notifications();
     }, [token]);
     
     const getlast10Notifications = async () => {
+      
       try {
+        const token = sessionStorage.getItem("token");
         const last10Notifications = await axios.get(
           `http://localhost:3001/app/get-last-10-notifications/${user._id}`,
           {
@@ -39,9 +42,7 @@ export function NotificationProvider({children}){
             },
           }
         );
-        setNotificationsList(prevNotifications => [
-          ...prevNotifications,
-          last10Notifications.data]);
+        setNotificationsList([...last10Notifications.data]);
       } catch (error) {
         console.log(error);
       }
