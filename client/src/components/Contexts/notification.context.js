@@ -1,5 +1,8 @@
 import {createContext, useContext, useEffect, useState } from 'react';
 import axios from "axios";
+import io from 'socket.io-client';
+
+const socket = io("http://localhost:3001");
 const NotificationsContext = createContext()
 export function useNotification() {
     return useContext(NotificationsContext);
@@ -29,7 +32,47 @@ export function NotificationProvider({children}){
       getProfileData();
       getlast10Notifications();
     }, [token]);
+
     
+    useEffect(()=>{
+
+      socket.emit('createNotification', {
+        UserIdToBeNotified:user._id, 
+        socketId:socket.id
+      });
+  
+      socket.on('addFriend', ({
+        UserIdToBeNotified,
+        ReturnNotificationMessage,
+        NotificationType}) => {
+          if(UserIdToBeNotified === user._id) {
+            createNotification({
+            UserIdToBeNotified,
+            ReturnNotificationMessage,
+            NotificationType
+          });
+          setIsNotificationExists(true);
+        }
+      })
+        socket.on('removeFriend', ({
+          UserIdToBeNotified,
+          ReturnNotificationMessage,
+          NotificationType}) => {
+            if(UserIdToBeNotified === user._id) {
+              createNotification({
+              UserIdToBeNotified,
+              ReturnNotificationMessage,
+              NotificationType
+            });
+            setIsNotificationExists(true);
+          }
+        })
+        return () => {
+          socket.off('addFriend');
+          socket.off('removeFriend');
+        }
+    },[user,isNotificationExists]);
+
     const getlast10Notifications = async () => {
       
       try {
@@ -47,12 +90,20 @@ export function NotificationProvider({children}){
         console.log(error);
       }
     };
-    
 
-    const checkNotificationExists = () => {
-      if(notificationsList.some(ntf => ntf.UserIdToBeNotified === user._id)){
-        setIsNotificationExists(true);
-      }
+    const getCurrentDate = () => {
+      const GMTNow = new Date();
+      const GMTHours = GMTNow.getHours();
+      const turkeyHours = GMTHours + 3;
+  
+      const turkeyNow = new Date(GMTNow);
+      turkeyNow.setHours(turkeyHours);
+      
+      return turkeyNow.toUTCString();
+    }
+
+    const setNotificationIsChecked = () =>{
+      setIsNotificationExists(false);
     }
 
     const createNotification = (newNotification) => {
@@ -63,15 +114,17 @@ export function NotificationProvider({children}){
           setNotificationsList(prevNotifications => [
           ...prevNotifications,
           newNotification
-        ]);} 
+        ])
+        ;} 
     }
     return (
         <NotificationsContext.Provider value={{ 
           createNotification, 
           notificationsList, 
-          checkNotificationExists,
           isNotificationExists,
-          getlast10Notifications }}>
+          getlast10Notifications,
+          setNotificationIsChecked,
+          getCurrentDate }}>
           {children}
         </NotificationsContext.Provider>
       );

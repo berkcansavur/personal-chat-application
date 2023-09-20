@@ -24,17 +24,17 @@ export class MessagesService implements IMessagesService {
     
   }
 
-  identify({
-    chatGroupId,
-    socket
-  }:{
-    chatGroupId: string, 
-    socket:Socket
-  }) {
-    const { logger } = this;
-    logger.debug(`[MessagesService] identify: ${JSON.stringify({chatGroupId,socket})}`);
-    this.connectedClients.set(chatGroupId, socket);
-  }
+  // identify({
+  //   chatGroupId,
+  //   socket
+  // }:{
+  //   chatGroupId: string, 
+  //   socket:Socket
+  // }) {
+  //   const { logger } = this;
+  //   logger.debug(`[MessagesService] identify: ${JSON.stringify({chatGroupId,socket})}`);
+  //   this.connectedClients.set(chatGroupId, socket);
+  // }
 
   async getLast20Messages({
     chatGroupID

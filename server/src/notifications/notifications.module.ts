@@ -6,17 +6,17 @@ import { ChatGroupsModule } from 'src/chat-groups/chat-groups.module';
 import { NotificationsSchema } from './entities/notification.entity';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NotificationsRepository } from './notifications.repository';
+import { NotificationProfile } from 'src/mapper/notification-mapper';
 
 @Module({
   imports:[
-    MongooseModule.forFeature([{name:'Notifications',schema:NotificationsSchema}]),
-    UsersModule,
-    ChatGroupsModule
+    MongooseModule.forFeature([{name:'Notifications',schema:NotificationsSchema}])
   ],
   providers: [
     NotificationsGateway, 
     NotificationsService,
-    NotificationsRepository
+    NotificationsRepository,
+    NotificationProfile
   ],
   exports:[
     NotificationsGateway,

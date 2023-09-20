@@ -91,6 +91,7 @@ function Chat() {
     };
     getlast20Messages();
   }, [chatGroupId, token]);
+  
   useEffect(() => {
 
     socket.emit('join', { chatGroupID: chatGroupId, user: { socketId: socket.id, ...user} } );
@@ -156,7 +157,7 @@ function Chat() {
         </div>
         <Footer />
     </>
-);
+    );
 }
 
 export default Chat;

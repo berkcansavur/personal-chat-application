@@ -16,15 +16,24 @@ import {
     ReturnUserDTO,
     FriendInfoDTO,
     CreateUserDTO } from './dtos/user-dtos';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { NotificationsService } from 'src/notifications/notifications.service';
+import { ReturnAddFriendNotificationDto, AddFriendNotificationDto, NotificationDto } from '../notifications/dto/create-notification.dto';
+import { UtilsService } from 'src/utils/utils.service';
+import { Socket } from 'socket.io';
 
 @Injectable()
 export class UsersService implements IUsersService {
     private readonly logger = new Logger(UsersService.name);
+    
     constructor( 
         private usersRepository: UsersRepository,
-        @InjectMapper() private readonly UserMapper: Mapper
+        @InjectMapper() private readonly UserMapper: Mapper,
+        private readonly eventEmmitter: EventEmitter2,
+        private notificationService: NotificationsService,
+        private utilsService : UtilsService
         ){}
-
+        
     async createUser({
         createUserDTO
     }:{
@@ -33,16 +42,18 @@ export class UsersService implements IUsersService {
 
         const {
             UserMapper,
-            logger
+            logger,
+            eventEmmitter
         } = this;
-
+        
         logger.debug(`[UsersService] createUser: ${JSON.stringify(createUserDTO)}`);
 
         const newUser : ReturnUser = await this.usersRepository.createUser({createUserDTO});
 
         return UserMapper.map< ReturnUser, ReturnUserDTO>(newUser,ReturnUser,ReturnUserDTO);
     }
-
+    
+      
     async findUser({
         userId
     }:{
@@ -161,17 +172,39 @@ export class UsersService implements IUsersService {
         try {
             const {
                 UserMapper,
-                logger
+                logger,
+                eventEmmitter,
+                utilsService
             } = this;
-
+            
             logger.debug(`[UsersService] addFriend: userId: ${JSON.stringify(userId)}, friendId: ${JSON.stringify(friendId)}`);
             
             const processedUser = await this.usersRepository.addFriend(userId, friendId);
+
+            eventEmmitter.emit('addFriendNotification', {
+                AddedByFriendName:processedUser.name,
+                UserToBeAdded:userId.toString(),
+                AddedTime:utilsService.getCurrentDate()
+            });
 
             return UserMapper.map<ReturnUser,FriendInfoDTO>(processedUser, ReturnUser, FriendInfoDTO)
         } catch (error) {
             throw new Error(error);
         }
+    }
+    @OnEvent('addFriendNotification')
+    async sendAddingUserNotification(
+        addFriendNotificationDto: AddFriendNotificationDto
+    ): Promise<NotificationDto>{
+        const { 
+            notificationService,
+            logger } = this;
+        
+        const notification = await notificationService.createAddedByFriendNotification({addFriendNotificationDto})
+        
+        logger.debug(`[UsersService] addFriendNotification: DTO: ${JSON.stringify(addFriendNotificationDto)}, notification: ${JSON.stringify(notification)}`);
+
+        return notification;
     }
     async removeFriend({
         userId, 

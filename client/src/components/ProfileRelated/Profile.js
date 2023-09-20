@@ -9,7 +9,7 @@ function Profile() {
   const [ friends, setFriends ] = useState([]);
   const [selectedChatGroup, setSelectedChatGroup] = useState(null);
   const token = sessionStorage.getItem("token");
-  const { notificationsList, getlast10Notifications } = useNotification();
+  const {  notificationsList, getlast10Notifications } = useNotification();
   console.log("Notification List: ",notificationsList);
   useEffect(() => {
     const getProfileData = async () => {
@@ -28,10 +28,10 @@ function Profile() {
       }
     };
     getProfileData();
-    getlast10Notifications(); 
+    getlast10Notifications();
+    
   }, [token]);
   
-
   const handleSelectChatGroup = async (chatGroupId) => {
     try {
       const response = await axios.get(`http://localhost:3001/app/get-chat-group/${chatGroupId}`, {
