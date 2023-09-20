@@ -7,7 +7,7 @@ import { Notification, ReturnNotificationDocument } from "./entities/notificati
 export class NotificationsRepository {
     constructor( @InjectModel('Notifications') private notificationsModel: Model<Notification>){}
 
-    async create(notificationDto: NotificationDto):Promise<ReturnNotificationDocument>{
+    async create(notificationDto: NotificationDto) : Promise<ReturnNotificationDocument>{
         const newNotification = new this.notificationsModel({
             UserIdToBeNotified: notificationDto.UserIdToBeNotified,
             ReturnNotificationMessage: notificationDto.ReturnNotificationMessage,

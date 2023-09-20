@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import {  AddFriendNotificationDto, RemoveFriendNotificationDto, NotificationDto, AddedToChatGroupNotificationDto, RemovedFromChatGroupNotificationDto } from './dto/create-notification.dto';
+import { AddFriendNotificationDto, RemoveFriendNotificationDto, NotificationDto, AddedToChatGroupNotificationDto, RemovedFromChatGroupNotificationDto } from './dto/create-notification.dto';
 
 import { INotificationsService } from 'interfaces/notification-service.interface';
 import {  ReturnNotification } from './entities/notification.entity';
@@ -85,7 +85,7 @@ export class NotificationsService implements INotificationsService {
     addedToChatGroupNotificationDto
   }:{
     addedToChatGroupNotificationDto : AddedToChatGroupNotificationDto
-    }){
+    }) : Promise<NotificationDto> {
       const { 
         logger, 
         NotificationsMapper
@@ -113,7 +113,7 @@ export class NotificationsService implements INotificationsService {
     removedFromChatGroupNotificationDto
   }:{
     removedFromChatGroupNotificationDto : RemovedFromChatGroupNotificationDto
-    }){
+    }) : Promise<NotificationDto> {
       const { 
         logger, 
         NotificationsMapper
@@ -140,7 +140,7 @@ export class NotificationsService implements INotificationsService {
     userId
   }:{
     userId:string
-  }){
+  }) : Promise<any>{
     const { logger } = this;
     logger.debug(`[NotificationsService] getLast10NotificationsOfUser: ${JSON.stringify(userId)}`);
     return await this.notificationsRepository.getLastNotifications(userId,10)
