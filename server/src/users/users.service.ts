@@ -18,9 +18,8 @@ import {
     CreateUserDTO } from './dtos/user-dtos';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { NotificationsService } from 'src/notifications/notifications.service';
-import { ReturnAddFriendNotificationDto, AddFriendNotificationDto, NotificationDto } from '../notifications/dto/create-notification.dto';
+import { AddFriendNotificationDto, NotificationDto, RemoveFriendNotificationDto } from '../notifications/dto/create-notification.dto';
 import { UtilsService } from 'src/utils/utils.service';
-import { Socket } from 'socket.io';
 
 @Injectable()
 export class UsersService implements IUsersService {
@@ -193,7 +192,7 @@ export class UsersService implements IUsersService {
         }
     }
     @OnEvent('addFriendNotification')
-    async sendAddingUserNotification(
+    async createAddingUserNotification(
         addFriendNotificationDto: AddFriendNotificationDto
     ): Promise<NotificationDto>{
         const { 
@@ -216,20 +215,41 @@ export class UsersService implements IUsersService {
         try {
             const {
                 UserMapper,
-                logger
+                logger,
+                eventEmmitter,
+                utilsService
             } = this;
 
             logger.debug(`[UsersService] removeFriend: userId: ${JSON.stringify(userId)}, friendId: ${JSON.stringify(friendId)}`);
 
-
             const processedUser = await this.usersRepository.removeFriend(userId, friendId);
 
+            eventEmmitter.emit('removeFriendNotification', {
+                RemovedByFriendName:processedUser.name,
+                UserToBeRemoved:userId.toString(),
+                RemovedTime:utilsService.getCurrentDate()
+            });
             
             return UserMapper.map<ReturnUser,FriendInfoDTO>(processedUser, ReturnUser, FriendInfoDTO)
 
         } catch (error) {
             throw new Error(error);
         }
+    }
+
+    @OnEvent('removeFriendNotification')
+    async createRemovingUserNotification(
+        removeFriendNotificationDto: RemoveFriendNotificationDto
+    ): Promise<NotificationDto>{
+        const { 
+            notificationService,
+            logger } = this;
+        
+        const notification = await notificationService.createRemovedByFriendNotification({removeFriendNotificationDto})
+        
+        logger.debug(`[UsersService] removeFriendNotification: DTO: ${JSON.stringify(removeFriendNotificationDto)}, notification: ${JSON.stringify(notification)}`);
+
+        return notification;
     }
     async getFriendIdsOfUser({
         userId

@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 
 export class CreateNotificationDto {
     socketId: string;
@@ -7,22 +6,33 @@ export class CreateNotificationDto {
 };
 
 
+
 export class AddFriendNotificationDto {
     UserToBeAdded : string;
     AddedByFriendName: string;
     AddedTime: String;
 };
+
+export class AddedToChatGroupNotificationDto {
+    UserToBeAdded : string;
+    AddedByFriendName: string;
+    AddedToChatGroupName: string;
+    AddedTime: String;
+};
+
+export class RemovedFromChatGroupNotificationDto {
+    UserToBeRemoved : string;
+    RemovedByFriendName: string;
+    RemovedFromChatGroupName: string;
+    RemovedTime: String;
+};
+
 export class RemoveFriendNotificationDto {
     UserToBeRemoved : string;
     RemovedByFriendName: string;
     RemovedTime: String;
 };
 
-export class ReturnAddFriendNotificationDto {
-    UserIdToBeNotified: string;
-    ReturnNotificationMessage: string;
-    NotificationType: string;
-}
 export class NotificationDto {
     UserIdToBeNotified: String;
     ReturnNotificationMessage: string;

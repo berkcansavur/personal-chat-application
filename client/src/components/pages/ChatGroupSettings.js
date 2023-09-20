@@ -4,6 +4,7 @@ import "../ChatGroupRelated/ChatGroupPage.css";
 import { useNavigate, useParams } from "react-router-dom";
 import Footer from '../Footer';
 import io from 'socket.io-client';
+import { useNotification } from "../Contexts/notification.context";
 const socket = io("http://localhost:3001");
 
 export default function Chats() {
@@ -12,9 +13,10 @@ export default function Chats() {
   const [chatGroup, setChatGroup] = useState({});
   const [chatGroupUsers, setChatGroupUsers] = useState([]);
   const { chatGroupId } = useParams();
+  const { getCurrentDate } = useNotification();
   const token = sessionStorage.getItem("token");
   const [isLoading, setIsLoading] = useState(true);
-
+  const [ user, setUser ] = useState({});
   useEffect(() => {
     const getChatGroupData = async () => {
       try {
@@ -35,6 +37,22 @@ export default function Chats() {
     };
     getChatGroupData();
   }, [chatGroupId, token]);
+  useEffect(() => {
+    const getProfileData = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/app/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setUser(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getProfileData();
+  }, [token]);
 
   useEffect(()=>{
     socket.emit('events', { eventName: 'getChatGroupUsersEvent', socketId: socket.id } );
@@ -78,7 +96,38 @@ export default function Chats() {
   const navigateToChat = () => {
     navigate(`/chat/${chatGroupId}`);
   }
+  const handleSubmitAddFriendToChatGroupNotification = (friendId) =>{
+    
+    const newNotification = {
+      UserToBeAdded: friendId, 
+      AddedByFriendName: user.name,
+      AddedToChatGroupName: chatGroup.chatGroupName, 
+      AddedTime: getCurrentDate(),
+    };
+    socket.emit('addedToChatGroupNotification', {
+      UserToBeAdded:newNotification.UserToBeAdded,
+      AddedByFriendName:newNotification.AddedByFriendName,
+      AddedToChatGroupName:newNotification.AddedToChatGroupName,
+      AddedTime:newNotification.AddedTime
 
+    })
+  }
+  const handleSubmitRemoveFriendFromChatGroupNotification = (friendId) =>{
+    
+    const newNotification = {
+      UserToBeRemoved: friendId, 
+      RemovedByFriendName: user.name,
+      RemovedFromChatGroupName: chatGroup.chatGroupName, 
+      RemovedTime: getCurrentDate(),
+    };
+    socket.emit('removedFromChatGroupNotification', {
+      UserToBeRemoved:newNotification.UserToBeRemoved,
+      RemovedByFriendName:newNotification.RemovedByFriendName,
+      RemovedFromChatGroupName:newNotification.RemovedFromChatGroupName,
+      RemovedTime:newNotification.RemovedTime
+
+    })
+  }
   const handleAddFriendToChatGroup = async (friendId) => {
     try {
       await axios.post(
@@ -144,7 +193,9 @@ export default function Chats() {
                 className="chat-group__card-button remove-button"
                 onClick={() => {
                   handleRemoveFriendFromChatGroup(user._id);
-                  handleGetFriendsOfChatGroup()}}
+                  handleGetFriendsOfChatGroup();
+                  handleSubmitRemoveFriendFromChatGroupNotification(user._id);
+                }}
               >
                 Remove Friend From Group
               </button>
@@ -162,7 +213,8 @@ export default function Chats() {
                 className="chat-group__card-button add-button"
                 onClick={() => {
                   handleAddFriendToChatGroup(friend._id);
-                  handleGetFriendsOfChatGroup()}}
+                  handleGetFriendsOfChatGroup();
+                  handleSubmitAddFriendToChatGroupNotification(friend._id);}}
               >
                 Add Friend to Group
               </button>

@@ -53,7 +53,7 @@ export function NotificationProvider({children}){
           });
           setIsNotificationExists(true);
         }
-      })
+      });
         socket.on('removeFriend', ({
           UserIdToBeNotified,
           ReturnNotificationMessage,
@@ -66,10 +66,38 @@ export function NotificationProvider({children}){
             });
             setIsNotificationExists(true);
           }
-        })
+        });
+        socket.on('addedToChatGroup',({
+          UserIdToBeNotified,
+          ReturnNotificationMessage,
+          NotificationType}) => {
+            if(UserIdToBeNotified === user._id) {
+              createNotification({
+                UserIdToBeNotified,
+                ReturnNotificationMessage,
+                NotificationType
+              });
+              setIsNotificationExists(true);
+            }
+          });
+          socket.on('removedFromChatGroup',({
+            UserIdToBeNotified,
+            ReturnNotificationMessage,
+            NotificationType}) => {
+              if(UserIdToBeNotified === user._id){
+                createNotification({
+                  UserIdToBeNotified,
+                  ReturnNotificationMessage,
+                  NotificationType
+                });
+                setIsNotificationExists(true);
+              }
+            })
         return () => {
           socket.off('addFriend');
           socket.off('removeFriend');
+          socket.off('addedToChatGroup');
+          socket.off('removedFromChatGroup');
         }
     },[user,isNotificationExists]);
 

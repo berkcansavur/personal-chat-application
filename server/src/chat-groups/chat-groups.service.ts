@@ -168,7 +168,7 @@ export class ChatGroupsService implements IChatGroupService {
             throw new Error(error.message);
         }
     }
-
+    
     async removeUserFromChatGroup({
         chatGroupId,
         userId
@@ -192,6 +192,7 @@ export class ChatGroupsService implements IChatGroupService {
             throw new Error(error);
         }   
     }
+
 
     async updateChatGroupName({
         updateChatGroupsNameDto
