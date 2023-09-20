@@ -131,7 +131,7 @@ export class NotificationsService implements INotificationsService {
       const notification =  await this.notificationsRepository.create({
         UserIdToBeNotified:UserToBeRemoved,
         ReturnNotificationMessage:returnMessage,
-        NotificationType:'AddedToChatGroupNotification'
+        NotificationType:'RemovedFromChatGroupNotification'
       });
       return NotificationsMapper.map<ReturnNotification, NotificationDto>(notification,ReturnNotification,NotificationDto);
 

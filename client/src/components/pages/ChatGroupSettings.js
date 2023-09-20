@@ -120,7 +120,7 @@ export default function Chats() {
       RemovedFromChatGroupName: chatGroup.chatGroupName, 
       RemovedTime: getCurrentDate(),
     };
-    socket.emit('addedToChatGroupNotification', {
+    socket.emit('removedFromChatGroupNotification', {
       UserToBeRemoved:newNotification.UserToBeRemoved,
       RemovedByFriendName:newNotification.RemovedByFriendName,
       RemovedFromChatGroupName:newNotification.RemovedFromChatGroupName,
