@@ -10,6 +10,7 @@ import { PassportModule } from '@nestjs/passport';
 import { UtilsModule } from 'src/utils/utils.module';
 import { UsersRepository } from './users.repository';
 import { UserProfile } from 'src/mapper/user-mapper';
+import { NotificationsModule } from 'src/notifications/notifications.module';
 
 
 
@@ -18,6 +19,7 @@ import { UserProfile } from 'src/mapper/user-mapper';
         MongooseModule.forFeature([{ name:'Users',schema: UserSchema}]),
         PassportModule,
         UtilsModule,
+        NotificationsModule,
         SessionModule.forRootAsync({
             useFactory: () => ({
             session: {

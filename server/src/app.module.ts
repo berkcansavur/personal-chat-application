@@ -12,6 +12,8 @@ import { MessagesModule } from './messages/messages.module';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { NotificationsModule } from './notifications/notifications.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ScheduleModule } from '@nestjs/schedule';
 @Module({
   imports: [
     ConfigModule.forRoot({}),
@@ -22,6 +24,8 @@ import { NotificationsModule } from './notifications/notifications.module';
         saveUninitialized: false
       },
     }),
+    EventEmitterModule.forRoot(),
+    ScheduleModule.forRoot(),
     MongooseModule.forRoot(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.duok4hv.mongodb.net/?retryWrites=true&w=majority`),
     AutomapperModule.forRoot({
       strategyInitializer: classes(),

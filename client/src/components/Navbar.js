@@ -4,12 +4,14 @@ import { Link } from 'react-router-dom';
 import './Navbar.css';
 import axios from 'axios';
 import { useAuth } from './Contexts/auth.context';
+import { useNotification } from './Contexts/notification.context';
 
 function Navbar() {
   const [click, setClick] = useState(false);
   const [button, setButton] = useState(true);
   const { loggedIn, logout } = useAuth();
   const token = sessionStorage.getItem("token");
+  const { isNotificationExists, setNotificationIsChecked } = useNotification();
   const handleClick = () => setClick(!click);
 
   const closeMobileMenu = () => setClick(false);
@@ -97,9 +99,16 @@ function Navbar() {
               <Link
                 to='/profile'
                 className='nav-links'
-                onClick={closeMobileMenu}
+                onClick={()=> {
+                  closeMobileMenu();
+                  setNotificationIsChecked();
+                  }
+                }  
               >
                 Profile
+                {isNotificationExists && (
+                  <div className="nav-item-notification-dot"></div>
+                  )}
               </Link>
             </li>
           </ul>

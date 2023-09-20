@@ -15,5 +15,15 @@ export class UtilsService {
             const generatedPassword = salt + '.' + hash.toString('hex');
             
             return generatedPassword;
+    }
+    getCurrentDate = () => {
+        const GMTNow = new Date();
+        const GMTHours = GMTNow.getHours();
+        const turkeyHours = GMTHours + 3;
+    
+        const turkeyNow = new Date(GMTNow);
+        turkeyNow.setHours(turkeyHours);
+        
+        return turkeyNow.toUTCString();
       }
 }

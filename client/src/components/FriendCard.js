@@ -8,8 +8,8 @@ const socket = io("http://localhost:3001");
 
 function FriendCard({ friend, currentUserFriends, onFriendAdded, onFriendRemoved }) {
   const token = sessionStorage.getItem("token");
-  const [isFriend, setIsFriend] = useState(currentUserFriends.includes(friend.email));
-  const {notificationsList, createNotification} = useNotification();
+  const [ isFriend, setIsFriend ] = useState(currentUserFriends.includes(friend.email));
+  const { notificationsList,getCurrentDate } = useNotification();
   const [ user, setUser ] = useState({});
   console.log("Friend Card Notifications List",notificationsList);
   useEffect(() => {
@@ -29,50 +29,10 @@ function FriendCard({ friend, currentUserFriends, onFriendAdded, onFriendRemoved
     getProfileData();
   }, [token]);
   
-  useEffect(()=>{
-
-    socket.emit('createNotification', {
-      UserIdToBeNotified:user._id, 
-      socketId:socket.id
-    });
-
-    socket.on('addFriend', ({
-      UserIdToBeNotified,
-      ReturnNotificationMessage,
-      NotificationType}) => {
-        if(UserIdToBeNotified === user._id) {
-          createNotification({
-          UserIdToBeNotified,
-          ReturnNotificationMessage,
-          NotificationType
-        })
-        ;}
-      })
-      socket.on('removeFriend', ({
-        UserIdToBeNotified,
-        ReturnNotificationMessage,
-        NotificationType}) => {
-          if(UserIdToBeNotified === user._id) {
-            createNotification({
-            UserIdToBeNotified,
-            ReturnNotificationMessage,
-            NotificationType
-          });}
-        })
-      return () => {
-        socket.off('addFriend');
-        socket.off('removeFriend');
-      }
-  });
-  
   useEffect(() => {
     setIsFriend(currentUserFriends.includes(friend.email));
   }, [currentUserFriends, friend.email]);
-  const getCurrentDate = () => {
-    const now = new Date();
-    
-    return now.toUTCString();
-  }
+  
   const handleSubmitAddFriendNotification = () => {
     
     const newNotification = {

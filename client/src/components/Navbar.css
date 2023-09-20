@@ -47,6 +47,16 @@
   
   .nav-item {
     height: 80px;
+    position: relative;
+  }
+  .nav-item-notification-dot {
+    width: 10px;
+    height: 10px;
+    background-color: orange; /* Turuncu renk */
+    border-radius: 50%; /* Yuvarlak bir şekil oluşturur */
+    position: absolute; /* Mutlak bir konumlandırma kullanarak metin içinde özgürce yerleştirin */
+    bottom: middle; /* Yukarıdan ortada */
+    right: 0px; /* Sağdan 5 piksel uzaklık */
   }
   
   .nav-links {
@@ -106,7 +116,7 @@
       width: 100%;
       display: table;
     }
-  
+    
     .nav-links:hover {
       background-color: #fff;
       color: #242424;

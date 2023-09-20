@@ -11,10 +11,9 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { Server,Socket } from 'socket.io';
 import { UsersService } from 'src/users/users.service';
 import { UserInterfaceForMessaging } from '../../interfaces/chat-groups-service.interface';
+import { MessageDTO } from './dto/message.dto';
 import { ChatGroupsService } from 'src/chat-groups/chat-groups.service';
 import mongoose from 'mongoose';
-import { MessageDTO } from './dto/message.dto';
-
   @WebSocketGateway({
   cors:{
     origin:'*',
@@ -26,7 +25,8 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
   
   constructor(
     private readonly messagesService: MessagesService,
-    private readonly userService: UsersService) {}
+    private readonly userService: UsersService,
+    private readonly chatGroupService : ChatGroupsService) {}
 
     @SubscribeMessage('createMessage')
     async create(@MessageBody() createMessageDto: CreateMessageDto) {
@@ -52,6 +52,14 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
     async manageEvents(@MessageBody() payload:{ eventName: string, socketId:string}){
       const { socketId, eventName } = payload;
       this.server.in(socketId).socketsJoin(eventName);
+    }
+    @SubscribeMessage('getChatGroupUsers')
+    async getChatGroupUsers(@MessageBody() payload:{chatGroupId: mongoose.Types.ObjectId}){
+      const { chatGroupId } = payload;
+      const friendIds = await this.chatGroupService.getChatGroupsUsers({chatGroupId: chatGroupId});
+      const friendsData = await this.userService.getUsersFriendsInfo({userIds:friendIds})
+      this.server.to('getChatGroupUsersEvent').emit('getChatGroupUsers', friendsData  );
+      return friendsData;
     }
     @SubscribeMessage('searchUser')
     async searchUser(@MessageBody() payload:{searchText: string}){

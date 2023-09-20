@@ -7,8 +7,7 @@ import {
   WebSocketServer
  } from '@nestjs/websockets';
 import { NotificationsService } from './notifications.service';
-import { CreateNotificationDto, AddFriendNotificationDto, ReturnAddFriendNotificationDto, RemoveFriendNotificationDto } from './dto/create-notification.dto';
-import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { CreateNotificationDto, AddFriendNotificationDto, RemoveFriendNotificationDto } from './dto/create-notification.dto';
 import { Server, Socket } from 'socket.io';
 
   @WebSocketGateway({
