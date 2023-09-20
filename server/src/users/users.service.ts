@@ -18,9 +18,8 @@ import {
     CreateUserDTO } from './dtos/user-dtos';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { NotificationsService } from 'src/notifications/notifications.service';
-import { ReturnAddFriendNotificationDto, AddFriendNotificationDto, NotificationDto } from '../notifications/dto/create-notification.dto';
+import { AddFriendNotificationDto, NotificationDto } from '../notifications/dto/create-notification.dto';
 import { UtilsService } from 'src/utils/utils.service';
-import { Socket } from 'socket.io';
 
 @Injectable()
 export class UsersService implements IUsersService {
