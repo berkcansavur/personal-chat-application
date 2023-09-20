@@ -13,7 +13,7 @@ import {
 import { NotificationsService } from 'src/notifications/notifications.service';
 import { UtilsService } from 'src/utils/utils.service';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
-import { AddedToChatGroupNotificationDto, NotificationDto } from '../notifications/dto/create-notification.dto';
+import { AddedToChatGroupNotificationDto, NotificationDto, RemovedFromChatGroupNotificationDto } from '../notifications/dto/create-notification.dto';
 
 @Injectable()
 export class ChatGroupsService implements IChatGroupService {
@@ -199,6 +199,7 @@ export class ChatGroupsService implements IChatGroupService {
             
             return notification;
     }
+    
     async removeUserFromChatGroup({
         chatGroupId,
         userId
@@ -208,19 +209,44 @@ export class ChatGroupsService implements IChatGroupService {
     }): Promise<ChatGroupInfoDTO> {
         try {
             const {
+                utilsService,
                 ChatGroupMapper,
-                logger
+                logger,
+                eventEmmitter
             } = this;
 
             logger.debug(`[ChatGroupsService] removeUserFromChatGroup: ${JSON.stringify({chatGroupId,userId})}`);
 
             const processedChatGroup =  await this.chatGroupsRepository.removeUserFromChatGroup(chatGroupId, userId);
+
+            eventEmmitter.emit('removedFromChatGroupNotification',{
+                UserToBeRemoved: userId.toString(),
+                RemovedFromChatGroupName: processedChatGroup.chatGroupName,
+                AddedByFriendName: 'example name',
+                AddedTime: utilsService.getCurrentDate()
+        });
             
             return ChatGroupMapper.map<ReturnChatGroup, ChatGroupInfoDTO>(processedChatGroup, ReturnChatGroup, ChatGroupInfoDTO);
             
         } catch (error) {
             throw new Error(error);
         }   
+    }
+
+    @OnEvent('removedFromChatGroupNotification')
+    async createRemovingUserToChatGroupNotification(
+        removedFromChatGroupNotificationDto:RemovedFromChatGroupNotificationDto
+    ): Promise<NotificationDto>{
+        
+        const { 
+            notificationsService,
+            logger } = this;
+        
+            const notification = await notificationsService.createRemovedFromChatGroupNotification({removedFromChatGroupNotificationDto});
+
+            logger.debug(`[ChatGroupsService] createRemovingUserToChatGroupNotification: ${removedFromChatGroupNotificationDto}`);
+            
+            return notification;
     }
 
     async updateChatGroupName({
