@@ -9,9 +9,8 @@ const socket = io("http://localhost:3001");
 function FriendCard({ friend, currentUserFriends, onFriendAdded, onFriendRemoved }) {
   const token = sessionStorage.getItem("token");
   const [ isFriend, setIsFriend ] = useState(currentUserFriends.includes(friend.email));
-  const { notificationsList,getCurrentDate } = useNotification();
+  const { getCurrentDate } = useNotification();
   const [ user, setUser ] = useState({});
-  console.log("Friend Card Notifications List",notificationsList);
   useEffect(() => {
     const getProfileData = async () => {
       try {

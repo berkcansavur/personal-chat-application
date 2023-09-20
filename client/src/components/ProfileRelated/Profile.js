@@ -59,9 +59,8 @@ function Profile() {
         <h6>Notifications:</h6>
         <ul className="notification-list">
           {notificationsList.map((notification, index) => (
-            console.log("Notification of notification list: ",notification),
             <li key={index}>
-              <span>{notification.ReturnNotificationMessage}</span>
+              <span>{`[ ${notification.NotificationType} ] : `+notification.ReturnNotificationMessage}</span>
               </li>
           ))}
         </ul>
