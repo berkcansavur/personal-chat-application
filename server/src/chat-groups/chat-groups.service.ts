@@ -10,12 +10,19 @@ import {
     CreateChatGroupDTO,
     ChatGroupInfoDTO, 
     UpdateChatGroupsNameDTO} from './dtos/chat-group-dtos';
+import { NotificationsService } from 'src/notifications/notifications.service';
+import { UtilsService } from 'src/utils/utils.service';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { AddedToChatGroupNotificationDto, NotificationDto } from '../notifications/dto/create-notification.dto';
 
 @Injectable()
 export class ChatGroupsService implements IChatGroupService {
     private readonly logger = new Logger(ChatGroupsService.name);
     constructor(
         private chatGroupsRepository : ChatGroupsRepository,
+        private notificationsService : NotificationsService, 
+        private utilsService : UtilsService,
+        private readonly eventEmmitter: EventEmitter2,
         @InjectMapper() private readonly ChatGroupMapper: Mapper){}
 
     async createChatGroup({
@@ -154,13 +161,22 @@ export class ChatGroupsService implements IChatGroupService {
     }): Promise<ChatGroupInfoDTO> {
         try {
             const {
+                utilsService,
                 ChatGroupMapper,
-                logger
+                logger,
+                eventEmmitter
             } = this;
 
             logger.debug(`[ChatGroupsService] addUserToChatGroup: ${JSON.stringify({chatGroupId,userId})}`);
 
             const processedChatGroup = await this.chatGroupsRepository.addUserToChatGroup(chatGroupId, userId);
+
+            eventEmmitter.emit('addedToChatGroupNotification',{
+                    UserToBeAdded: userId.toString(),
+                    AddedToChatGroupName: processedChatGroup.chatGroupName,
+                    AddedByFriendName: 'example name',
+                    AddedTime: utilsService.getCurrentDate()
+            });
 
             return ChatGroupMapper.map<ReturnChatGroup, ChatGroupInfoDTO>(processedChatGroup, ReturnChatGroup, ChatGroupInfoDTO);
 
@@ -168,7 +184,21 @@ export class ChatGroupsService implements IChatGroupService {
             throw new Error(error.message);
         }
     }
+    @OnEvent('addedToChatGroupNotification')
+    async createAddingUserToChatGroupNotification(
+        addedToChatGroupNotificationDto:AddedToChatGroupNotificationDto
+    ): Promise<NotificationDto>{
+        
+        const { 
+            notificationsService,
+            logger } = this;
+        
+            const notification = await notificationsService.createAddedToChatGroupNotification({addedToChatGroupNotificationDto});
 
+            logger.debug(`[ChatGroupsService] createAddingUserToChatGroupNotification: ${addedToChatGroupNotificationDto}`);
+            
+            return notification;
+    }
     async removeUserFromChatGroup({
         chatGroupId,
         userId

@@ -88,14 +88,7 @@ export class AppController {
         throw new UnauthorizedException('You must be logged in for adding friend');
       }
       const updatedUser = await this.userService.addFriend( {userId: req.user.userId, friendId: friendId} );
-      const t = new Date();
-      const now = t.toUTCString();
-      const addFriendNotificationDto = {
-        UserToBeAdded: friendId.toString(),
-        AddedByFriendName:updatedUser.name,
-        AddedTime:now
-    }
-      //await this.notificationsService.createAddedByFriendNotification({addFriendNotificationDto});
+
       return updatedUser;
   }
   @UseGuards( JwtAuthGuard )
@@ -105,15 +98,7 @@ export class AppController {
         throw new UnauthorizedException('You must be logged in for removing friend');
       }
       const updatedUser = await this.userService.removeFriend( {userId: req.user.userId,friendId: friendId });
-      const t = new Date();
-      const now = t.toUTCString();
-      const removeFriendNotificationDto = {
-          UserToBeRemoved: friendId.toString(),
-          RemovedByFriendName:updatedUser.name,
-          RemovedTime:now
-      }
-      
-      //await this.notificationsService.createRemovedByFriendNotification({removeFriendNotificationDto});
+
       return updatedUser;
   }
   @UseGuards( JwtAuthGuard )
