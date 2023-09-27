@@ -18,7 +18,6 @@ function Login() {
     .then((res)=>{
       sessionStorage.setItem("token", res.data.access_token);
       login();
-      // getlast10Notifications();
     })
     .catch((err)=>{
       console.log(err);
