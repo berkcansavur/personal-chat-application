@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import  { useDispatch, useSelector } from 'react-redux';
+import { 
+  getChatGroupData, 
+  addUserToChatGroup,
+  removeUserFromChatGroup, 
+  deleteChatGroup} from "../../features/chatgrops/chatgroupSlice";
 import "../ChatGroupRelated/ChatGroupPage.css";
 import { useNavigate, useParams } from "react-router-dom";
 import Footer from '../Footer';
@@ -9,89 +14,62 @@ const socket = io("http://localhost:3001");
 
 export default function Chats() {
   const navigate = useNavigate();
-  const [friends, setFriends] = useState([]);
+  const dispatch = useDispatch();
   const [chatGroup, setChatGroup] = useState({});
   const [chatGroupUsers, setChatGroupUsers] = useState([]);
   const { chatGroupId } = useParams();
   const { getCurrentDate } = useNotification();
   const token = sessionStorage.getItem("token");
-  const [isLoading, setIsLoading] = useState(true);
-  const [ user, setUser ] = useState({});
+  const { userProfileInfo } = useSelector((state) => state.user);
   useEffect(() => {
-    const getChatGroupData = async () => {
+    const getChatGroup = async () => {
       try {
-        const chatGroupData = await axios.get(
-          `http://localhost:3001/app/get-chat-group/${chatGroupId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setChatGroup(chatGroupData.data);
+        dispatch(getChatGroupData(chatGroupId)).then((result) => {
+          setChatGroup(result.payload);
+        })
+        
       } catch (error) {
         console.log(error);
-      } finally {
-        setIsLoading(false);
       }
     };
-    getChatGroupData();
+    getChatGroup();
   }, [chatGroupId, token]);
-  useEffect(() => {
-    const getProfileData = async () => {
-      try {
-        const response = await axios.get("http://localhost:3001/app/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setUser(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    getProfileData();
-  }, [token]);
 
   useEffect(()=>{
-    socket.emit('events', { eventName: 'getChatGroupUsersEvent', socketId: socket.id } );
-    socket.on('getChatGroupUsers', (users)=>{
-      setChatGroupUsers(users);
+    socket.emit('events', {
+      eventName: 'getChatGroupUsersEvent',
+      socketId: socket.id, 
+      userId: userProfileInfo._id});
+    socket.on('getChatGroupUsers', ({
+      users,
+      userId
+    })=>{
+      
+      if(userId === userProfileInfo._id && users) {
+        setChatGroupUsers(users);
+      }
+      
     });
     return () => {
       socket.off('getChatGroupUsers');
     }
-  },[socket.id]);
+  },[socket.id, userProfileInfo, chatGroupUsers]);
 
   useEffect(()=>{
     handleGetFriendsOfChatGroup();
-  }, [chatGroupId]);
+  },[addUserToChatGroup,removeUserFromChatGroup,userProfileInfo]);
 
   const handleGetFriendsOfChatGroup = async ()=>{
     try {
-      socket.emit( 'getChatGroupUsers', { chatGroupId: chatGroupId } )
+      socket.emit( 'getChatGroupUsersEvent', { 
+        chatGroupId : chatGroupId, 
+        userId : userProfileInfo._id
+      })
+      
     } catch (error) {
       console.log(error);
     }
   }
-  useEffect(() => {
-    if (!isLoading) {
-      const getFriendsOfUser = async () => {
-        try {
-          const response = await axios.get("http://localhost:3001/app/me", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setFriends(response.data.Friends);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-      getFriendsOfUser();
-    }
-  }, [isLoading, token]);
 
   const navigateToChat = () => {
     navigate(`/chat/${chatGroupId}`);
@@ -100,7 +78,7 @@ export default function Chats() {
     
     const newNotification = {
       UserToBeAdded: friendId, 
-      AddedByFriendName: user.name,
+      AddedByFriendName: userProfileInfo.name,
       AddedToChatGroupName: chatGroup.chatGroupName, 
       AddedTime: getCurrentDate(),
     };
@@ -116,7 +94,7 @@ export default function Chats() {
     
     const newNotification = {
       UserToBeRemoved: friendId, 
-      RemovedByFriendName: user.name,
+      RemovedByFriendName: userProfileInfo.name,
       RemovedFromChatGroupName: chatGroup.chatGroupName, 
       RemovedTime: getCurrentDate(),
     };
@@ -130,16 +108,14 @@ export default function Chats() {
   }
   const handleAddFriendToChatGroup = async (friendId) => {
     try {
-      await axios.post(
-        `http://localhost:3001/app/add-friends-to-chat-group/${chatGroupId}/${friendId}`,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      handleGetFriendsOfChatGroup();
+      const parameters = {
+        chatGroupId,
+        friendId
+      }
+      dispatch(addUserToChatGroup(parameters)).then(()=>{
+        handleGetFriendsOfChatGroup();
+      });
+      
     } catch (error) {
       console.log(error);
     }
@@ -147,16 +123,14 @@ export default function Chats() {
 
   const handleRemoveFriendFromChatGroup = async (friendId) => {
     try {
-      await axios.post(
-        `http://localhost:3001/app/remove-friends-from-chat-group/${chatGroupId}/${friendId}`,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      handleGetFriendsOfChatGroup();
+      const parameters = {
+        chatGroupId,
+        friendId
+      }
+      dispatch(removeUserFromChatGroup(parameters)).then(()=>{
+        handleGetFriendsOfChatGroup();
+      });
+      
     } catch (error) {
       console.log(error);
     }
@@ -164,14 +138,10 @@ export default function Chats() {
 
   const handleDeleteChatGroup = async () => {
     try {
-      await axios.delete(`http://localhost:3001/app/delete-chat-group/${chatGroupId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      navigate('/profile');
+      dispatch(deleteChatGroup(chatGroupId)).then(()=>{
+        navigate('/profile');
+      });
+      
     } catch (error) {
       console.log(error);
     }
@@ -205,7 +175,7 @@ export default function Chats() {
         </div>
         <div className="chat-group__cards-wrapper">
           <h3 className="chat-group__section-title">Friends</h3>
-          {friends && friends.map((friend) => (
+          {userProfileInfo.Friends && userProfileInfo.Friends.map((friend) => (
             <div className="chat-group__card" key={friend._id}>
               <h4 className="chat-group__card-title">{friend.name}</h4>
               <p className="chat-group__card-email">{friend.email}</p>

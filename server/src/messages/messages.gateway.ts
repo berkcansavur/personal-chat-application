@@ -14,6 +14,7 @@ import { UserInterfaceForMessaging } from '../../interfaces/chat-groups-service.
 import { MessageDTO } from './dto/message.dto';
 import { ChatGroupsService } from 'src/chat-groups/chat-groups.service';
 import mongoose from 'mongoose';
+import { ChatGroupsFriendsDto, SearchUserDto } from './dto/search-user.dto';
   @WebSocketGateway({
   cors:{
     origin:'*',
@@ -49,23 +50,37 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
         this.server.in(socketId).socketsJoin(chatGroupID);
     }
     @SubscribeMessage('events')
-    async manageEvents(@MessageBody() payload:{ eventName: string, socketId:string}){
-      const { socketId, eventName } = payload;
-      this.server.in(socketId).socketsJoin(eventName);
+    async manageEvents(@MessageBody() payload:{ eventName: string, socketId:string, userId:string}){
+      const { socketId, userId } = payload;
+      this.server.in(socketId).socketsJoin(userId);
     }
-    @SubscribeMessage('getChatGroupUsers')
-    async getChatGroupUsers(@MessageBody() payload:{chatGroupId: mongoose.Types.ObjectId}){
-      const { chatGroupId } = payload;
+    @SubscribeMessage('getChatGroupUsersEvent')
+    async getChatGroupUsers(@MessageBody() payload:{
+      chatGroupId: mongoose.Types.ObjectId,
+      userId:string 
+    }){
+      const { chatGroupId, userId } = payload;
       const friendIds = await this.chatGroupService.getChatGroupsUsers({chatGroupId: chatGroupId});
       const friendsData = await this.userService.getUsersFriendsInfo({userIds:friendIds})
-      this.server.to('getChatGroupUsersEvent').emit('getChatGroupUsers', friendsData  );
+      const chatGroupUsersDTO = new ChatGroupsFriendsDto()
+      chatGroupUsersDTO.userId = userId;
+      chatGroupUsersDTO.users = friendsData;
+      this.server.to(userId).emit('getChatGroupUsers', chatGroupUsersDTO );
+
       return friendsData;
     }
-    @SubscribeMessage('searchUser')
-    async searchUser(@MessageBody() payload:{searchText: string}){
-      const { searchText } = payload;
+    @SubscribeMessage('searchUserEvent')
+    async searchUser(
+      @MessageBody() payload : {
+        searchText: string, 
+        userId:string
+      }){
+      const { searchText, userId } = payload;
       const users = await this.userService.searchUser( {searchText: searchText} );
-      this.server.to('searchUserEvent').emit('searchUser', users  );
+      const searchUserDTO = new SearchUserDto()
+      searchUserDTO.userId = userId;
+      searchUserDTO.users = users;
+      this.server.to(userId).emit('searchUser', searchUserDTO );
       return users;
     }
     async handleConnection(socket: Socket): Promise<void> {

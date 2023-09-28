@@ -25,7 +25,6 @@ function Chat() {
             Authorization: `Bearer ${token}`,
           },
         });
-
         setUser(response.data);
       } catch (error) {
         console.error(error);

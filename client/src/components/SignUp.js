@@ -3,26 +3,35 @@ import {useState} from "react"
 import axios from '../api/axios'
 import { Button } from './Button';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { signupUser } from '../features/user/userSlice';
 function SignUp() {
   const [name, setUsername] = useState('');
   const [email, setEmail] = useState('')
   const [ password, setPassword] = useState('')
   const navigate = useNavigate();
-  const handleSubmit = (e)=>{
+  const dispatch = useDispatch();
+
+  const handleSubmit = async (e)=>{
     e.preventDefault();
-    console.log(name,email,password);
-    axios.post('http://localhost:3001/users/signup',{
-      name: name,
-      email: email,
-      password: password
-    })
-    .then((res)=>{
-      console.log(res);
-    })
-    .catch((err)=>{
-      console.log(err);
-    });
-    navigate('/')
+    try {
+      const payload = { 
+        name:name,
+        email:email,
+        password:password
+      }
+      dispatch(signupUser(payload)).then((result)=>{
+        if(result.payload){
+          setUsername('')
+          setEmail('');
+          setPassword('');
+          navigate('/')
+        }
+      })
+    } catch (error) {
+      console.log(error);
+    }
+    
   }
   return (
     

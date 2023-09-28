@@ -5,81 +5,96 @@ import Footer from "../Footer";
 import "../NetworkRelated/Network.css"
 import { Button } from "../Button";
 import io from 'socket.io-client';
+import { useSelector } from "react-redux";
 const socket = io("http://localhost:3001");
 
 function Network() {
   const token = sessionStorage.getItem("token");
+  const {userProfileInfo} = useSelector((state)=> state.user);
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [currentUserFriends, setCurrentUserFriends] = useState([]);
+  const { loggedIn } = useSelector((state)=> state.auth)
+    useEffect(() => {
+      const fetchFriends = async () => {
+        try {
+          const response = await axios.get("http://localhost:3001/app/get-friends", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setCurrentUserFriends(response.data.map((friend) => friend.email));
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      fetchFriends();
+    }, [token]);
   
-  useEffect(() => {
-    const fetchFriends = async () => {
+    useEffect(()=>{
+      
+        socket.emit('events', { 
+          eventName: 'searchUserEvent', 
+          socketId: socket.id, 
+          userId: userProfileInfo._id});
+        socket.on('searchUser',({
+          users,
+          userId
+        })=>{
+          if(userId === userProfileInfo._id && users){
+            console.log(users)
+            setSearchResults(users);
+          }
+          
+        })
+        return () => {
+          socket.off('searchUser');
+        }
+    },[socket.id, userProfileInfo,searchText]);
+  
+    useEffect(() => {
+      handleSearchFriendsOfUser();
+    }, [searchText]);
+    
+    
+  
+    const handleSearchFriendsOfUser = async ()=>{
+      if (searchText.trim() === "") {
+        setSearchResults([]);
+        return;
+      }
       try {
-        const response = await axios.get("http://localhost:3001/app/get-friends", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setCurrentUserFriends(response.data.map((friend) => friend.email));
+        socket.emit('searchUserEvent',{
+          searchText: searchText,
+          userId: userProfileInfo._id
+        })
       } catch (error) {
         console.error(error);
       }
+    }
+    const handleFriendAdded = async (friendEmail) => {
+      setCurrentUserFriends((prevFriends) => [...prevFriends, friendEmail]);
+      setSearchResults((prevResults) =>
+        prevResults.map((friend) =>
+          friend.email === friendEmail
+            ? { ...friend, isFriend: true }
+            : friend
+        )
+      );
     };
-    fetchFriends();
-  }, [token]);
-
   
-  useEffect(()=>{
-    socket.emit('events', { eventName: 'searchUserEvent', socketId:socket.id });
-    socket.on('searchUser',(users)=>{
-      setSearchResults(users);
-    })
-    return () => {
-      socket.off('searchUser');
-    }
-  },[socket.id]);
-
-  useEffect(() => {
-    handleSearchFriendsOfUser();
-  }, [searchText]);
-  
-  
-
-  const handleSearchFriendsOfUser = async ()=>{
-    if (searchText.trim() === "") {
-      setSearchResults([]);
-      return;
-    }
-    try {
-      socket.emit('searchUser',{ searchText: searchText} );
-    } catch (error) {
-      console.error(error);
-    }
-  }
-  const handleFriendAdded = async (friendEmail) => {
-    setCurrentUserFriends((prevFriends) => [...prevFriends, friendEmail]);
-    setSearchResults((prevResults) =>
-      prevResults.map((friend) =>
-        friend.email === friendEmail
-          ? { ...friend, isFriend: true }
-          : friend
-      )
-    );
-  };
-
-  const handleFriendRemoved = async (friendEmail) => {
-    setCurrentUserFriends((prevFriends) =>
-      prevFriends.filter((email) => email !== friendEmail)
-    );
-    setSearchResults((prevResults) =>
-      prevResults.map((friend) =>
-        friend.email === friendEmail
-          ? { ...friend, isFriend: false }
-          : friend
-      )
-    );
-  };
+    const handleFriendRemoved = async (friendEmail) => {
+      setCurrentUserFriends((prevFriends) =>
+        prevFriends.filter((email) => email !== friendEmail)
+      );
+      setSearchResults((prevResults) =>
+        prevResults.map((friend) =>
+          friend.email === friendEmail
+            ? { ...friend, isFriend: false }
+            : friend
+        )
+      );
+    };
 
   return (
     <>

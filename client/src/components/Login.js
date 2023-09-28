@@ -1,29 +1,44 @@
 import './SignUp.css';
-import {useState} from "react"
-import axios from 'axios';
 import { Button } from './Button';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from './Contexts/auth.context';
-function Login() {
+import { useState } from "react"
+import  { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../features/auth/authSlice';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { getProfileData } from '../features/user/userSlice';
+
+function Login() {  
   const [ email, setEmail] = useState('')
   const [ password, setPassword] = useState('')
   const navigate = useNavigate();
-  const { login }  = useAuth();
+  const dispatch = useDispatch();
+  const {loggedIn} = useSelector((state)=> state.auth)
   const handleSubmit = async (e)=>{
     e.preventDefault();
-    await axios.post('http://localhost:3001/app/login',{
-      email: email,
-      password: password
-    },{ withCredentials: true })
-    .then((res)=>{
-      sessionStorage.setItem("token", res.data.access_token);
-      login();
-    })
-    .catch((err)=>{
-      console.log(err);
-    });
+    try{
+      const credentials = {
+        email:email,
+        password: password
+      }
+      dispatch(loginUser(credentials))
+      .then((result)=>{
+        if(result.payload.access_token){
+          setEmail('');
+          setPassword('');
+          dispatch(getProfileData(result.payload.access_token))
+          .then((result)=>{
+            if(result.payload){
+            navigate('/profile')
+            }
+          })
+        }
+      });
+    }catch(error){
+      console.error(error);
+    }
+    if(loggedIn === true){
+      return <Navigate to="/profile" />;
+    }
     
-    navigate('/profile')
   }
   return (
     

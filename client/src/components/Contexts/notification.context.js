@@ -1,7 +1,6 @@
 import {createContext, useContext, useEffect, useState } from 'react';
 import axios from "axios";
 import io from 'socket.io-client';
-
 const socket = io("http://localhost:3001");
 const NotificationsContext = createContext()
 export function useNotification() {
@@ -13,7 +12,6 @@ export function NotificationProvider({children}){
     const [ isNotificationExists, setIsNotificationExists] = useState(false);
     const token = sessionStorage.getItem("token");
     const [ user, setUser ] = useState({});
-    console.log("General scope navigation provider: ",notificationsList);
     useEffect(() => {
       const getProfileData = async () => {
         try {

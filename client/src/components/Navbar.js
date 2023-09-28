@@ -2,18 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Button } from './Button';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
-import axios from 'axios';
-import { useAuth } from './Contexts/auth.context';
 import { useNotification } from './Contexts/notification.context';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutUser } from '../features/auth/authSlice';
 
 function Navbar() {
   const [click, setClick] = useState(false);
   const [button, setButton] = useState(true);
-  const { loggedIn, logout } = useAuth();
+  const dispatch = useDispatch();
+  const { loggedIn } = useSelector((state)=> state.auth)
   const token = sessionStorage.getItem("token");
   const { isNotificationExists, setNotificationIsChecked } = useNotification();
   const handleClick = () => setClick(!click);
-
   const closeMobileMenu = () => setClick(false);
 
   const showButton = () => {
@@ -23,43 +23,18 @@ function Navbar() {
       setButton(true);
     }
   };
-
   useEffect(() => {
     showButton();
   }, []);
-
   const handleLogout = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/app/logout", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      sessionStorage.setItem("token", response.data.access_token);
-      logout();
+      dispatch(logoutUser(token))
     } catch (err) {
       console.error(err);
       console.error('Token was not deleted');
     }
   };
   
-  const getAndSetAccessToken = async () => {
-    try {
-      const response = await axios.get("http://localhost:3001/app/getAuthenticatedUser", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      sessionStorage.setItem("token", response.data.access_token);
-    } catch (err) {
-      console.error('Token was not retrieved.');
-    }
-  };
-  useEffect(()=>{
-    getAndSetAccessToken();
-  },[token]);
-  
-
   return (
     <>
       <nav className='navbar'>
