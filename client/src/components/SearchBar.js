@@ -4,7 +4,6 @@ function SearchBar({ onSearch }) {
   const [searchText, setSearchText] = useState("");
 
   const handleSearch = () => {
-    // Arama işlemini gerçekleştir ve sonucu onSearch fonksiyonuna gönder
     onSearch(searchText);
   };
 

@@ -53,9 +53,9 @@ function FriendCard({ friend, currentUserFriends, onFriendAdded, onFriendRemoved
     };
     
     socket.emit('removeFriendNotification', {
-      UserToBeRemoved:newNotification.UserToBeRemoved,
-      RemovedByFriendName:newNotification.RemovedByFriendName,
-      RemovedTime:newNotification.RemovedTime
+      UserToBeRemoved: newNotification.UserToBeRemoved,
+      RemovedByFriendName: newNotification.RemovedByFriendName,
+      RemovedTime: newNotification.RemovedTime
     });
   }
   const handleFriendAction = async (action) => {
