@@ -66,6 +66,51 @@ export const deleteChatGroup = createAsyncThunk(
     return response;
     }
 )
+export const getChatGroupUsersData = createAsyncThunk(
+    'chatGroups/get-chat-group-users',
+    async(chatGroupId) => {
+        const request = await axios.get(
+            `http://localhost:3001/app/get-chatgroups-friends-data/${chatGroupId}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const response = await request.data;
+            return response;
+
+    }
+)
+export const getLast20Messages = createAsyncThunk(
+    'chatGroups/getLast20Messages',
+    async(chatGroupId) => {
+        const request = await axios.get(
+            `http://localhost:3001/app/get-last-20-messages/${chatGroupId}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const response = await request.data;
+            return response;
+    }
+)
+export const createChatGroup = createAsyncThunk(
+    'chatGroups/createChatGroup',
+    async(chatGroupName) =>{
+        const request = await axios.post(
+            'http://localhost:3001/app/create-chat-group',
+            { chatGroupName },
+            {
+                headers:{
+                    Authorization:`Bearer ${token}`,
+                }
+            });
+            const response = await request.data;
+            return response;
+
+    }
+)
 const chatGroupSlice = createSlice({
     name: 'chatGroups',
     initialState,
@@ -152,6 +197,53 @@ const chatGroupSlice = createSlice({
                 state.error = action.error.message;
             }
         })
+        .addCase(getChatGroupUsersData.pending, ( state ) => {
+            state.loading = true;
+            state.success = false;
+            state.error = null;
+        })
+        .addCase(getChatGroupUsersData.fulfilled, ( state ) => {
+            state.loading = false;
+            state.success = true;
+            state.error = null;
+        })
+        .addCase(getChatGroupUsersData.rejected, ( state, action ) => {
+            state.loading = false;
+            state.success = false;
+            state.error = action.error.message;
+        })
+        .addCase(getLast20Messages.pending, ( state ) => {
+            state.loading = true;
+            state.success = false;
+            state.error = null;
+        })
+        .addCase(getLast20Messages.fulfilled, ( state ) => {
+            state.loading = false;
+            state.success = true;
+            state.error = null;
+        })
+        .addCase(getLast20Messages.rejected, ( state, action ) => {
+            state.loading = false;
+            state.success = false;
+            state.error = action.error.message;
+        })
+        .addCase(createChatGroup.pending, ( state ) => {
+            state.loading = true;
+            state.success = false;
+            state.error = null;
+        })
+        .addCase(createChatGroup.fulfilled, ( state ) => {
+            state.loading = false;
+            state.success = true;
+            state.error = null;
+        })
+        .addCase(createChatGroup.rejected, ( state, action ) => {
+            state.loading = false;
+            state.success = false;
+            state.error = action.error.message;
+        })
+        
+        
     }
 })
 export default chatGroupSlice.reducer;

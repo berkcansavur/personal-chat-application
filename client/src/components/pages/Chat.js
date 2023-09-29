@@ -4,6 +4,8 @@ import "../ChatGroupRelated/Chat.css";
 import axios from "axios";
 import Footer from '../Footer';
 import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getChatGroupData, getChatGroupUsersData, getLast20Messages } from "../../features/chatgroups/chatgroupSlice";
 const socket = io("http://localhost:3001");
 
 function Chat() {
@@ -11,79 +13,48 @@ function Chat() {
   const { chatGroupId } = useParams();
   const [message, setMessage] = useState("");
   const [messagesList, setMessagesList] = useState([]);
-  const [ user, setUser ] = useState({});
+  const { loggedIn } = useSelector( (state) => state.auth );
+  const { chatGroupData, loading } = useSelector((state) => state.chatGroups);
+  const { userProfileInfo } = useSelector((state) => state.user);
   const [chatGroupUsers, setChatGroupUsers] = useState([]);
   const [chatGroup, setChatGroup] = useState({});
   const token = sessionStorage.getItem("token");
   const [isLoading, setIsLoading] = useState(true);
-  
+  const dispatch = useDispatch();
+  console.log("MessageList: ",messagesList)
   useEffect(() => {
-    const getProfileData = async () => {
-      try {
-        const response = await axios.get("http://localhost:3001/app/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setUser(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    getProfileData();
-  }, [token]);
-
-  useEffect(() => {
-    
-      const getChatGroupUsersData = async () => {
+      const getChatGroupUsers = async () => {
         try {
-          const response = await axios.get(
-            `http://localhost:3001/app/get-chatgroups-friends-data/${chatGroupId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          setChatGroupUsers(response.data);
-          setIsLoading(false);
+          dispatch(getChatGroupUsersData(chatGroupId)).then((result) => {
+            setChatGroupUsers(result.payload);
+            setIsLoading(false);
+          }); 
+          
         } catch (error) {
           console.error(error);
         }
       };
-      getChatGroupUsersData();
+      getChatGroupUsers();
   }, [isLoading, chatGroupId, token]);
 
   useEffect(() => {
-    const getChatGroupData = async () => {
+    const getChatGroup = async () => {
       try {
-        const chatGroupData = await axios.get(
-          `http://localhost:3001/app/get-chat-group/${chatGroupId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setChatGroup(chatGroupData.data);
+        dispatch(getChatGroupData(chatGroupId)).then(()=>{
+          setChatGroup(chatGroupData);
+        })
       } catch (error) {
         console.log(error);
       }
     };
-    getChatGroupData();
+    getChatGroup();
   }, [chatGroupId, token]);
   useEffect(() => {
     const getlast20Messages = async () => {
       try {
-        const last20Messages = await axios.get(
-          `http://localhost:3001/app/get-last-20-messages/${chatGroupId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setMessagesList(last20Messages.data);
+        dispatch(getLast20Messages(chatGroupId)).then((result)=>{
+          setMessagesList(result.payload);
+        })
       } catch (error) {
         console.log(error);
       }
@@ -93,7 +64,7 @@ function Chat() {
   
   useEffect(() => {
 
-    socket.emit('join', { chatGroupID: chatGroupId, user: { socketId: socket.id, ...user} } );
+    socket.emit('join', { chatGroupID: chatGroupId, user: { socketId: socket.id, ...userProfileInfo} } );
     
     socket.on('message', ({ chatGroup, senderUser, text }) => {
       if (chatGroup === chatGroupId) {
@@ -108,13 +79,12 @@ function Chat() {
 
   const handleSubmitNewMessage = () => {
     if (message.trim() !== "") {
-      socket.emit('createMessage', { chatGroupID: chatGroupId, senderUser:user._id, text: message });
-      setMessage(""); // Reset the message input
+      socket.emit('createMessage', { chatGroupID: chatGroupId, senderUser:userProfileInfo._id, text: message });
+      setMessage("");
     }
   }
 
   const handleNewMessage = (newMessage) => {
-    // Check if new message already exists
     if (!messagesList.some(msg => msg.text === newMessage.text && msg.senderUser === newMessage.senderUser)) {
       setMessagesList(prevMessages => [...prevMessages, newMessage]);
     }
@@ -132,14 +102,21 @@ function Chat() {
                     <p>Chat Group Users: { chatGroupUsers.map( ( cgUser ) => cgUser.name ).join(", ")}</p>
                 </div>
                 <ul id='messages'>
-                    {messagesList.map(( msg, index ) => (
+                    {loggedIn ? 
+                    ( loading ? 'Loading...' : 
+                    ( 
+                      messagesList ?
+                      messagesList.map(( msg, index ) => (
                         <li key={index}>
                             <div>
                                 <span className="username">{ msg.senderUser }:</span>
                                 <span className="message">{ msg.text }</span>
                             </div>
                         </li>
-                    ))}
+                        )) : 
+                        'Messages could not retrieved...' 
+                        )) : 
+                        null}
                 </ul>
                 <div className="message-input">
                     <input
@@ -147,11 +124,11 @@ function Chat() {
                         value={ message }
                         onChange={ e => setMessage( e.target.value )}
                     />
-                    <button onClick={ handleSubmitNewMessage }>Submit</button>
+                    <button onClick={ handleSubmitNewMessage } >Submit</button>
                 </div>
             </div>
             <button onClick={ navigateToChatGroup } className="chat-group__card-button">
-                Go to Chat Group Settings
+                Chat Group Settings
             </button>
         </div>
         <Footer />
