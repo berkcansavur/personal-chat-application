@@ -6,7 +6,6 @@ const NotificationsContext = createContext()
 export function useNotification() {
     return useContext(NotificationsContext);
 }
-
 export function NotificationProvider({children}){
     const [notificationsList, setNotificationsList] = useState([]);
     const [ isNotificationExists, setIsNotificationExists] = useState(false);
@@ -14,17 +13,19 @@ export function NotificationProvider({children}){
     const [ user, setUser ] = useState({});
     useEffect(() => {
       const getProfileData = async () => {
-        try {
-          const response = await axios.get("http://localhost:3001/app/me", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-    
-          setUser(response.data);
-          
-        } catch (error) {
-          console.error(error);
+        if(token){
+          try {
+            const response = await axios.get("http://localhost:3001/app/me", {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+      
+            setUser(response.data);
+            
+          } catch (error) {
+            console.error(error);
+          }
         }
       };
       getProfileData();
@@ -100,20 +101,23 @@ export function NotificationProvider({children}){
     },[user,isNotificationExists]);
 
     const getlast10Notifications = async () => {
-      
-      try {
-        const token = sessionStorage.getItem("token");
-        const last10Notifications = await axios.get(
-          `http://localhost:3001/app/get-last-10-notifications/${user._id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setNotificationsList([...last10Notifications.data]);
-      } catch (error) {
-        console.log(error);
+      if(user){
+        try {
+          const token = sessionStorage.getItem("token");
+            const last10Notifications = await axios.get(
+              `http://localhost:3001/app/get-last-10-notifications/${user._id}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            if(last10Notifications.data){
+              setNotificationsList([...last10Notifications.data]);
+            }  
+        } catch (error) {
+          console.log(error);
+        }
       }
     };
 

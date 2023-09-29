@@ -5,7 +5,8 @@ import Footer from "../Footer";
 import "../NetworkRelated/Network.css"
 import { Button } from "../Button";
 import io from 'socket.io-client';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getUsersFriends } from "../../features/user/userSlice";
 const socket = io("http://localhost:3001");
 
 function Network() {
@@ -14,22 +15,23 @@ function Network() {
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [currentUserFriends, setCurrentUserFriends] = useState([]);
+  const dispatch = useDispatch();
   const { loggedIn } = useSelector((state)=> state.auth)
     useEffect(() => {
       const fetchFriends = async () => {
         try {
-          const response = await axios.get("http://localhost:3001/app/get-friends", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setCurrentUserFriends(response.data.map((friend) => friend.email));
+          dispatch(getUsersFriends(token)).then((result)=>{
+            if(result.payload){
+              setCurrentUserFriends(result.payload.map((friend) => friend.email));
+            }
+            
+          })
         } catch (error) {
           console.error(error);
         }
       };
       fetchFriends();
-    }, [token]);
+    }, [token,]);
   
     useEffect(()=>{
       
@@ -96,40 +98,63 @@ function Network() {
       );
     };
 
-  return (
-    <>
-    <div className="network">
-      <div className="search-bar">
-        <input className="network-name-input"
-          type="text"
-          value={searchText}
-          onChange={(e) => {
-            setSearchText(e.target.value)}}
-        />
-        <Button 
-        toOperation='search-friend'
-        buttonStyle='btn--outline'
-        onClick={handleSearchFriendsOfUser}>Search</Button>
-      </div>
-      <div className="friend-cards">
-      {searchResults.length > 0 ? (
-            searchResults.map((friend) => (
-              <FriendCard
-                key={friend._id}
-                friend={friend}
-                currentUserFriends={currentUserFriends}
-                onFriendAdded={handleFriendAdded}
-                onFriendRemoved={handleFriendRemoved}
-              />
-            ))
-          ) : (
-            <h6>{searchText.trim() === "" ? "Enter username or email" : "No results found"}</h6>
-          )}
-      </div>
-    </div>
-       <Footer/>
-    </>
-  );
+    if(loggedIn && userProfileInfo){
+      return (
+        <>
+        <div className="network">
+          <div className="search-bar">
+            <input className="network-name-input"
+              type="text"
+              value={searchText}
+              onChange={(e) => {
+                setSearchText(e.target.value)}}
+            />
+            <Button 
+            toOperation='search-friend'
+            buttonStyle='btn--outline'
+            onClick={handleSearchFriendsOfUser}>Search</Button>
+          </div>
+          <div className="friend-cards">
+          {searchResults ? searchResults.length > 0 ? (
+                searchResults.map((friend) => (
+                  <FriendCard
+                    key={friend._id}
+                    friend={friend}
+                    currentUserFriends={currentUserFriends}
+                    onFriendAdded={handleFriendAdded}
+                    onFriendRemoved={handleFriendRemoved}
+                  />
+                ))
+              ) : (
+                <h6>{searchText.trim() === "" ? "Enter username or email" : "No results found"}</h6>
+              ): null}
+          </div>
+        </div>
+           <Footer/>
+        </>
+      );
+    }else{
+      return (
+        <>
+        <div className='chatgroup'>
+                <div className='chatgroup__container'>
+                    <h2>You need to register for search users</h2>
+
+                        <div className='sign-up__wrapper'>
+                            <p>Don't you have an account? Click to create one.</p>
+                                <form>
+                                <Button toOperation='signup' buttonStyle='btn--outline'>Create an Account</Button>
+                                </form>
+                        </div>
+
+                </div>
+            </div>
+        <Footer/>
+        </>
+        
+    )
+    }
+  
 }
 
 export default Network;

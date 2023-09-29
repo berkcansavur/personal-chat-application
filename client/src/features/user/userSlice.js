@@ -31,6 +31,18 @@ export const getProfileData = createAsyncThunk(
         return response;
     }
 )
+export const getUsersFriends = createAsyncThunk(
+    'user/usersFriends',
+    async(token) =>{
+        const request = await axios.get("http://localhost:3001/app/get-friends", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+        const response = await request.data;
+        return response;
+    }
+)
 const userSlice = createSlice({
     name: 'user',
     initialState,
@@ -75,6 +87,21 @@ const userSlice = createSlice({
             state.userProfileInfo = null;
             state.error = action.error.message;
             state.success = false;
+        })
+        .addCase(getUsersFriends.pending, (state)=>{
+            state.loading = true;
+            state.success = false;
+            state.error = null;
+        })
+        .addCase(getUsersFriends.fulfilled, (state)=>{
+            state.loading = false;
+            state.success = true;
+            state.error = null;
+        })
+        .addCase(getUsersFriends.rejected, (state, action)=>{
+            state.loading = false;
+            state.success = false;
+            state.error = action.error.message;
         })
     }
 })
