@@ -4,7 +4,7 @@ import {
   getChatGroupData, 
   addUserToChatGroup,
   removeUserFromChatGroup, 
-  deleteChatGroup} from "../../features/chatgrops/chatgroupSlice";
+  deleteChatGroup} from "../../features/chatgroups/chatgroupSlice";
 import "../ChatGroupRelated/ChatGroupPage.css";
 import { useNavigate, useParams } from "react-router-dom";
 import Footer from '../Footer';
