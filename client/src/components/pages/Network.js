@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import FriendCard from "../FriendCard";
-import Footer from "../Footer";
+import FriendCard from "../Features/FriendCard";
+import Footer from "../Features/Footer";
 import "../NetworkRelated/Network.css"
-import { Button } from "../Button";
+import { Button } from "../Features/Button";
 import io from 'socket.io-client';
 import { useDispatch, useSelector } from "react-redux";
 import { getUsersFriends } from "../../features/user/userSlice";
@@ -35,6 +35,7 @@ function Network() {
   
     useEffect(()=>{
       
+       if(userProfileInfo){ 
         socket.emit('events', { 
           eventName: 'searchUserEvent', 
           socketId: socket.id, 
@@ -51,7 +52,7 @@ function Network() {
         })
         return () => {
           socket.off('searchUser');
-        }
+        }}
     },[socket.id, userProfileInfo,searchText]);
   
     useEffect(() => {
@@ -61,18 +62,21 @@ function Network() {
     
   
     const handleSearchFriendsOfUser = async ()=>{
-      if (searchText.trim() === "") {
-        setSearchResults([]);
-        return;
+      if(userProfileInfo){
+        if (searchText.trim() === "") {
+          setSearchResults([]);
+          return;
+        }
+        try {
+          socket.emit('searchUserEvent',{
+            searchText: searchText,
+            userId: userProfileInfo._id
+          })
+        } catch (error) {
+          console.error(error);
+        }
       }
-      try {
-        socket.emit('searchUserEvent',{
-          searchText: searchText,
-          userId: userProfileInfo._id
-        })
-      } catch (error) {
-        console.error(error);
-      }
+      
     }
     const handleFriendAdded = async (friendEmail) => {
       setCurrentUserFriends((prevFriends) => [...prevFriends, friendEmail]);

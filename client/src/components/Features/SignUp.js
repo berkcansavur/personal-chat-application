@@ -3,7 +3,7 @@ import {useState} from "react"
 import { Button } from './Button';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { signupUser } from '../features/user/userSlice';
+import { signupUser } from '../../features/user/userSlice';
 function SignUp() {
   const [name, setUsername] = useState('');
   const [email, setEmail] = useState('')

@@ -1,6 +1,6 @@
 import '../../App.css'
 import CreateChatGroup from '../ChatGroupRelated/CreateChatGroup';
-import Footer from '../Footer';
+import Footer from '../Features/Footer';
 function CreateChatGroupPage(){
     return(
         <>

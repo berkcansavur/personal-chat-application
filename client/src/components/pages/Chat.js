@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import io from 'socket.io-client';
 import "../ChatGroupRelated/Chat.css";
-import axios from "axios";
-import Footer from '../Footer';
+import Footer from '../Features/Footer';
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getChatGroupData, getChatGroupUsersData, getLast20Messages } from "../../features/chatgroups/chatgroupSlice";

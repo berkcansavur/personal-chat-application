@@ -2,9 +2,9 @@ import './SignUp.css';
 import { Button } from './Button';
 import { useState } from "react"
 import  { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../features/auth/authSlice';
+import { loginUser } from '../../features/auth/authSlice';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { getProfileData } from '../features/user/userSlice';
+import { getProfileData } from '../../features/user/userSlice';
 
 function Login() {  
   const [ email, setEmail] = useState('')
