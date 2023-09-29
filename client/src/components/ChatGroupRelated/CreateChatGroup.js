@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './CreateChatGroup.css';
-import { Button } from '../Button';
+import { Button } from '../Features/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { createChatGroup } from '../../features/chatgroups/chatgroupSlice';
 import { useNavigate } from 'react-router-dom';

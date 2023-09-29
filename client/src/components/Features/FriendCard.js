@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import './FriendCard.css';
-import { useNotification } from "./Contexts/notification.context";
+import { useNotification } from "../Contexts/notification.context";
 import io from 'socket.io-client';
 
 const socket = io("http://localhost:3001");

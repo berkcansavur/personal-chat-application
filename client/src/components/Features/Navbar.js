@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Button } from './Button';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
-import { useNotification } from './Contexts/notification.context';
+import { useNotification } from '../Contexts/notification.context';
 import { useDispatch, useSelector } from 'react-redux';
-import { logoutUser } from '../features/auth/authSlice';
+import { logoutUser } from '../../features/auth/authSlice';
 
 function Navbar() {
   const [click, setClick] = useState(false);

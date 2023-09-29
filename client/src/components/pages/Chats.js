@@ -1,6 +1,6 @@
 import React from "react";
 import ChatGroupPage from "../ChatGroupRelated/CreateChatGroup";
-import Footer from "../Footer"
+import Footer from "../Features/Footer"
 export default function Chats(){
     return(
     <>

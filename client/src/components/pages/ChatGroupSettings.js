@@ -7,7 +7,7 @@ import {
   deleteChatGroup} from "../../features/chatgroups/chatgroupSlice";
 import "../ChatGroupRelated/ChatGroupPage.css";
 import { useNavigate, useParams } from "react-router-dom";
-import Footer from '../Footer';
+import Footer from '../Features/Footer';
 import io from 'socket.io-client';
 import { useNotification } from "../Contexts/notification.context";
 const socket = io("http://localhost:3001");
