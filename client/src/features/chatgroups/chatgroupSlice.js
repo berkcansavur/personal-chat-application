@@ -232,10 +232,11 @@ const chatGroupSlice = createSlice({
             state.success = false;
             state.error = null;
         })
-        .addCase(createChatGroup.fulfilled, ( state ) => {
+        .addCase(createChatGroup.fulfilled, ( state, action ) => {
             state.loading = false;
             state.success = true;
             state.error = null;
+            state.chatGroupData = action.payload;
         })
         .addCase(createChatGroup.rejected, ( state, action ) => {
             state.loading = false;

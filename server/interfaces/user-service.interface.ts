@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { ReturnUserProfile } from 'src/users/users.model';
+import { ReturnUserProfile, User } from 'src/users/users.model';
 import { AuthenticatedUserDTO } from '../src/users/dtos/user-dtos';
 import { 
     UserToBeValidateDTO,
@@ -22,5 +22,5 @@ export interface IUsersService {
     mapUserProfileInfo({mapUserInfoDTO}:{mapUserInfoDTO:MapUserInfoDTO}) : Promise<ReturnUserProfile>;
     setUsersAccessToken({authenticatedUserDto}:{authenticatedUserDto:AuthenticatedUserDTO}): Promise<AuthenticatedUserDTO>;
     removeUsersAccessToken({userId}:{userId:string}): Promise<AuthenticatedUserDTO>;
-    searchUser({searchText} : {searchText:string}): Promise<any>;
+    searchUser({searchText} : {searchText:string}): Promise< ReturnUserDTO[] | null>;
 }

@@ -9,6 +9,7 @@ import {
     ReturnUser, 
     ReturnUserProfile, 
     ReturnUserToBeAuth, 
+    User, 
     UserToBeValidate } from './users.model';
 import { 
     UserToBeValidateDTO, 
@@ -366,7 +367,7 @@ export class UsersService implements IUsersService {
         searchText
     }:{
         searchText:string
-    }) {
+    }): Promise< ReturnUserDTO[] | null> {
         return await this.usersRepository.searchUser(searchText);
     }   
 }
