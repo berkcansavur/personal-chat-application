@@ -57,7 +57,7 @@ export class UsersService implements IUsersService {
     async findUser({
         userId
     }:{
-        userId: mongoose.Types.ObjectId
+        userId: string
     }): Promise<UserProfileInfoDTO> {
         try {
             const {
@@ -78,7 +78,7 @@ export class UsersService implements IUsersService {
     async getUserToBeValidate({
         userId
     }:{
-        userId: mongoose.Types.ObjectId
+        userId: string
     } ): Promise<UserToBeValidateDTO> {
         try {
             const {
@@ -121,8 +121,8 @@ export class UsersService implements IUsersService {
         userId,
         chatGroupId
     }:{
-        userId:mongoose.Types.ObjectId,
-        chatGroupId:mongoose.Types.ObjectId
+        userId:string,
+        chatGroupId:string
     }): Promise<UserProfileInfoDTO> {
         try {
             const {
@@ -144,8 +144,8 @@ export class UsersService implements IUsersService {
         userId,
         chatGroupId
     }:{
-        userId:mongoose.Types.ObjectId, 
-        chatGroupId:mongoose.Types.ObjectId
+        userId:string, 
+        chatGroupId:string
     }): Promise<UserProfileInfoDTO> {
         try {
             const {
@@ -166,8 +166,8 @@ export class UsersService implements IUsersService {
         userId, 
         friendId
     }:{
-        userId:mongoose.Types.ObjectId, 
-        friendId:mongoose.Types.ObjectId
+        userId: string, 
+        friendId: string
     }): Promise<FriendInfoDTO> {
         try {
             const {
@@ -210,8 +210,8 @@ export class UsersService implements IUsersService {
         userId, 
         friendId
     }:{
-        userId:mongoose.Types.ObjectId, 
-        friendId:mongoose.Types.ObjectId
+        userId:string, 
+        friendId:string
     }): Promise<FriendInfoDTO> {
         try {
             const {
@@ -255,8 +255,8 @@ export class UsersService implements IUsersService {
     async getFriendIdsOfUser({
         userId
     } : {
-        userId: mongoose.Types.ObjectId
-    }): Promise<mongoose.Types.ObjectId[]> {
+        userId: string
+    }): Promise<string[]> {
         try {
             const { logger } = this;
 
@@ -271,7 +271,7 @@ export class UsersService implements IUsersService {
     async getUsersFriendsInfo({
         userIds
     }:{
-        userIds: mongoose.Types.ObjectId[]
+        userIds: string[]
     }): Promise<FriendInfoDTO[]> {
         try {
             const {

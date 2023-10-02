@@ -14,23 +14,23 @@ export class UsersRepository {
         const { userModel } = this;
         return ( await userModel.create(createUserDTO)).toObject();
     }
-    async findUserByObjectId( userId: mongoose.Types.ObjectId): Promise<ReturnUserDocument>{
+    async findUserByObjectId( userId: string): Promise<ReturnUserDocument>{
         return await this.userModel.findOne({ _id: userId });
     }
-    async findUserByObjectIdForValidating( id: mongoose.Types.ObjectId): Promise<UserToBeValidateDocument>{
+    async findUserByObjectIdForValidating( id: string): Promise<UserToBeValidateDocument>{
         return await this.userModel.findOne({ _id: id });
     }
     async findByEmail(email: string): Promise<ReturnUserDocument>{
         return this.userModel.findOne({email: email});
     }
-    async addChatGroupToUser(userId:mongoose.Types.ObjectId, chatGroupId:mongoose.Types.ObjectId): Promise<ReturnUserDocument>{
+    async addChatGroupToUser(userId: string, chatGroupId: string): Promise<ReturnUserDocument>{
         return await this.userModel.findByIdAndUpdate(
             userId,
             {$push:{ ChatGroups: {_id: chatGroupId } }},
             {new:true}
         );
     }
-    async removeChatGroupFromUser(userId:mongoose.Types.ObjectId, chatGroupId:mongoose.Types.ObjectId ): Promise<ReturnUserDocument>{
+    async removeChatGroupFromUser(userId:string, chatGroupId:string ): Promise<ReturnUserDocument>{
         return await this.userModel.findByIdAndUpdate(
             userId,
             { $pull: { ChatGroups: {_id: chatGroupId } } },
@@ -38,34 +38,34 @@ export class UsersRepository {
         );
         
     }
-    async addFriend(userId:mongoose.Types.ObjectId, friendId:mongoose.Types.ObjectId): Promise<ReturnUserDocument> {
+    async addFriend(userId:string, friendId:string): Promise<ReturnUserDocument> {
         return await this.userModel.findByIdAndUpdate(
             userId,
             {$push:{ Friends: { _id:friendId } } },
             {new:true}
         );
     }
-    async removeFriend(userId:mongoose.Types.ObjectId, friendId:mongoose.Types.ObjectId): Promise<ReturnUserDocument> {
+    async removeFriend(userId:string, friendId:string): Promise<ReturnUserDocument> {
         return await this.userModel.findByIdAndUpdate(
             userId,
             { $pull: { Friends: { _id: friendId } } },
             { new: true }
         );
     }
-    async getFriendIdsOfUser( userId:mongoose.Types.ObjectId): Promise<mongoose.Types.ObjectId[]> {
+    async getFriendIdsOfUser( userId: string): Promise<string[]> {
         const user = await this.userModel.findOne({ _id: userId });
-        const friends = user.Friends;
+        const friends = user.Friends.map((friendId) => {return friendId.toString()});
         return friends;
         
     }
 
-    async getUserFriends(userIds:mongoose.Types.ObjectId[]): Promise<ReturnUserDocument[]>{
+    async getUserFriends(userIds:string[]): Promise<ReturnUserDocument[]>{
         
         return await this.userModel.find({ _id: { $in: userIds } });
     }
 
-    async getUserData( userId: mongoose.Types.ObjectId ){
-        const user = await this.userModel.findOne(userId);
+    async getUserData( userId: string ){
+        const user = await this.userModel.findOne({_id: userId});
             const { name, email, ChatGroups,  } = user;
             const userData = new UserDataDTO();
             userData._id = userId;
@@ -75,7 +75,7 @@ export class UsersRepository {
             return userData;
     }
     
-    async getUsersFriendsData( userId:mongoose.Types.ObjectId){
+    async getUsersFriendsData( userId: string){
         const friendIds = await this.getFriendIdsOfUser(userId);
         const friendsData = friendIds.map( async (friendId) => {
             return await this.getUserData(friendId);

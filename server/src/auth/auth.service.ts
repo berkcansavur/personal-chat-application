@@ -26,7 +26,7 @@ export class AuthService {
       const {email, password } = body;
       const user = await this.userService.findUserByEmail({email});
       const { UserId } = user
-      const userToBeValidated = await this.userService.getUserToBeValidate({userId:UserId})
+      const userToBeValidated = await this.userService.getUserToBeValidate({userId:UserId.toString()})
       if(!user){
           throw new NotFoundException('User Not Found');
       }

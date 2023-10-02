@@ -12,6 +12,7 @@ import { MessagesService } from './messages/messages.service';
 import { ReturnUserProfile } from './users/users.model';
 import { FriendInfoDTO } from './users/dtos/user-dtos';
 import { NotificationsService } from './notifications/notifications.service';
+import { ParseObjectIdPipe } from './core/pipe/object-id.pipe';
 
 @Controller('app')
 export class AppController {
@@ -47,7 +48,7 @@ export class AppController {
   @Get('/me')
   async getUserProfile(@Request() req ) : Promise<ReturnUserProfile>{
     try {
-      const user = await this.userService.findUser( {userId:req.user.userId} );
+      const user = await this.userService.findUser( {userId:req.user.userId.toString()} );
       const { UserId, UserName, UserEmail, ChatGroups,Friends } = user;
       const [ChatGroupDetails, FriendsData] = await Promise.all([
         await this.chatGroupService.getChatGroupDetails({chatGroups:ChatGroups}),
@@ -61,10 +62,13 @@ export class AppController {
   }
   @UseGuards( JwtAuthGuard )
   @Post('/add-friends-to-chat-group/:chatGroupId/:friendId')
-  async addFriendsToChatGroup(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId ,@Param('friendId') friendId: mongoose.Types.ObjectId ): Promise<ChatGroupInfoDTO>{
+  async addFriendsToChatGroup(
+    @Param('chatGroupId', ParseObjectIdPipe ) chatGroupId: string,
+    @Param('friendId', ParseObjectIdPipe ) friendId: string 
+    ): Promise<ChatGroupInfoDTO>{
     try {
       const updatedChatGroup = await this.chatGroupService.addUserToChatGroup( {chatGroupId: chatGroupId,userId: friendId} );
-      await this.userService.addChatGroupToUser( {userId:friendId, chatGroupId:updatedChatGroup._id} );
+      await this.userService.addChatGroupToUser( {userId:friendId, chatGroupId:updatedChatGroup._id.toString()} );
       return updatedChatGroup ;
     } catch (error) {
       throw new Error(error);
@@ -72,10 +76,12 @@ export class AppController {
   }
   @UseGuards( JwtAuthGuard )
   @Post('/remove-friends-from-chat-group/:chatGroupId/:friendId')
-  async removeFriendsFromChatGroup(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId, @Param('friendId') friendId: mongoose.Types.ObjectId ): Promise<ChatGroupInfoDTO>{
+  async removeFriendsFromChatGroup(
+    @Param('chatGroupId', ParseObjectIdPipe ) chatGroupId: string, 
+    @Param('friendId', ParseObjectIdPipe ) friendId: string ): Promise<ChatGroupInfoDTO>{
     try {
       const updatedChatGroup = await this.chatGroupService.removeUserFromChatGroup( {chatGroupId:chatGroupId, userId: friendId} );
-      await this.userService.removeChatGroupFromUser({userId: friendId ,chatGroupId: updatedChatGroup._id});
+      await this.userService.removeChatGroupFromUser({userId: friendId ,chatGroupId: updatedChatGroup._id.toString()});
       return updatedChatGroup;
     } catch (error) {
       throw new Error(error);
@@ -83,7 +89,9 @@ export class AppController {
   } 
   @UseGuards( JwtAuthGuard )
   @Post('/add-friend/:friendId')
-  async addFriend( @Param('friendId') friendId: mongoose.Types.ObjectId, @Request() req ):Promise<FriendInfoDTO> {
+  async addFriend( 
+    @Param('friendId', ParseObjectIdPipe ) friendId: string, 
+    @Request() req ) : Promise<FriendInfoDTO> {
       if( !req.user ) {
         throw new UnauthorizedException('You must be logged in for adding friend');
       }
@@ -93,17 +101,19 @@ export class AppController {
   }
   @UseGuards( JwtAuthGuard )
   @Post('/remove-friend/:friendId')
-  async removeFriend( @Param('friendId') friendId: mongoose.Types.ObjectId, @Request() req ): Promise<FriendInfoDTO> {
+  async removeFriend( 
+    @Param('friendId', ParseObjectIdPipe ) friendId: string, 
+    @Request() req ): Promise<FriendInfoDTO> {
       if( !req.user ) {
         throw new UnauthorizedException('You must be logged in for removing friend');
       }
-      const updatedUser = await this.userService.removeFriend( {userId: req.user.userId,friendId: friendId });
+      const updatedUser = await this.userService.removeFriend( {userId: req.user.userId.toString(),friendId: friendId });
 
       return updatedUser;
   }
   @UseGuards( JwtAuthGuard )
   @Get('/get-friends')
-  async getFriends(@Request() req):Promise<FriendInfoDTO[]> {
+  async getFriends(@Request() req) : Promise<FriendInfoDTO[]> {
     if (!req.user) {
       throw new UnauthorizedException('You must be logged in to view friends');
     }
@@ -113,7 +123,7 @@ export class AppController {
   }
   @UseGuards( JwtAuthGuard )
   @Get('/get-chatgroups-friends-data/:chatGroupId')
-  async getChatGroupsUsersInfo(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId):Promise<FriendInfoDTO[]> {
+  async getChatGroupsUsersInfo(@Param('chatGroupId', ParseObjectIdPipe ) chatGroupId: string):Promise<FriendInfoDTO[]> {
     if (!chatGroupId) {
       throw new UnauthorizedException('You must provide an existing chatgroup!');
     }
@@ -129,18 +139,18 @@ export class AppController {
       }
       const newChatGroup = await this.chatGroupService.createChatGroup({ createChatGroupDTO: body });
       const createdChatGroup = await this.chatGroupService.getChatGroupByStringId({ chatGroupId: newChatGroup._id});
-      const updatedChatGroup = await this.chatGroupService.addUserToChatGroup({ chatGroupId: createdChatGroup._id, userId: req.user.userId });
-      await this.userService.addChatGroupToUser({ userId: req.user.userId, chatGroupId: updatedChatGroup._id });
+      const updatedChatGroup = await this.chatGroupService.addUserToChatGroup({ chatGroupId: createdChatGroup._id.toString(), userId: req.user.userId });
+      await this.userService.addChatGroupToUser({ userId: req.user.userId, chatGroupId: updatedChatGroup._id.toString() });
       return createdChatGroup;
   }
   @UseGuards( JwtAuthGuard )
   @Delete('/delete-chat-group/:chatGroupId')
-  async deleteChatGroup( @Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId ) {
+  async deleteChatGroup( @Param('chatGroupId', ParseObjectIdPipe ) chatGroupId: string ) {
     try {
       const chatGroupToBeDelete = await this.chatGroupService.getChatGroup( {chatGroupId:chatGroupId} );
       const usersOfChatGroup = await this.chatGroupService.getChatGroupsUsers({chatGroupId: chatGroupId});
       const deleteChatGroupFromUsers = usersOfChatGroup.map(async (user) => {
-        await this.userService.removeChatGroupFromUser({userId:user,chatGroupId: chatGroupToBeDelete._id});
+        await this.userService.removeChatGroupFromUser({userId:user.toString(),chatGroupId: chatGroupToBeDelete._id.toString()});
       });
       await Promise.all(deleteChatGroupFromUsers);
       await this.chatGroupService.deleteChatGroup({chatGroupId:chatGroupId});
@@ -150,7 +160,7 @@ export class AppController {
   }
   @UseGuards( JwtAuthGuard )
   @Get('/get-chat-group/:chatGroupId')
-  async getChatGroup( @Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId, @Request() req ): Promise<ChatGroupInfoDTO> {
+  async getChatGroup( @Param('chatGroupId', ParseObjectIdPipe ) chatGroupId: string, @Request() req ): Promise<ChatGroupInfoDTO> {
     if (!req.user) {
       throw new UnauthorizedException('You need to login to create a chat group');
     }
@@ -165,7 +175,7 @@ export class AppController {
   }
   @UseGuards(JwtAuthGuard)
   @Get('/get-last-20-messages/:chatGroupId')
-  async getLast20Messages(@Param('chatGroupId') chatGroupId: mongoose.Types.ObjectId, @Request() req){
+  async getLast20Messages(@Param('chatGroupId', ParseObjectIdPipe ) chatGroupId: string, @Request() req){
     if (!req.user) {
       throw new UnauthorizedException('You need to login to create a chat group');
     }
@@ -174,7 +184,7 @@ export class AppController {
   }
   @UseGuards(JwtAuthGuard)
   @Get('/get-last-10-notifications/:userId')
-  async getLast10NotificationsOfCurrentUser(@Param('userId') userId:string, @Request() req){
+  async getLast10NotificationsOfCurrentUser(@Param('userId') userId:string ){
     const last10Notifications = await this.notificationsService.getLast10NotificationsOfUser({userId:userId});
     return last10Notifications.reverse();
   }

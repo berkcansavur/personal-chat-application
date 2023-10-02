@@ -1,5 +1,4 @@
-import mongoose from 'mongoose';
-import { ReturnUserProfile, User } from 'src/users/users.model';
+import { ReturnUserProfile } from 'src/users/users.model';
 import { AuthenticatedUserDTO } from '../src/users/dtos/user-dtos';
 import { 
     UserToBeValidateDTO,
@@ -11,14 +10,14 @@ import {
      } from 'src/users/dtos/user-dtos';
 export interface IUsersService {
     createUser({createUserDTO} : {createUserDTO: CreateUserDTO }):Promise<ReturnUserDTO>;
-    findUser({userId} : {userId:mongoose.Types.ObjectId}): Promise<UserProfileInfoDTO>;
+    findUser({userId} : {userId:string}): Promise<UserProfileInfoDTO>;
     findUserByEmail({email} : {email:string}): Promise<UserProfileInfoDTO>;
-    addChatGroupToUser({userId, chatGroupId} : {userId: mongoose.Types.ObjectId, chatGroupId: mongoose.Types.ObjectId}) : Promise<UserProfileInfoDTO>;
-    removeChatGroupFromUser({userId, chatGroupId} : {userId: mongoose.Types.ObjectId, chatGroupId: mongoose.Types.ObjectId}): Promise<UserProfileInfoDTO>;
-    addFriend({userId, friendId} : {userId:mongoose.Types.ObjectId, friendId: mongoose.Types.ObjectId}) : Promise<FriendInfoDTO>;
-    removeFriend({userId, friendId} : {userId:mongoose.Types.ObjectId, friendId: mongoose.Types.ObjectId}) : Promise<FriendInfoDTO>;
-    getFriendIdsOfUser({userId} : {userId: mongoose.Types.ObjectId}) : Promise<mongoose.Types.ObjectId[]>;
-    getUserToBeValidate({userId}:{userId: mongoose.Types.ObjectId} ) : Promise<UserToBeValidateDTO>
+    addChatGroupToUser({userId, chatGroupId} : {userId: string, chatGroupId: string}) : Promise<UserProfileInfoDTO>;
+    removeChatGroupFromUser({userId, chatGroupId} : {userId: string, chatGroupId: string}): Promise<UserProfileInfoDTO>;
+    addFriend({userId, friendId} : {userId:string, friendId: string}) : Promise<FriendInfoDTO>;
+    removeFriend({userId, friendId} : {userId:string, friendId: string}) : Promise<FriendInfoDTO>;
+    getFriendIdsOfUser({userId} : {userId: string}) : Promise<string[]>;
+    getUserToBeValidate({userId}:{userId: string} ) : Promise<UserToBeValidateDTO>
     mapUserProfileInfo({mapUserInfoDTO}:{mapUserInfoDTO:MapUserInfoDTO}) : Promise<ReturnUserProfile>;
     setUsersAccessToken({authenticatedUserDto}:{authenticatedUserDto:AuthenticatedUserDTO}): Promise<AuthenticatedUserDTO>;
     removeUsersAccessToken({userId}:{userId:string}): Promise<AuthenticatedUserDTO>;

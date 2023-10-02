@@ -43,7 +43,7 @@ export class ChatGroupsService implements IChatGroupService {
     async deleteChatGroup({
         chatGroupId
     }:{
-        chatGroupId: mongoose.Types.ObjectId
+        chatGroupId: string
     }): Promise<ReturnChatGroupDTO> {
         try {
             const {
@@ -65,7 +65,7 @@ export class ChatGroupsService implements IChatGroupService {
     async getChatGroup({
         chatGroupId
     }:{
-        chatGroupId: mongoose.Types.ObjectId
+        chatGroupId: string
     }): Promise<ChatGroupInfoDTO> {
         try {
             const {
@@ -109,7 +109,7 @@ export class ChatGroupsService implements IChatGroupService {
     async getChatGroupDetails({
         chatGroups
     } : {
-        chatGroups: mongoose.Types.ObjectId[]
+        chatGroups: string[]
     } ): Promise<ChatGroupInfoDTO[]> {
         try {
             const{ logger } = this;
@@ -131,8 +131,8 @@ export class ChatGroupsService implements IChatGroupService {
     async getChatGroupsUsers({
         chatGroupId
     }:{
-        chatGroupId:mongoose.Types.ObjectId
-    }):Promise<mongoose.Types.ObjectId[]> {
+        chatGroupId:string
+    }):Promise<string[]> {
         try {
             const { logger } = this;
 
@@ -149,8 +149,8 @@ export class ChatGroupsService implements IChatGroupService {
         chatGroupId,
         userId
     }:{
-        chatGroupId:mongoose.Types.ObjectId, 
-        userId:mongoose.Types.ObjectId
+        chatGroupId:string, 
+        userId:string
     }): Promise<ChatGroupInfoDTO> {
         try {
             const {
@@ -173,8 +173,8 @@ export class ChatGroupsService implements IChatGroupService {
         chatGroupId,
         userId
     }:{
-        chatGroupId: mongoose.Types.ObjectId, 
-        userId: mongoose.Types.ObjectId
+        chatGroupId: string, 
+        userId: string
     }): Promise<ChatGroupInfoDTO> {
         try {
             const {

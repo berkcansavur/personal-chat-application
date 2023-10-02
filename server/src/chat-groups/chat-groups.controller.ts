@@ -28,7 +28,7 @@ export class ChatGroupsController {
     //     return newChatGroup;
     // }
     @Get('/get-users/:id')
-    async getChatGroupUsers(@Param('id') id: mongoose.Types.ObjectId){
+    async getChatGroupUsers(@Param('id') id: string){
         const users = await this.chatGroupsService.getChatGroupsUsers({chatGroupId :id});
         return users;
     }
@@ -43,7 +43,7 @@ export class ChatGroupsController {
     //     }
     // }
     @Post('/remove-user/:id')
-    async removeUserFromChatGroup(@Param('id') chatGroupId: mongoose.Types.ObjectId, @Body() body:{ userId: mongoose.Types.ObjectId }){
+    async removeUserFromChatGroup(@Param('id') chatGroupId: string, @Body() body:{ userId: string}){
         try {
             const updatedChatGroup = await this.chatGroupsService.removeUserFromChatGroup({chatGroupId:chatGroupId,userId:body.userId});
             return updatedChatGroup;
