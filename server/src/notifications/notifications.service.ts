@@ -140,7 +140,7 @@ export class NotificationsService implements INotificationsService {
     userId
   }:{
     userId:string
-  }) : Promise<any>{
+  }) : Promise<NotificationDto[] | null>{
     const { logger } = this;
     logger.debug(`[NotificationsService] getLast10NotificationsOfUser: ${JSON.stringify(userId)}`);
     return await this.notificationsRepository.getLastNotifications(userId,10)

@@ -56,7 +56,7 @@ export class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect
     }
     @SubscribeMessage('getChatGroupUsersEvent')
     async getChatGroupUsers(@MessageBody() payload:{
-      chatGroupId: mongoose.Types.ObjectId,
+      chatGroupId: string,
       userId:string 
     }){
       const { chatGroupId, userId } = payload;

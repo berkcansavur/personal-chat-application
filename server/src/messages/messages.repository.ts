@@ -15,7 +15,7 @@ export class MessagesRepository {
           text:messageDto.text });
           return await newMessage.save();
         }
-    getLastMessages(chatGroupID:mongoose.Types.ObjectId, messageCount:number){
+    getLastMessages(chatGroupID: string, messageCount:number){
         return this.messageModel
           .find({ chatGroup: chatGroupID })
           .sort({ createdAt: -1 })

@@ -1,4 +1,3 @@
-import mongoose from "mongoose"
 import { 
     ReturnChatGroupDTO,
     CreateChatGroupDTO,
@@ -7,13 +6,13 @@ import {
 
 export interface IChatGroupService {
     createChatGroup({createChatGroupDTO}:{createChatGroupDTO: CreateChatGroupDTO, }): Promise<ReturnChatGroupDTO>;
-    deleteChatGroup({chatGroupId} : {chatGroupId:mongoose.Types.ObjectId}) : Promise<any>;
-    getChatGroup({chatGroupId} : {chatGroupId:mongoose.Types.ObjectId}): Promise<ChatGroupInfoDTO>;
-    getChatGroupDetails({chatGroups} : {chatGroups:mongoose.Types.ObjectId[]}): Promise<ChatGroupInfoDTO[]>;
+    deleteChatGroup({chatGroupId} : {chatGroupId: string}) : Promise<any>;
+    getChatGroup({chatGroupId} : {chatGroupId: string}): Promise<ChatGroupInfoDTO>;
+    getChatGroupDetails({chatGroups} : {chatGroups:string[]}): Promise<ChatGroupInfoDTO[]>;
     getChatGroupByStringId({chatGroupId}:{chatGroupId: string}): Promise<ChatGroupInfoDTO>;
-    getChatGroupsUsers({chatGroupId} : {chatGroupId:mongoose.Types.ObjectId}): Promise<mongoose.Types.ObjectId[]>;
-    addUserToChatGroup({chatGroupId, userId } : {chatGroupId:mongoose.Types.ObjectId, userId:mongoose.Types.ObjectId}): Promise<ChatGroupInfoDTO>;
-    removeUserFromChatGroup({chatGroupId,userId } : {chatGroupId:mongoose.Types.ObjectId, userId:mongoose.Types.ObjectId}): Promise<ChatGroupInfoDTO>;
+    getChatGroupsUsers({chatGroupId} : {chatGroupId:string}): Promise<string[]>;
+    addUserToChatGroup({chatGroupId, userId } : {chatGroupId:string, userId:string}): Promise<ChatGroupInfoDTO>;
+    removeUserFromChatGroup({chatGroupId,userId } : {chatGroupId:string, userId:string}): Promise<ChatGroupInfoDTO>;
     updateChatGroupName({updateChatGroupsNameDto}:{updateChatGroupsNameDto: UpdateChatGroupsNameDTO}): Promise<ChatGroupInfoDTO>;
     
 }

@@ -6,7 +6,7 @@ import { ChatGroupInfoDTO } from "src/chat-groups/dtos/chat-group-dtos";
 export class UserToBeValidateDTO {
     
     @IsEmpty()
-    _id: mongoose.Types.ObjectId;
+    _id: string;
 
     @IsEmail()
     @IsEmpty({message:'Email field is required'})
@@ -26,7 +26,7 @@ export class UserProfileInfoDTO {
 }
 
 export class UserDataDTO {
-    _id: mongoose.Types.ObjectId;
+    _id: string;
     name: string;
     email: string;
     ChatGroups: mongoose.Types.ObjectId[];
