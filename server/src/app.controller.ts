@@ -1,13 +1,10 @@
-import { Controller, Get, Post, UseGuards, Request, Body, UnauthorizedException, Param, Query, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards, Request, Body, Param, Query, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth/auth.service';
 import { JwtAuthGuard } from './auth/jwt.auth.guard';
 import { UsersService } from './users/users.service';
 import { ChatGroupsService } from './chat-groups/chat-groups.service';
-import mongoose from 'mongoose';
-import { 
-  CreateChatGroupDTO,
-  ChatGroupInfoDTO } from './chat-groups/dtos/chat-group-dtos';
+import { CreateChatGroupDTO, ChatGroupInfoDTO } from './chat-groups/dtos/chat-group-dtos';
 import { MessagesService } from './messages/messages.service';
 import { ReturnUserProfile } from './users/users.model';
 import { FriendInfoDTO } from './users/dtos/user-dtos';
@@ -92,9 +89,6 @@ export class AppController {
   async addFriend( 
     @Param('friendId', ParseObjectIdPipe ) friendId: string, 
     @Request() req ) : Promise<FriendInfoDTO> {
-      if( !req.user ) {
-        throw new UnauthorizedException('You must be logged in for adding friend');
-      }
       const updatedUser = await this.userService.addFriend( {userId: req.user.userId, friendId: friendId} );
 
       return updatedUser;
@@ -104,19 +98,13 @@ export class AppController {
   async removeFriend( 
     @Param('friendId', ParseObjectIdPipe ) friendId: string, 
     @Request() req ): Promise<FriendInfoDTO> {
-      if( !req.user ) {
-        throw new UnauthorizedException('You must be logged in for removing friend');
-      }
       const updatedUser = await this.userService.removeFriend( {userId: req.user.userId.toString(),friendId: friendId });
 
       return updatedUser;
   }
   @UseGuards( JwtAuthGuard )
   @Get('/get-friends')
-  async getFriends(@Request() req) : Promise<FriendInfoDTO[]> {
-    if (!req.user) {
-      throw new UnauthorizedException('You must be logged in to view friends');
-    }
+  async getFriends(@Request() req ) : Promise<FriendInfoDTO[]> {
     const friendIds = await this.userService.getFriendIdsOfUser({userId:req.user.userId});
     const friendsData = await this.userService.getUsersFriendsInfo({userIds:friendIds})
     return friendsData;
@@ -124,9 +112,6 @@ export class AppController {
   @UseGuards( JwtAuthGuard )
   @Get('/get-chatgroups-friends-data/:chatGroupId')
   async getChatGroupsUsersInfo(@Param('chatGroupId', ParseObjectIdPipe ) chatGroupId: string):Promise<FriendInfoDTO[]> {
-    if (!chatGroupId) {
-      throw new UnauthorizedException('You must provide an existing chatgroup!');
-    }
     const friendIds = await this.chatGroupService.getChatGroupsUsers({chatGroupId: chatGroupId});
     const friendsData = await this.userService.getUsersFriendsInfo({userIds:friendIds})
     return friendsData;
@@ -134,9 +119,6 @@ export class AppController {
   @UseGuards( JwtAuthGuard )
   @Post('/create-chat-group')
   async createChatGroup( @Body() body:CreateChatGroupDTO, @Request() req ): Promise<ChatGroupInfoDTO> {
-      if (!req.user) {
-        throw new UnauthorizedException('You need to login to create a chat group');
-      }
       const newChatGroup = await this.chatGroupService.createChatGroup({ createChatGroupDTO: body });
       const createdChatGroup = await this.chatGroupService.getChatGroupByStringId({ chatGroupId: newChatGroup._id});
       const updatedChatGroup = await this.chatGroupService.addUserToChatGroup({ chatGroupId: createdChatGroup._id.toString(), userId: req.user.userId });
@@ -160,10 +142,7 @@ export class AppController {
   }
   @UseGuards( JwtAuthGuard )
   @Get('/get-chat-group/:chatGroupId')
-  async getChatGroup( @Param('chatGroupId', ParseObjectIdPipe ) chatGroupId: string, @Request() req ): Promise<ChatGroupInfoDTO> {
-    if (!req.user) {
-      throw new UnauthorizedException('You need to login to create a chat group');
-    }
+  async getChatGroup( @Param('chatGroupId', ParseObjectIdPipe ) chatGroupId: string ): Promise<ChatGroupInfoDTO> {
     const chatGroup = await this.chatGroupService.getChatGroup( {chatGroupId:chatGroupId} );
     return chatGroup; 
   }
@@ -176,9 +155,6 @@ export class AppController {
   @UseGuards(JwtAuthGuard)
   @Get('/get-last-20-messages/:chatGroupId')
   async getLast20Messages(@Param('chatGroupId', ParseObjectIdPipe ) chatGroupId: string, @Request() req){
-    if (!req.user) {
-      throw new UnauthorizedException('You need to login to create a chat group');
-    }
     const last20Messages = await this.messagesService.getLast20Messages({chatGroupID:chatGroupId});
     return last20Messages.reverse();
   }

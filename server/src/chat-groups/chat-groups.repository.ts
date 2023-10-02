@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import mongoose, { Model } from "mongoose";
 import { CreateChatGroupDTO } from "./dtos/chat-group-dtos";
 import { ChatGroups, ReturnChatGroupDocument } from "./chat-groups.model";
+import { Document } from 'mongoose';
 
 @Injectable()
 export class ChatGroupsRepository {
@@ -27,7 +28,7 @@ export class ChatGroupsRepository {
         if (!chatGroup) {
             throw new Error('Chat group not found');
         }
-        const users = chatGroup.users.map((userId)=>{return userId.toString()});
+        const users = chatGroup.users.map((user)=>{return user._id.toString()});
         return users;
     }
     async addUserToChatGroup(chatGroupId: string, userId: string) : Promise<ReturnChatGroupDocument>{

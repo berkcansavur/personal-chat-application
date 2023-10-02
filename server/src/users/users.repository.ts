@@ -54,7 +54,7 @@ export class UsersRepository {
     }
     async getFriendIdsOfUser( userId: string): Promise<string[]> {
         const user = await this.userModel.findOne({ _id: userId });
-        const friends = user.Friends.map((friendId) => {return friendId.toString()});
+        const friends = user.Friends.map((friend) => {return friend._id.toString()});
         return friends;
         
     }
