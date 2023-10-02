@@ -10,6 +10,7 @@ import {
     CreateChatGroupDTO,
     ChatGroupInfoDTO, 
     UpdateChatGroupsNameDTO} from './dtos/chat-group-dtos';
+import { ChatGroupNotFoundException, ChatGroupsNotFoundException, ChatGroupsUsersNotFoundException, CouldNotAddedUserToChatGroupException, CouldNotRemovedUserFromChatGroupException, CouldNotUpdatedChatGroupNameException } from './exceptions';
 
 @Injectable()
 export class ChatGroupsService implements IChatGroupService {
@@ -67,21 +68,21 @@ export class ChatGroupsService implements IChatGroupService {
     }:{
         chatGroupId: string
     }): Promise<ChatGroupInfoDTO> {
-        try {
-            const {
-                ChatGroupMapper,
-                logger
-            } = this;
 
-            logger.debug(`[ChatGroupsService] getChatGroup: chatGroupId: ${JSON.stringify(chatGroupId)}`);
+        const {
+            ChatGroupMapper,
+            logger
+        } = this;
 
-            const chatGroup = await this.chatGroupsRepository.getChatGroupByObjectId({id:chatGroupId});
+        logger.debug(`[ChatGroupsService] getChatGroup: chatGroupId: ${JSON.stringify(chatGroupId)}`);
 
-            return ChatGroupMapper.map<ReturnChatGroup, ChatGroupInfoDTO>(chatGroup,ReturnChatGroup,ChatGroupInfoDTO);
+        const chatGroup = await this.chatGroupsRepository.getChatGroupByObjectId({id:chatGroupId});
 
-        } catch (error) {
-            throw new Error(error.message);
+        if(!chatGroup) {
+            throw new ChatGroupNotFoundException({chatGroupId});
         }
+        return ChatGroupMapper.map<ReturnChatGroup, ChatGroupInfoDTO>(chatGroup,ReturnChatGroup,ChatGroupInfoDTO);
+
     }
     
     async getChatGroupByStringId({
@@ -99,6 +100,10 @@ export class ChatGroupsService implements IChatGroupService {
 
             const chatGroup = await this.chatGroupsRepository.getChatGroupByStringId({id:chatGroupId});
             
+            if(!chatGroup) {
+                throw new ChatGroupNotFoundException({chatGroupId});
+            }
+
             return ChatGroupMapper.map<ReturnChatGroup, ChatGroupInfoDTO>(chatGroup,ReturnChatGroup,ChatGroupInfoDTO);
 
         } catch (error) {
@@ -111,21 +116,23 @@ export class ChatGroupsService implements IChatGroupService {
     } : {
         chatGroups: string[]
     } ): Promise<ChatGroupInfoDTO[]> {
-        try {
-            const{ logger } = this;
+        const{ logger } = this;
 
-            logger.debug(`[ChatGroupsService] getChatGroupDetails: chatGroups: ${JSON.stringify(chatGroups)}`);
+        logger.debug(`[ChatGroupsService] getChatGroupDetails: chatGroups: ${JSON.stringify(chatGroups)}`);
 
-            const chatGroupDetails = await Promise.all(chatGroups.map( async (chatGroupId)=>{
+        const chatGroupDetails = await Promise.all(chatGroups.map( async (chatGroupId)=>{
 
-                return await this.getChatGroup({chatGroupId :chatGroupId});
-            }));
+            const chatGroup = await this.getChatGroup({chatGroupId :chatGroupId});
+            if(!chatGroup){
+                throw new ChatGroupNotFoundException({chatGroup});
+            }
+            return chatGroup;
+        }));
 
-            return chatGroupDetails;
-
-        } catch (error) {
-            throw new Error(error);
+        if(!chatGroupDetails) {
+            throw new ChatGroupsNotFoundException({chatGroups});
         }
+        return chatGroupDetails;
     }
 
     async getChatGroupsUsers({
@@ -138,7 +145,12 @@ export class ChatGroupsService implements IChatGroupService {
 
             logger.debug(`[ChatGroupsService] getChatGroupsUsers: chatGroupId: ${JSON.stringify(chatGroupId)}`);
             
-            return await this.chatGroupsRepository.getChatGroupsUsers(chatGroupId);
+            const users =  await this.chatGroupsRepository.getChatGroupsUsers(chatGroupId);
+
+            if(!users){
+                throw new ChatGroupsUsersNotFoundException({chatGroupId});
+            }
+            return users;
 
           } catch (error) {
             throw new Error(error.message);
@@ -161,6 +173,10 @@ export class ChatGroupsService implements IChatGroupService {
             logger.debug(`[ChatGroupsService] addUserToChatGroup: ${JSON.stringify({chatGroupId,userId})}`);
 
             const processedChatGroup = await this.chatGroupsRepository.addUserToChatGroup(chatGroupId, userId);
+
+            if(processedChatGroup.errors) {
+                throw new CouldNotAddedUserToChatGroupException({chatGroupId, userId});
+            }
 
             return ChatGroupMapper.map<ReturnChatGroup, ChatGroupInfoDTO>(processedChatGroup, ReturnChatGroup, ChatGroupInfoDTO);
 
@@ -186,13 +202,15 @@ export class ChatGroupsService implements IChatGroupService {
 
             const processedChatGroup =  await this.chatGroupsRepository.removeUserFromChatGroup(chatGroupId, userId);
             
+            if(processedChatGroup.errors){
+                throw new CouldNotRemovedUserFromChatGroupException({chatGroupId, userId});
+            }
             return ChatGroupMapper.map<ReturnChatGroup, ChatGroupInfoDTO>(processedChatGroup, ReturnChatGroup, ChatGroupInfoDTO);
             
         } catch (error) {
             throw new Error(error);
         }   
     }
-
 
     async updateChatGroupName({
         updateChatGroupsNameDto
@@ -208,7 +226,12 @@ export class ChatGroupsService implements IChatGroupService {
             logger.debug(`[ChatGroupsService] updateChatGroupName: ${JSON.stringify(updateChatGroupsNameDto)}`);
 
             const {chatGroupId, chatGroupName} = updateChatGroupsNameDto; 
+
             const processedChatGroup = await this.chatGroupsRepository.updateChatGroupName(chatGroupId, chatGroupName);
+
+            if(processedChatGroup.chatGroupName !== chatGroupName) {
+                throw new CouldNotUpdatedChatGroupNameException({chatGroupName});
+            }
 
             return ChatGroupMapper.map<ReturnChatGroup, ChatGroupInfoDTO>(processedChatGroup, ReturnChatGroup, ChatGroupInfoDTO);
 
