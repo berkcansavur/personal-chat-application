@@ -6,7 +6,7 @@ export class UserNotFoundException extends ChatAppException{
         super(
             'User not found',
             1010,
-            HttpStatus.BAD_REQUEST,
+            HttpStatus.NOT_FOUND,
             JSON.stringify(data),
             'UserNotFoundException'
         );
@@ -21,7 +21,7 @@ export class UsersNotFoundException extends ChatAppException{
         super(
             'Users not found',
             1011,
-            HttpStatus.BAD_REQUEST,
+            HttpStatus.NOT_FOUND,
             JSON.stringify(data),
             'UsersNotFoundException'
         );
@@ -29,6 +29,20 @@ export class UsersNotFoundException extends ChatAppException{
         this.name = 'UsersNotFoundException';
         Object.setPrototypeOf(this, UsersNotFoundException.prototype);
 
+    }
+}
+export class UserCouldNotCreatedException extends ChatAppException {
+    constructor( data?: string | object ) {
+        super(
+            'User could not be created',
+            1012,
+            HttpStatus.BAD_REQUEST,
+            JSON.stringify(data),
+            'UserCouldNotCreateException'
+        );
+
+        this.name = 'UserCouldNotCreateException';
+        Object.setPrototypeOf(this, UserCouldNotCreatedException.prototype);
     }
 }
 export class UserAccessTokenCouldNotAssigned extends ChatAppException{
@@ -51,7 +65,7 @@ export class UserAccessTokenCouldNotRetrieved extends ChatAppException{
         super(
             'User access token could not retrieved',
             1021,
-            HttpStatus.BAD_REQUEST,
+            HttpStatus.NOT_FOUND,
             JSON.stringify(data),
             'UserAccessTokenCouldNotRetrieved'
         );
@@ -76,26 +90,12 @@ export class UserAccessTokenCouldNotRemoved extends ChatAppException{
 
     }
 }
-export class EmailIsAlreadyExistException extends ChatAppException {
-    constructor( data?: string | object ) {
-        super(
-            'Email is already in use',
-            1002,
-            HttpStatus.BAD_REQUEST,
-            JSON.stringify(data),
-            'EmailIsAlreadyExistException'
-        );
-
-        this.name = 'EmailIsAlreadyExistException';
-        Object.setPrototypeOf(this, EmailIsAlreadyExistException.prototype);
-    }
-}
 export class EmailIsNotExistException extends ChatAppException {
     constructor( data?: string | object ) {
         super(
             'Email is not exists',
-            1003,
-            HttpStatus.BAD_REQUEST,
+            1030,
+            HttpStatus.NOT_FOUND,
             JSON.stringify(data),
             'EmailIsNotExistException'
         );
@@ -108,7 +108,7 @@ export class PasswordIsNotValidException extends ChatAppException {
     constructor( data?: string | object ) {
         super(
             'Password is not valid',
-            1004,
+            1040,
             HttpStatus.BAD_REQUEST,
             JSON.stringify(data),
             'PasswordIsNotValidException'
@@ -118,25 +118,25 @@ export class PasswordIsNotValidException extends ChatAppException {
         Object.setPrototypeOf(this, PasswordIsNotValidException.prototype);
     }
 }
-export class UserCouldNotCreatedException extends ChatAppException {
+export class EmailIsAlreadyExistException extends ChatAppException {
     constructor( data?: string | object ) {
         super(
-            'User could not be created',
-            1005,
+            'Email is already in use',
+            1050,
             HttpStatus.BAD_REQUEST,
             JSON.stringify(data),
-            'UserCouldNotCreateException'
+            'EmailIsAlreadyExistException'
         );
 
-        this.name = 'UserCouldNotCreateException';
-        Object.setPrototypeOf(this, UserCouldNotCreatedException.prototype);
+        this.name = 'EmailIsAlreadyExistException';
+        Object.setPrototypeOf(this, EmailIsAlreadyExistException.prototype);
     }
 }
 export class UserCouldNotAddedToChatGroupException extends ChatAppException {
     constructor( data?: string | object ) {
         super(
             'User could not added to chat group',
-            1006,
+            1060,
             HttpStatus.BAD_REQUEST,
             JSON.stringify(data),
             'UserCouldNotAddedToChatGroupException'
@@ -150,7 +150,7 @@ export class UserCouldNotRemovedFromChatGroupException extends ChatAppException 
     constructor( data?: string | object ) {
         super(
             'User could not removed from chat group',
-            1007,
+            1061,
             HttpStatus.BAD_REQUEST,
             JSON.stringify(data),
             'UserCouldNotRemovedFromChatGroupException'
@@ -164,7 +164,7 @@ export class FriendCouldNotAddedException extends ChatAppException {
     constructor( data?: string | object ) {
         super(
             'Friend could not added',
-            1008,
+            1070,
             HttpStatus.BAD_REQUEST,
             JSON.stringify(data),
             'FriendCouldNotAddedException'
@@ -178,7 +178,7 @@ export class FriendCouldNotRemovedException extends ChatAppException {
     constructor( data?: string | object ) {
         super(
             'Friend could not removed',
-            1009,
+            1071,
             HttpStatus.BAD_REQUEST,
             JSON.stringify(data),
             'FriendCouldNotRemovedException'
