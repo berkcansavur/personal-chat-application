@@ -10,7 +10,7 @@ export interface Message {
     text: string;
 }
 export const MessagesSchema = new mongoose.Schema({
-    chatGroup:{type:Object},
-    senderUser:{type:Object},
+    chatGroup:{type:String},
+    senderUser:{type:String},
     text: {type:String}
 },{timestamps:true});
