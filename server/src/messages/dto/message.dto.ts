@@ -13,3 +13,16 @@ export class MessageDTO {
   @IsString()
   text: string;
 }
+export class CreateMessageDto {
+  @IsNotEmpty()
+  @IsString()
+  chatGroupID: string;
+
+  @IsNotEmpty()
+  @IsString()
+  senderUser: string;
+
+  @IsNotEmpty()
+  @IsString()
+  text: string;
+}
