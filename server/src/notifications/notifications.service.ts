@@ -6,6 +6,7 @@ import {  ReturnNotification } from './entities/notification.entity';
 import { NotificationsRepository } from './notifications.repository';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
+import { NotificationCouldNotCreatedException, NotificationNotFoundException } from './exceptions';
 
 @Injectable()
 export class NotificationsService implements INotificationsService {
@@ -47,6 +48,9 @@ export class NotificationsService implements INotificationsService {
       NotificationType:'AddFriendNotification'
     });
 
+    if(!notification) {
+      throw new NotificationCouldNotCreatedException({addFriendNotificationDto});
+    }
     return NotificationsMapper.map<ReturnNotification, NotificationDto>(notification,ReturnNotification,NotificationDto);
   }
   
@@ -78,6 +82,11 @@ export class NotificationsService implements INotificationsService {
       ReturnNotificationMessage:returnMessage,
       NotificationType:'RemoveFriendNotification'
     });
+
+    if(!notification) {
+      throw new NotificationCouldNotCreatedException({removeFriendNotificationDto});
+    }
+    
     return NotificationsMapper.map<ReturnNotification,NotificationDto>(notification,ReturnNotification,NotificationDto);
   }
 
@@ -100,11 +109,17 @@ export class NotificationsService implements INotificationsService {
       logger.debug(`[NotificationsService] createAddedToChatGroupNotification: ${JSON.stringify(addedToChatGroupNotificationDto)}`)
 
       const returnMessage : string = `${AddedByFriendName} added you to ${AddedToChatGroupName} at ${AddedTime}`;
+      
       const notification =  await this.notificationsRepository.create({
         UserIdToBeNotified:UserToBeAdded,
         ReturnNotificationMessage:returnMessage,
         NotificationType:'AddedToChatGroupNotification'
       });
+      
+      if(!notification) {
+        throw new NotificationCouldNotCreatedException({addedToChatGroupNotificationDto});
+      }
+      
       return NotificationsMapper.map<ReturnNotification, NotificationDto>(notification,ReturnNotification,NotificationDto);
 
   }
@@ -128,11 +143,17 @@ export class NotificationsService implements INotificationsService {
       logger.debug(`[NotificationsService] createAddedToChatGroupNotification: ${JSON.stringify(removedFromChatGroupNotificationDto)}`)
 
       const returnMessage : string = `${RemovedByFriendName} added you to ${RemovedFromChatGroupName} at ${RemovedTime}`;
+      
       const notification =  await this.notificationsRepository.create({
         UserIdToBeNotified:UserToBeRemoved,
         ReturnNotificationMessage:returnMessage,
         NotificationType:'RemovedFromChatGroupNotification'
       });
+
+      if(!notification) {
+        throw new NotificationCouldNotCreatedException({removedFromChatGroupNotificationDto});
+      }
+
       return NotificationsMapper.map<ReturnNotification, NotificationDto>(notification,ReturnNotification,NotificationDto);
 
   }
@@ -141,9 +162,18 @@ export class NotificationsService implements INotificationsService {
   }:{
     userId:string
   }) : Promise<NotificationDto[] | null>{
+
     const { logger } = this;
+
     logger.debug(`[NotificationsService] getLast10NotificationsOfUser: ${JSON.stringify(userId)}`);
-    return await this.notificationsRepository.getLastNotifications(userId,10)
+    
+    const notifications = await this.notificationsRepository.getLastNotifications(userId,10)
+    
+    if(!notifications) {
+      throw new NotificationNotFoundException({userId});
+    }
+    
+    return notifications;
   }
   
 }
