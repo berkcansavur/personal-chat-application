@@ -91,3 +91,33 @@ export class CouldNotUpdatedChatGroupNameException extends ChatAppException {
 
     }
 }
+export class ChatGroupNotCreatedException extends ChatAppException {
+    constructor( data?: string | object ){
+        super(
+            'Could not created chat group',
+            2041,
+            HttpStatus.BAD_REQUEST,
+            JSON.stringify(data),
+            'ChatGroupNotCreatedException'
+        );
+        
+        this.name ='ChatGroupNotCreatedException'
+        Object.setPrototypeOf(this, ChatGroupNotCreatedException.prototype);
+
+    }
+}
+export class ChatGroupNotRemovedException extends ChatAppException {
+    constructor( data?: string | object ){
+        super(
+            'Could not removed chat group',
+            2042,
+            HttpStatus.BAD_REQUEST,
+            JSON.stringify(data),
+            'ChatGroupNotRemovedException'
+        );
+        
+        this.name ='ChatGroupNotRemovedException'
+        Object.setPrototypeOf(this, ChatGroupNotRemovedException.prototype);
+
+    }
+}
