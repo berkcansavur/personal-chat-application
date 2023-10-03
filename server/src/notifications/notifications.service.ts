@@ -142,7 +142,7 @@ export class NotificationsService implements INotificationsService {
 
       logger.debug(`[NotificationsService] createAddedToChatGroupNotification: ${JSON.stringify(removedFromChatGroupNotificationDto)}`)
 
-      const returnMessage : string = `${RemovedByFriendName} added you to ${RemovedFromChatGroupName} at ${RemovedTime}`;
+      const returnMessage : string = `${RemovedByFriendName} removed you from ${RemovedFromChatGroupName} at ${RemovedTime}`;
       
       const notification =  await this.notificationsRepository.create({
         UserIdToBeNotified:UserToBeRemoved,
