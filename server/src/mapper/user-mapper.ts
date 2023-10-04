@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { createMap, forMember, mapFrom, Mapper, MappingProfile } from '@automapper/core';
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
-import { ReturnUser, ReturnUserProfile, ReturnUserToBeAuth, UserToBeValidate } from "src/users/users.model";
+import { ReturnUser, ReturnUserProfile, ReturnUserToBeAuth, UserToBeValidate } from "../users/users.model";
 import { 
     UserToBeValidateDTO,
     UserProfileInfoDTO,
@@ -9,7 +9,7 @@ import {
     FriendInfoDTO,
     MapUserInfoDTO,
     AuthenticatedUserDTO
- } from "src/users/dtos/user-dtos";
+ } from "../users/dtos/user-dtos";
 @Injectable()
 export class UserProfile extends AutomapperProfile{
     constructor(@InjectMapper() protected readonly mapper: Mapper){

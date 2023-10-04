@@ -2,7 +2,7 @@ import { Mapper, MappingProfile, createMap, forMember, mapFrom } from "@automapp
 import { AutomapperProfile, InjectMapper } from "@automapper/nestjs";
 import { Injectable } from "@nestjs/common";
 import { ReturnNotification, ReturnNotificationDocument } from '../notifications/entities/notification.entity';
-import { NotificationDto } from "src/notifications/dto/create-notification.dto";
+import { NotificationDto } from "../notifications/dto/create-notification.dto";
 
 @Injectable()
 export class NotificationProfile extends AutomapperProfile{
@@ -26,6 +26,10 @@ export class NotificationProfile extends AutomapperProfile{
                 forMember(
                     (destination) => destination.NotificationType,
                     mapFrom((source)=> source.NotificationType)
+                ),
+                forMember(
+                    (destination) => destination.NotificationState,
+                    mapFrom((source)=> source.NotificationState)
                 )
             )
         }

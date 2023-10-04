@@ -1,12 +1,12 @@
 import { Injectable,NotFoundException } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { promisify } from "util";
 import { scrypt as _scrypt} from "crypto";
 import { 
   LoginUserDTO,
   AuthenticatedUserDTO, 
   UserProfileInfoDTO,
-  CurrentUserDTO} from 'src/users/dtos/user-dtos';
+  CurrentUserDTO} from '../users/dtos/user-dtos';
 const scrypt = promisify(_scrypt);
 import { JwtService } from '@nestjs/jwt';
 import { InjectMapper } from '@automapper/nestjs';

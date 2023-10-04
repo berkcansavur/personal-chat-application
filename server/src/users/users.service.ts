@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import mongoose from 'mongoose';
 import { UsersRepository } from './users.repository';
 import { IUsersService } from 'interfaces/user-service.interface';
 import { InjectMapper } from '@automapper/nestjs';
@@ -18,9 +17,9 @@ import {
     FriendInfoDTO,
     CreateUserDTO } from './dtos/user-dtos';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
-import { NotificationsService } from 'src/notifications/notifications.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { AddFriendNotificationDto, NotificationDto, RemoveFriendNotificationDto } from '../notifications/dto/create-notification.dto';
-import { UtilsService } from 'src/utils/utils.service';
+import { UtilsService } from '..//utils/utils.service';
 import { EmailIsNotExistException, FriendCouldNotAddedException, FriendCouldNotRemovedException, UserAccessTokenCouldNotAssigned, UserAccessTokenCouldNotRemoved, UserAccessTokenCouldNotRetrieved, UserCouldNotAddedToChatGroupException, UserCouldNotCreatedException, UserCouldNotRemovedFromChatGroupException, UserNotFoundException, UsersNotFoundException } from './exceptions';
 
 @Injectable()

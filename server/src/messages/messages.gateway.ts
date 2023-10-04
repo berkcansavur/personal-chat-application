@@ -9,11 +9,10 @@ import {
 import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { Server,Socket } from 'socket.io';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { UserInterfaceForMessaging } from '../../interfaces/chat-groups-service.interface';
 import { MessageDTO } from './dto/message.dto';
-import { ChatGroupsService } from 'src/chat-groups/chat-groups.service';
-import mongoose from 'mongoose';
+import { ChatGroupsService } from '../chat-groups/chat-groups.service';
 import { ChatGroupsFriendsDto, SearchUserDto } from './dto/search-user.dto';
   @WebSocketGateway({
   cors:{

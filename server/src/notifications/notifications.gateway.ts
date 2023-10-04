@@ -87,10 +87,6 @@ export class NotificationsGateway implements OnGatewayConnection, OnGatewayDisco
       this.server.in(socketId).socketsJoin( UserIdToBeNotified );
   }
   
-  @SubscribeMessage('removeNotification')
-  remove(@MessageBody() id: number) {
-    return this.notificationsService.remove(id);
-  }
   async handleConnection(socket: Socket): Promise<void> {
     console.log(`Socket connected for Notification: ${socket.id}`)
   }

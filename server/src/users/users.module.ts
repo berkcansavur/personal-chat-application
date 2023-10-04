@@ -7,10 +7,10 @@ import { UserSchema } from './users.model';
 import { SessionModule } from 'nestjs-session';
 import { SessionOptions } from 'express-session';
 import { PassportModule } from '@nestjs/passport';
-import { UtilsModule } from 'src/utils/utils.module';
+import { UtilsModule } from '../utils/utils.module';
 import { UsersRepository } from './users.repository';
-import { UserProfile } from 'src/mapper/user-mapper';
-import { NotificationsModule } from 'src/notifications/notifications.module';
+import { UserProfile } from '../mapper/user-mapper';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 
 

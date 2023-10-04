@@ -1,5 +1,5 @@
 import { HttpStatus } from "@nestjs/common";
-import { ChatAppException } from "src/core/exceptions/chatapp.exception";
+import { ChatAppException } from "../../core/exceptions/chatapp.exception";
 
 export class NotificationCouldNotCreatedException extends ChatAppException{
     constructor( data?: string | object ){

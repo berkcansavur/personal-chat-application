@@ -34,7 +34,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     ChatGroupsModule,
     AuthModule,
     MessagesModule,
-    NotificationsModule,
+    NotificationsModule
   ],
   controllers: [AppController],
   providers: [{

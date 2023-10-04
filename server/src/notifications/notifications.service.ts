@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { AddFriendNotificationDto, RemoveFriendNotificationDto, NotificationDto, AddedToChatGroupNotificationDto, RemovedFromChatGroupNotificationDto } from './dto/create-notification.dto';
 
 import { INotificationsService } from 'interfaces/notification-service.interface';
@@ -7,6 +7,8 @@ import { NotificationsRepository } from './notifications.repository';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { NotificationCouldNotCreatedException, NotificationNotFoundException } from './exceptions';
+import { NotificationStateFactory } from './factories/notification-state.factory';
+import { NOTIFICATION_STATUSES } from './constants/notification.constant';
 
 @Injectable()
 export class NotificationsService implements INotificationsService {
@@ -14,30 +16,29 @@ export class NotificationsService implements INotificationsService {
 
   constructor( 
     private notificationsRepository: NotificationsRepository,
+    //@Inject('NOTIFICATION_STATE_FACTORY') private readonly notificationStateFactory: NotificationStateFactory,
     @InjectMapper() private readonly NotificationsMapper: Mapper
   ){}
-  
-  findOne(id: number) {
-    return `This action returns a #${id} notification`;
-  }
   
   async createAddedByFriendNotification({
     addFriendNotificationDto
   }:{
     addFriendNotificationDto:AddFriendNotificationDto
-  }){
+  }): Promise<NotificationDto>{
 
     const { 
       logger, 
       NotificationsMapper
      } = this;
-
+    
     const {
       UserToBeAdded,
       AddedByFriendName,
       AddedTime
     } = addFriendNotificationDto;
-
+    
+  
+    
     logger.debug(`[NotificationsService] createAddedByFriendNotification: ${JSON.stringify(addFriendNotificationDto)}`)
 
     const returnMessage:string =  `${AddedByFriendName} added you as a friend at: ${AddedTime}`;
@@ -45,7 +46,8 @@ export class NotificationsService implements INotificationsService {
     const notification = await this.notificationsRepository.create({
       UserIdToBeNotified:UserToBeAdded,
       ReturnNotificationMessage:returnMessage,
-      NotificationType:'AddFriendNotification'
+      NotificationType:'AddFriendNotification',
+      NotificationState: NOTIFICATION_STATUSES.CREATED
     });
 
     if(!notification) {
@@ -54,15 +56,12 @@ export class NotificationsService implements INotificationsService {
     return NotificationsMapper.map<ReturnNotification, NotificationDto>(notification,ReturnNotification,NotificationDto);
   }
   
-  remove(id: number) {
-    return `This action removes a #${id} notification`;
-  }
   
   async createRemovedByFriendNotification({
     removeFriendNotificationDto
   }:{
     removeFriendNotificationDto:RemoveFriendNotificationDto
-  }){
+  }): Promise<NotificationDto>{
     const { 
       logger, 
       NotificationsMapper
@@ -80,7 +79,8 @@ export class NotificationsService implements INotificationsService {
     const notification = await this.notificationsRepository.create({
       UserIdToBeNotified:UserToBeRemoved,
       ReturnNotificationMessage:returnMessage,
-      NotificationType:'RemoveFriendNotification'
+      NotificationType:'RemoveFriendNotification',
+      NotificationState:NOTIFICATION_STATUSES.CREATED
     });
 
     if(!notification) {
@@ -113,7 +113,8 @@ export class NotificationsService implements INotificationsService {
       const notification =  await this.notificationsRepository.create({
         UserIdToBeNotified:UserToBeAdded,
         ReturnNotificationMessage:returnMessage,
-        NotificationType:'AddedToChatGroupNotification'
+        NotificationType:'AddedToChatGroupNotification',
+        NotificationState:NOTIFICATION_STATUSES.CREATED
       });
       
       if(!notification) {
@@ -147,7 +148,8 @@ export class NotificationsService implements INotificationsService {
       const notification =  await this.notificationsRepository.create({
         UserIdToBeNotified:UserToBeRemoved,
         ReturnNotificationMessage:returnMessage,
-        NotificationType:'RemovedFromChatGroupNotification'
+        NotificationType:'RemovedFromChatGroupNotification',
+        NotificationState:NOTIFICATION_STATUSES.CREATED
       });
 
       if(!notification) {

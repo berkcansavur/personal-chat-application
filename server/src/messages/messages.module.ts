@@ -3,9 +3,9 @@ import { MessagesService } from './messages.service';
 import { MessagesGateway } from './messages.gateway';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MessagesSchema } from './entities/message.entity';
-import { UsersModule } from 'src/users/users.module';
+import { UsersModule } from '../users/users.module';
 import { MessagesRepository } from './messages.repository';
-import { ChatGroupsModule } from 'src/chat-groups/chat-groups.module';
+import { ChatGroupsModule } from '../chat-groups/chat-groups.module';
 
 @Module({
   imports:[

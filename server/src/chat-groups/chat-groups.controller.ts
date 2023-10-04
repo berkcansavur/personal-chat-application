@@ -4,12 +4,10 @@ import {
     Post,
     Get,
     Param,
-    Session, 
-    UnauthorizedException
 } from '@nestjs/common';
 import { ChatGroupsService } from './chat-groups.service';
-import { UsersService } from 'src/users/users.service';
-import { CreateChatGroupDTO } from './dtos/chat-group-dtos';
+import { UsersService } from '../users/users.service';
+
 import mongoose from 'mongoose';
 
 @Controller('chat-groups')

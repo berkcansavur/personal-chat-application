@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { NotificationsGateway } from './notifications.gateway';
-import { UsersModule } from 'src/users/users.module';
-import { ChatGroupsModule } from 'src/chat-groups/chat-groups.module';
 import { NotificationsSchema } from './entities/notification.entity';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NotificationsRepository } from './notifications.repository';
-import { NotificationProfile } from 'src/mapper/notification-mapper';
+import { NotificationProfile } from '../mapper/notification-mapper';
+import { NotificationStateFactory } from './factories/notification-state.factory';
+import { NotificationStateMap } from './states/notification-state.map';
 
 @Module({
   imports:[
@@ -16,7 +16,12 @@ import { NotificationProfile } from 'src/mapper/notification-mapper';
     NotificationsGateway, 
     NotificationsService,
     NotificationsRepository,
-    NotificationProfile
+    NotificationProfile,
+    NotificationStateMap,
+    {
+      provide:'NOTIFICATION_STATE_FACTORY',
+      useClass: NotificationStateFactory
+    }
   ],
   exports:[
     NotificationsGateway,

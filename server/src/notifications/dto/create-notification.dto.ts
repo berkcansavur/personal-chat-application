@@ -37,4 +37,5 @@ export class NotificationDto {
     UserIdToBeNotified: String;
     ReturnNotificationMessage: string;
     NotificationType: string;
+    NotificationState: number;
 }
