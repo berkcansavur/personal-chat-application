@@ -20,7 +20,6 @@ describe('NotificationsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports:[
         AppModule,
-        //MongooseModule.forRoot(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.duok4hv.mongodb.net/?retryWrites=true&w=majority`),
         MongooseModule.forFeature([{name:'Notifications',schema:NotificationsSchema}]),
         AutomapperModule.forRoot({
           strategyInitializer: classes(),
@@ -28,7 +27,6 @@ describe('NotificationsService', () => {
       ],
       providers: [
         NotificationsGateway,
-        AppModule,
         NotificationsService,
         NotificationsRepository,
         NotificationProfile,
