@@ -188,3 +188,17 @@ export class FriendCouldNotRemovedException extends ChatAppException {
         Object.setPrototypeOf(this, FriendCouldNotRemovedException.prototype);
     }
 }
+export class FriendAlreadyAddedException extends ChatAppException {
+    constructor( data?: string | object ) {
+        super(
+            'Friend could not added because it already exists',
+            1072,
+            HttpStatus.BAD_REQUEST,
+            JSON.stringify(data),
+            'FriendAlreadyAddedException'
+        );
+
+        this.name = 'FriendAlreadyAddedException';
+        Object.setPrototypeOf(this, FriendAlreadyAddedException.prototype);
+    }
+}

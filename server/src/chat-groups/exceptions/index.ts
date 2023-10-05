@@ -76,6 +76,36 @@ export class CouldNotRemovedUserFromChatGroupException extends ChatAppException 
 
     }
 }
+export class UserAlreadyExistsInChatGroupException extends ChatAppException {
+    constructor( data?: string | object ){
+        super(
+            'Could not added user to chat group because user already exists in group.',
+            2032,
+            HttpStatus.BAD_REQUEST,
+            JSON.stringify(data),
+            'UserAlreadyExistsInChatGroupException'
+        );
+        
+        this.name ='UserAlreadyExistsInChatGroupException'
+        Object.setPrototypeOf(this, CouldNotRemovedUserFromChatGroupException.prototype);
+
+    }
+}
+export class UserNotExistsInChatGroupException extends ChatAppException {
+    constructor( data?: string | object ){
+        super(
+            'Could not removed user from chat group because user not exists in group.',
+            2033,
+            HttpStatus.BAD_REQUEST,
+            JSON.stringify(data),
+            'UserNotExistsInChatGroupException'
+        );
+        
+        this.name ='UserNotExistsInChatGroupException'
+        Object.setPrototypeOf(this, UserNotExistsInChatGroupException.prototype);
+
+    }
+}
 export class CouldNotUpdatedChatGroupNameException extends ChatAppException {
     constructor( data?: string | object ){
         super(

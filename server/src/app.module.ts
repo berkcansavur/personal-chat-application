@@ -41,7 +41,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     provide:APP_PIPE,
     useValue:new ValidationPipe({
       whitelist:true
-    })
+    }),
   }],
 })
 export class AppModule {
