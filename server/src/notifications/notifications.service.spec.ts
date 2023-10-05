@@ -1,8 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotificationsService } from './notifications.service';
-import { NotificationCouldNotCreatedException } from './exceptions';
 import { AddFriendNotificationDto, AddedToChatGroupNotificationDto, RemoveFriendNotificationDto, RemovedFromChatGroupNotificationDto } from './dto/create-notification.dto';
-import { NOTIFICATION_STATUSES } from './constants/notification.constant';
 import { NotificationsRepository } from './notifications.repository';
 import { NotificationProfile } from '../mapper/notification-mapper';
 import { NotificationsGateway } from './notifications.gateway';
@@ -11,7 +9,6 @@ import { classes } from '@automapper/classes';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NotificationsSchema } from './entities/notification.entity';
 import { AppModule } from '../app.module';
-import { NotificationsModule } from './notifications.module';
 
 describe('NotificationsService', () => {
   let service: NotificationsService;

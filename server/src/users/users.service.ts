@@ -49,7 +49,7 @@ export class UsersService implements IUsersService {
         logger.debug(`[UsersService] createUser: ${JSON.stringify(createUserDTO)}`);
 
         const newUser : ReturnUser = await this.usersRepository.createUser({createUserDTO});
-        
+
         if(!newUser){
             throw new UserCouldNotCreatedException({createUserDTO});
         }
