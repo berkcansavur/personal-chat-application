@@ -3,7 +3,6 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { NotificationDto } from "./dto/create-notification.dto";
 import { Notification, ReturnNotificationDocument } from "./entities/notification.entity";
-import { NOTIFICATION_STATUSES } from './constants/notification.constant';
 @Injectable()
 export class NotificationsRepository {
     constructor( @InjectModel('Notifications') private notificationsModel: Model<Notification>){}
