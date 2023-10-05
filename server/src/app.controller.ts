@@ -10,6 +10,12 @@ import { ReturnUserProfile } from './users/users.model';
 import { FriendInfoDTO } from './users/dtos/user-dtos';
 import { NotificationsService } from './notifications/notifications.service';
 import { ParseObjectIdPipe } from './core/pipe/object-id.pipe';
+import { 
+  IsAllowedToAddFriend,
+  IsUserAllowedToAddingChatGroup,
+  IsUserAllowedToRemovingFromChatGroup,
+  IsAllowedToRemoveFriend
+ } from './core/decorators/index';
 
 @Controller('app')
 export class AppController {
@@ -60,7 +66,7 @@ export class AppController {
       const userProfileInfo = await this.userService.mapUserProfileInfo({mapUserInfoDTO:{UserId, UserName, UserEmail, ChatGroupDetails, FriendsData}});
       return userProfileInfo;
   }
-  @UseGuards( JwtAuthGuard )
+  @UseGuards( JwtAuthGuard, IsUserAllowedToAddingChatGroup )
   @Post('/add-friends-to-chat-group/:chatGroupId/:friendId')
   async addFriendsToChatGroup(
     @Param('chatGroupId', ParseObjectIdPipe ) chatGroupId: string,
@@ -71,7 +77,7 @@ export class AppController {
       return updatedChatGroup ;
 
   }
-  @UseGuards( JwtAuthGuard )
+  @UseGuards( JwtAuthGuard, IsUserAllowedToRemovingFromChatGroup )
   @Post('/remove-friends-from-chat-group/:chatGroupId/:friendId')
   async removeFriendsFromChatGroup(
     @Param('chatGroupId', ParseObjectIdPipe ) chatGroupId: string, 
@@ -83,9 +89,9 @@ export class AppController {
       return updatedChatGroup;
 
   } 
-  @UseGuards( JwtAuthGuard )
+  @UseGuards( JwtAuthGuard, IsAllowedToAddFriend )
   @Post('/add-friend/:friendId')
-  async addFriend( 
+  async addFriend(
     @Param('friendId', ParseObjectIdPipe ) friendId: string, 
     @Request() req 
     ) : Promise<FriendInfoDTO> {
@@ -93,7 +99,7 @@ export class AppController {
       const updatedUser = await this.userService.addFriend( {userId: req.user.userId, friendId: friendId} );
       return updatedUser;
   }
-  @UseGuards( JwtAuthGuard )
+  @UseGuards( JwtAuthGuard, IsAllowedToRemoveFriend )
   @Post('/remove-friend/:friendId')
   async removeFriend( 
     @Param('friendId', ParseObjectIdPipe ) friendId: string, 

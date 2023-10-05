@@ -8,7 +8,6 @@ import {
     ReturnUser, 
     ReturnUserProfile, 
     ReturnUserToBeAuth, 
-    User, 
     UserToBeValidate } from './users.model';
 import { 
     UserToBeValidateDTO, 
