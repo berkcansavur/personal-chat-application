@@ -9,7 +9,7 @@ import { MessagesService } from './messages/messages.service';
 import { ReturnUserProfile } from './users/users.model';
 import { FriendInfoDTO } from './users/dtos/user-dtos';
 import { NotificationsService } from './notifications/notifications.service';
-import { ParseObjectIdPipe } from './core/pipe/object-id.pipe';
+import { ParseObjectIdPipe } from './core/pipes/object-id.pipe';
 import { 
   IsAllowedToAddFriend,
   IsUserAllowedToAddingChatGroup,
