@@ -83,7 +83,7 @@ describe('getUserToBeValidate', () => {
 
     const testUser = await service.getUserToBeValidate({userId:testUserId});
     expect(testUser).toBeDefined();
-    expect(testUser._id).toBe('651df1f3b08ecc894f8d2c22');
+    expect(testUser._id).toEqual('651df1f3b08ecc894f8d2c22');
     expect(testUser.email).toBe('testuser@example.com');
     expect(testUser.password).toBe('testpassword');
 

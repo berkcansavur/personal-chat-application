@@ -18,7 +18,7 @@ export class UsersRepository {
         return await this.userModel.findOne({ _id: userId });
     }
     async findUserByObjectIdForValidating( id: string): Promise<UserToBeValidateDocument>{
-        return await this.userModel.findOne({ _id: id });
+        return (await this.userModel.findOne({ _id: id })).toObject();
     }
     async findByEmail(email: string): Promise<ReturnUserDocument>{
         return this.userModel.findOne({email: email});

@@ -101,8 +101,8 @@ export class UsersService implements IUsersService {
             throw new UserNotFoundException({userId});
         }
 
-        return UserMapper.map<UserToBeValidate, UserToBeValidateDTO>(user, UserToBeValidate, UserToBeValidateDTO);
-
+        const mappedUSer = UserMapper.map<UserToBeValidate, UserToBeValidateDTO>(user, UserToBeValidate, UserToBeValidateDTO);
+        return mappedUSer;
     }
 
     async findUserByEmail({

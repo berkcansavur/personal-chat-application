@@ -41,8 +41,8 @@ export class ReturnUserToBeAuth{
     accessToken:string;
 }
 export class UserToBeValidate{
-    @Prop({type: mSchema.Types.ObjectId, auto: true})
-    _id:Types.ObjectId;
+    @Prop({type: String, required: true})
+    _id:string;
 
     @Prop({type: String, required: true})
     email:string;

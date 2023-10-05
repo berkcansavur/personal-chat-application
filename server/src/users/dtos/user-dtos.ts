@@ -66,7 +66,7 @@ export class FriendInfoDTO{
 
 export class CurrentUserDTO {
     @Expose()
-    userId: mongoose.Types.ObjectId;
+    userId: string;
     @Expose()
     userName: string;
     @Expose()

@@ -21,12 +21,12 @@ export class AuthService {
   
   async validateUser(
     body: LoginUserDTO
-    ): Promise<any> {
+    ): Promise<CurrentUserDTO> {
       const { AuthMapper } = this;
       const {email, password } = body;
       const user = await this.userService.findUserByEmail({email});
       const { UserId } = user
-      const userToBeValidated = await this.userService.getUserToBeValidate({userId:UserId.toString()})
+      const userToBeValidated = await this.userService.getUserToBeValidate({userId:UserId})
       if(!user){
           throw new NotFoundException('User Not Found');
       }
@@ -39,7 +39,7 @@ export class AuthService {
       }
       return null
   }
-  async loginWithCredentials(user: AuthenticatedUserDTO){
+  async loginWithCredentials(user: AuthenticatedUserDTO): Promise<AuthenticatedUserDTO>{
     const payload = {
       sub:user.userId,
       email:user.userEmail,
