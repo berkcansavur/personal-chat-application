@@ -15,7 +15,7 @@ export class AuthProfile extends AutomapperProfile{
                 UserProfileInfoDTO,
                 CurrentUserDTO,
                 forMember(
-                    (destination)=> destination.userId,
+                    (destination)=> destination.userId.toString(),
                     mapFrom((source)=> source.UserId)
                 ),
                 forMember(

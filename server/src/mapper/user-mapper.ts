@@ -21,6 +21,26 @@ export class UserProfile extends AutomapperProfile{
                 mapper,
                 ReturnUser,
                 ReturnUserDTO,
+                forMember(
+                    (destination) => destination.name,
+                    mapFrom((source) => source.name)
+                ),
+                forMember(
+                    (destination) => destination._id,
+                    mapFrom((source) => source._id.toString())
+                ),
+                forMember(
+                    (destination) => destination.email,
+                    mapFrom((source) => source.email)
+                ),
+                forMember(
+                    (destination) => destination.ChatGroups,
+                    mapFrom((source) => source.ChatGroups)
+                ),
+                forMember(
+                    (destination) => destination.Friends,
+                    mapFrom((source) => source.Friends)
+                )
             )
             createMap<UserToBeValidate, UserToBeValidateDTO>(
                 mapper,
@@ -44,7 +64,7 @@ export class UserProfile extends AutomapperProfile{
                 UserProfileInfoDTO,
                 ReturnUserProfile,
                 forMember(
-                    (destination)=>destination._id,
+                    (destination)=>destination._id.toString(),
                     mapFrom((source)=>source.UserId)
                 ),
                 forMember(
@@ -69,7 +89,7 @@ export class UserProfile extends AutomapperProfile{
                 MapUserInfoDTO,
                 ReturnUserProfile,
                 forMember(
-                    (destination)=>destination._id,
+                    (destination)=>destination._id.toString(),
                     mapFrom((source)=>source.UserId)
                 ),
                 forMember(
@@ -95,7 +115,7 @@ export class UserProfile extends AutomapperProfile{
                 UserProfileInfoDTO,
                 forMember(
                     (destination)=> destination.UserId,
-                    mapFrom((source)=> source._id)
+                    mapFrom((source)=> source._id.toString())
                 ),
                 forMember(
                     (destination)=> destination.UserName,
@@ -120,7 +140,7 @@ export class UserProfile extends AutomapperProfile{
                 FriendInfoDTO,
                 forMember(
                     (destination)=> destination._id,
-                    mapFrom((source)=> source._id)
+                    mapFrom((source)=> source._id.toString())
                 ),
                 forMember(
                     (destination)=> destination.name,

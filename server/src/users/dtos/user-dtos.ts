@@ -18,7 +18,7 @@ export class UserToBeValidateDTO {
 }
 
 export class UserProfileInfoDTO {
-    UserId: mongoose.Types.ObjectId;
+    UserId: string;
     UserName: string;
     UserEmail: string;
     ChatGroups: any[];
@@ -59,7 +59,7 @@ export class LoginUserDTO {
 }
 
 export class FriendInfoDTO{
-    _id: mongoose.Types.ObjectId;
+    _id: string;
     name: string;
     email: string;
 }
@@ -109,7 +109,7 @@ export class AuthenticatedUserDTO {
 }
 export class MapUserInfoDTO {
 
-    UserId: mongoose.Types.ObjectId;
+    UserId: string;
 
     UserName: string;
 
