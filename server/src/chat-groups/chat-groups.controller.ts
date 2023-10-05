@@ -50,7 +50,7 @@ export class ChatGroupsController {
         }
     }
     @Post('/change-group-name/:id')
-    async updateGroupName(@Param('id') chatGroupId: mongoose.Types.ObjectId, @Body() body:{ newName: string}){
+    async updateGroupName(@Param('id') chatGroupId:string, @Body() body:{ newName: string}){
         try {
             const updatedChatGroup = await this.chatGroupsService.updateChatGroupName({updateChatGroupsNameDto:{chatGroupId :chatGroupId,chatGroupName :body.newName}});
             return updatedChatGroup;

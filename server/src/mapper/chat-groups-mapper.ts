@@ -54,7 +54,7 @@ export class ChatGroupsProfile extends AutomapperProfile{
                 ChatGroupInfoDTO,
                 forMember(
                     (destination)=> destination._id,
-                    mapFrom((source)=>source._id)
+                    mapFrom((source)=>source._id.toString())
                 ),
                 forMember(
                     (destination)=>destination.chatGroupName,

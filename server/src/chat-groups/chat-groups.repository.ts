@@ -45,7 +45,7 @@ export class ChatGroupsRepository {
             { new: true } 
         );            
     }
-    async updateChatGroupName(chatGroupId: mongoose.Types.ObjectId, chatGroupName: string) : Promise<ReturnChatGroupDocument>{
+    async updateChatGroupName(chatGroupId: string, chatGroupName: string) : Promise<ReturnChatGroupDocument>{
         return await this.ChatGroupsModel.findByIdAndUpdate(
             chatGroupId,
             { chatGroupName: chatGroupName},

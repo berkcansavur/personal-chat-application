@@ -18,10 +18,11 @@ export class UsersRepository {
         return await this.userModel.findOne({ _id: userId });
     }
     async findUserByObjectIdForValidating( id: string): Promise<UserToBeValidateDocument>{
-        return await this.userModel.findOne({ _id: id });
+        return (await this.userModel.findOne({ _id: id })).toObject();
     }
     async findByEmail(email: string): Promise<ReturnUserDocument>{
-        return this.userModel.findOne({email: email});
+        const user = this.userModel.findOne({email: email});
+        return (await user).toObject();
     }
     async addChatGroupToUser(userId: string, chatGroupId: string): Promise<ReturnUserDocument>{
         return await this.userModel.findByIdAndUpdate(
@@ -85,11 +86,12 @@ export class UsersRepository {
     }
     async setUsersAccessToken(userId: string, accessToken: string): Promise<ReturnUserToBeAuthDocument>{
         const { userModel } = this;
-        return await userModel.findByIdAndUpdate(
+        const user = await userModel.findByIdAndUpdate(
             userId,
             {accessToken:accessToken},
             {new:true}
         );
+        return user.toObject();
     }
     async getUsersAccessToken(userId: string): Promise<ReturnUserToBeAuthDocument>{
         const { userModel } = this;

@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import mongoose from "mongoose";
 import { ChatGroupsRepository } from './chat-groups.repository';
 import { IChatGroupService } from 'interfaces/chat-groups-service.interface';
 import { ReturnChatGroup } from './chat-groups.model';

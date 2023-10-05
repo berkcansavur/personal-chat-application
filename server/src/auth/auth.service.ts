@@ -25,8 +25,8 @@ export class AuthService {
       const { AuthMapper } = this;
       const {email, password } = body;
       const user = await this.userService.findUserByEmail({email});
-      const { UserId } = user
-      const userToBeValidated = await this.userService.getUserToBeValidate({userId:UserId.toString()})
+      const { UserId } = user;
+      const userToBeValidated = await this.userService.getUserToBeValidate({userId:UserId})
       if(!user){
           throw new NotFoundException('User Not Found');
       }

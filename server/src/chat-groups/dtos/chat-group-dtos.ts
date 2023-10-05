@@ -21,14 +21,14 @@ export class CreateChatGroupDTO{
 };
 
 export class ChatGroupInfoDTO {
-    _id: mongoose.Types.ObjectId;
+    _id: string;
     chatGroupName: string;
     users: mongoose.Types.ObjectId[];
 };
 
 export class UpdateChatGroupsNameDTO {
     
-    chatGroupId: mongoose.Types.ObjectId;
+    chatGroupId: string;
     
     @IsString()
     @IsNotEmpty()

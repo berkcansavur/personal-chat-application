@@ -346,7 +346,7 @@ export class UsersService implements IUsersService {
 
         const updatedUser = await this.usersRepository.setUsersAccessToken(userId, access_token);
 
-        if(updatedUser.accessToken.length < 5) {
+        if(updatedUser.accessToken === null) {
             throw new UserAccessTokenCouldNotAssigned({authenticatedUserDto});
         }
 
