@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { ChatGroupsService } from "src/chat-groups/chat-groups.service";
-import { UserAlreadyExistsInChatGroupException, UserNotExistsInChatGroupException } from "src/chat-groups/exceptions";
+import { UserNotExistsInChatGroupException } from "src/chat-groups/exceptions";
 
 @Injectable()
 export class IsUserAllowedToRemovingFromChatGroup implements CanActivate {

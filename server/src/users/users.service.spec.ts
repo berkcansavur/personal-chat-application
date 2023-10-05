@@ -11,8 +11,6 @@ import { UserProfile } from '../mapper/user-mapper';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { CreateUserDTO, MapUserInfoDTO } from './dtos/user-dtos';
-import { UtilsService } from '../utils/utils.service';
-import { ChatGroupInfoDTO } from 'src/chat-groups/dtos/chat-group-dtos';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -41,26 +39,26 @@ describe('UsersService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
-  // describe('createUser', () => {
-  //   it('should creates User with correct structure', async () => {
+  describe('createUser', () => {
+    it('should creates User with correct structure', async () => {
 
-  //     const testCreateUserDto : CreateUserDTO = {
-  //       name:'Test User Name',
-  //       email: 'testuser@example.com',
-  //       password: 'test-password',
-  //       ChatGroups:[],
-  //       Friends:[],
-  //     }
+      const testCreateUserDto : CreateUserDTO = {
+        name:'Test User Name',
+        email: 'testuser@example.com',
+        password: 'test-password',
+        ChatGroups:[],
+        Friends:[],
+      }
 
-  //     const testUser = await service.createUser({createUserDTO:testCreateUserDto});
-  //     expect(testUser).toBeDefined();
-  //     expect(testUser.name).toBe('Test User Name');
-  //     expect(testUser.email).toBe('testuser@example.com');
-  //     expect(testUser.Friends.length).toBe(0);
-  //     expect(testUser.ChatGroups.length).toBe(0);
+      const testUser = await service.createUser({createUserDTO:testCreateUserDto});
+      expect(testUser).toBeDefined();
+      expect(testUser.name).toBe('Test User Name');
+      expect(testUser.email).toBe('testuser@example.com');
+      expect(testUser.Friends.length).toBe(0);
+      expect(testUser.ChatGroups.length).toBe(0);
 
-  //   });
-  // });
+    });
+  });
   describe('findUser', () => {
     it('should find User and return correct structure', async () => {
 
